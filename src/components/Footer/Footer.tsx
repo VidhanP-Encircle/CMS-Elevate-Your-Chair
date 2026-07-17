@@ -31,13 +31,13 @@ export default async function Footer({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-[20px] w-full">
             {/* Top text row inside grid to align with images */}
             <div 
-              className="col-span-1 md:col-span-2 flex justify-start items-end font-sans font-extrabold uppercase pb-[15px] leading-none tracking-wide"
+              className="col-span-1 md:col-span-2 flex justify-start items-end font-title font-extrabold uppercase pb-[15px] leading-none tracking-wide"
               style={{ color: footerTextColor, fontSize: footerLabelSize ? `${footerLabelSize}px` : '28px' }}
             >
               {globalSettings.label || "FOLLOW US"}
             </div>
             <div 
-              className="col-span-1 md:col-span-2 flex justify-end items-end font-sans font-extrabold uppercase text-[#c2b7a3] pb-[15px] leading-none tracking-wide wrap-break-word text-right"
+              className="col-span-1 md:col-span-2 flex justify-end items-end font-title font-extrabold uppercase text-[#c2b7a3] pb-[15px] leading-none tracking-wide wrap-break-word text-right"
               style={{ fontSize: footerLabelSize ? `${footerLabelSize}px` : '28px' }}
             >
               @elevateyourchair

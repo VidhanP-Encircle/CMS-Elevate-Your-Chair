@@ -2,9 +2,13 @@ import { getDirectus } from '@/lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
 import BlockTitle from '@/components/BlockTitle/BlockTitle';
 import BlockMobile from '@/components/BlockMobile/BlockMobile';
-// import BlockCard from '@/components/BlockCard/BlockCard';
+import BlockCard from '@/components/BlockCard/BlockCard';
+import { draftMode } from 'next/headers';
+import Link from 'next/link';
 
 export default async function HomePage() {
+  const { isEnabled } = await draftMode();
+
   try {
     const directus = await getDirectus();
     
@@ -12,7 +16,7 @@ export default async function HomePage() {
     const pages = (await directus.request(
       readItems('pages', {
         filter: { inner_name: { _eq: 'Home Page' } },
-        fields: ['*', 'pages_blocks.*', 'pages_blocks.item.*'] as any,
+        fields: ['*', 'pages_blocks.*', 'pages_blocks.item.*', 'pages_blocks.item.cards.*'] as any,
       })
     )) as any[];
 
@@ -32,10 +36,19 @@ export default async function HomePage() {
     const blocks = homePage.pages_blocks;
 
     return (
-      <div className="flex flex-col w-full">
-        {blocks.map((blockWrap: any, index: number) => {
-          const collection = blockWrap.collection;
-          const item = blockWrap.item;
+      <>
+        {isEnabled && (
+          <div className="w-full bg-[#c2b7a3] text-black text-center py-2 text-sm font-bold tracking-wide z-50 relative">
+            Draft Mode Enabled — Viewing Uncached Data.{' '}
+            <Link href="/api/disable-draft" className="underline hover:text-white transition-colors">
+              Disable Draft Mode
+            </Link>
+          </div>
+        )}
+        <div className="flex flex-col w-full">
+          {blocks.map((blockWrap: any, index: number) => {
+            const collection = blockWrap.collection;
+            const item = blockWrap.item;
 
           if (collection === 'block_title') {
             return <BlockTitle key={index} data={item} globalSettings={globalSettings} />;
@@ -46,18 +59,13 @@ export default async function HomePage() {
           }
 
           if (collection === 'block_card') {
-            return (
-              <div key={index} className="p-8 border border-dashed border-gray-400 m-4">
-                <h2 className="text-xl font-bold">Block Card Placeholder</h2>
-                <div dangerouslySetInnerHTML={{ __html: item.title }} className="prose" />
-              </div>
-            );
-            // return <BlockCard key={index} data={item} />;
+            return <BlockCard key={index} data={item} globalSettings={globalSettings} />;
           }
 
           return <div key={index}>Unknown block type: {collection}</div>;
         })}
       </div>
+      </>
     );
   } catch (error) {
     console.error('Error fetching home page blocks:', error);

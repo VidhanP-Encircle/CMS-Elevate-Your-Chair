@@ -9,7 +9,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-montserrat), sans-serif;
+  --font-sans: "Avenir Next LT Pro", Avenir, sans-serif;
+  --font-title: "Termina", sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 

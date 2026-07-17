@@ -51,7 +51,7 @@ export default function BlockMobile({
           >
             {title && (
               <div
-                className="font-sans font-light uppercase tracking-wide [&>p]:m-0 [&>p]:leading-[1.1] [&>p>strong]:font-black [&>p>strong]:font-sans"
+                className="font-title font-light uppercase tracking-wide [&>p]:m-0 [&>p]:leading-[1.1] [&>p>strong]:font-black [&>p>strong]:font-title"
                 style={{ fontSize: `${titleSize}px`, color: textColor }}
                 dangerouslySetInnerHTML={{ __html: title }}
               />

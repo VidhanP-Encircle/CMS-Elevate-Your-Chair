@@ -6,14 +6,6 @@ import NoticeBlock from "@/components/NoticeBlock/NoticeBlock";
 import Navigation from "@/components/Navigation/Navigation";
 import Footer from "@/components/Footer/Footer";
 
-import { Montserrat } from "next/font/google";
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-montserrat",
-});
-
 export const metadata: Metadata = {
   title: "Elevate Your Chair",
   description: "Join a Movement. Elevate Your Craft. Fuel Your Purpose.",
@@ -35,7 +27,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={montserrat.variable}>
+      <body>
         <header className="sticky top-0 z-50 w-full flex flex-col">
           <NoticeBlock globalSettings={globalSettings} />
           <Navigation globalSettings={globalSettings} />
