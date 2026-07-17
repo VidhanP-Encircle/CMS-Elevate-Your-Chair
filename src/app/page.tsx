@@ -3,11 +3,17 @@ import { readItems, readSingleton } from '@directus/sdk';
 import BlockTitle from '@/components/BlockTitle/BlockTitle';
 import BlockMobile from '@/components/BlockMobile/BlockMobile';
 import BlockCard from '@/components/BlockCard/BlockCard';
+import BlockPricingCards from '@/components/BlockPricingCards/BlockPricingCards';
 import { draftMode } from 'next/headers';
+import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
 
 export default async function HomePage() {
   const { isEnabled } = await draftMode();
+
+  if (isEnabled) {
+    noStore();
+  }
 
   try {
     const directus = await getDirectus();
@@ -16,7 +22,15 @@ export default async function HomePage() {
     const pages = (await directus.request(
       readItems('pages', {
         filter: { inner_name: { _eq: 'Home Page' } },
-        fields: ['*', 'pages_blocks.*', 'pages_blocks.item.*', 'pages_blocks.item.cards.*'] as any,
+        fields: [
+          '*', 
+          'pages_blocks.*', 
+          'pages_blocks.item.*', 
+          'pages_blocks.item.cards.*',
+          'pages_blocks.item.pricing_cards.*',
+          'pages_blocks.item.pricing_cards.pricing_cards_id.*',
+          'pages_blocks.item.background_image.*'
+        ] as any,
       })
     )) as any[];
 
@@ -35,6 +49,31 @@ export default async function HomePage() {
     const homePage = pages[0];
     const blocks = homePage.pages_blocks;
 
+    // Group pricing cards blocks if they are sequential
+    const groupedBlocks = [];
+    for (let i = 0; i < blocks.length; i++) {
+      if (blocks[i].collection === 'block_pricing_cards') {
+        const currentBlock = blocks[i];
+        const nextBlock = blocks[i + 1];
+        
+        if (nextBlock && nextBlock.collection === 'block_pricing_cards') {
+          groupedBlocks.push({
+            collection: 'block_pricing_cards_group',
+            items: [currentBlock.item, nextBlock.item]
+          });
+          i++; // Skip the next block since we grouped it
+          continue;
+        } else {
+          groupedBlocks.push({
+            collection: 'block_pricing_cards_group',
+            items: [currentBlock.item]
+          });
+          continue;
+        }
+      }
+      groupedBlocks.push(blocks[i]);
+    }
+
     return (
       <>
         {isEnabled && (
@@ -46,23 +85,27 @@ export default async function HomePage() {
           </div>
         )}
         <div className="flex flex-col w-full">
-          {blocks.map((blockWrap: any, index: number) => {
+          {groupedBlocks.map((blockWrap: any, index: number) => {
             const collection = blockWrap.collection;
-            const item = blockWrap.item;
+            const item = blockWrap.item; // for standard blocks
 
-          if (collection === 'block_title') {
-            return <BlockTitle key={index} data={item} globalSettings={globalSettings} />;
-          }
+            if (collection === 'block_title') {
+              return <BlockTitle key={index} data={item} globalSettings={globalSettings} />;
+            }
 
-          if (collection === 'block_mobile') {
-            return <BlockMobile key={index} data={item} globalSettings={globalSettings} />;
-          }
+            if (collection === 'block_mobile') {
+              return <BlockMobile key={index} data={item} globalSettings={globalSettings} />;
+            }
 
-          if (collection === 'block_card') {
-            return <BlockCard key={index} data={item} globalSettings={globalSettings} />;
-          }
+            if (collection === 'block_card') {
+              return <BlockCard key={index} data={item} globalSettings={globalSettings} />;
+            }
 
-          return <div key={index}>Unknown block type: {collection}</div>;
+            if (collection === 'block_pricing_cards_group') {
+              return <BlockPricingCards key={index} data={blockWrap.items} globalSettings={globalSettings} />;
+            }
+
+            return <div key={index}>Unknown block type: {collection}</div>;
         })}
       </div>
       </>
