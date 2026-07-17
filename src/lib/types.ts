@@ -17,6 +17,13 @@ export interface GlobalSettings {
   content: string;
   button_color: string | null;
   button_text_color: string | null;
+  bg_color?: string | null;
+  text_color?: string | null;
+  subtitle_color?: string | null;
+  global_title_size?: number | null;
+  global_subtitle_size?: number | null;
+  global_label_size?: number | null;
+  global_content_size?: number | null;
   social_links: string[]; // UUIDs of social links
   footer_images: string[]; // UUIDs of footer images
 }

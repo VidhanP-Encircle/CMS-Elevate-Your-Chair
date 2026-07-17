@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-export default function BlockTitle({ data }: { data: any }) {
+export default function BlockTitle({ data, globalSettings }: { data: any, globalSettings?: any }) {
   const { title, subtitle, buttons, background_image, background_video, subtitle_size } = data;
 
   // Render buttons
@@ -43,6 +43,9 @@ export default function BlockTitle({ data }: { data: any }) {
       </motion.div>
     );
   };
+
+  const titleSize = data.title_size || globalSettings?.global_title_size || undefined;
+  const subtitleSize = globalSettings?.global_subtitle_size || undefined;
 
   return (
     <div className="relative w-full min-h-[500px] md:h-[880px] flex flex-col items-center justify-center max-w-[1512px] mx-auto z-10 overflow-hidden bg-black">
@@ -99,7 +102,12 @@ export default function BlockTitle({ data }: { data: any }) {
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
                 }}
-                className="flex flex-col justify-center items-center gap-[10px] w-full text-center prose prose-invert prose-p:my-0 prose-h1:my-0 prose-h3:my-0 prose-h1:text-[40px] md:prose-h1:text-[64px] prose-h1:leading-[1.2] prose-h1:uppercase prose-h1:font-bold prose-h3:text-[24px] md:prose-h3:text-[32px] prose-h3:leading-[1.2] prose-p:text-[40px] md:prose-p:text-[64px] prose-p:leading-[1.2] prose-p:uppercase"
+                className="flex flex-col justify-center items-center gap-[10px] w-full text-center prose prose-invert prose-p:my-0 prose-h1:my-0 prose-h3:my-0 prose-h1:leading-[1.2] prose-h1:uppercase prose-h1:font-bold prose-h3:leading-[1.2] prose-p:leading-[1.2] prose-p:uppercase"
+                style={{ 
+                   fontSize: titleSize ? `${titleSize}px` : undefined,
+                   "--tw-prose-headings": "inherit",
+                   "--tw-prose-p": "inherit"
+                } as any}
                 dangerouslySetInnerHTML={{ __html: title }}
               />
             )}
@@ -110,7 +118,8 @@ export default function BlockTitle({ data }: { data: any }) {
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
                 }}
-                className="font-sans font-normal text-[18px] md:text-[28px] leading-[1.4] md:leading-[34px] text-center uppercase text-white m-0 max-w-[900px]"
+                className="font-sans font-normal leading-[1.4] text-center uppercase text-white m-0 max-w-[900px]"
+                style={{ fontSize: subtitleSize ? `${subtitleSize}px` : '18px' }}
               >
                 {subtitle}
               </motion.p>

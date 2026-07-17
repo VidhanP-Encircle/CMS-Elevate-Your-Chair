@@ -19,16 +19,27 @@ export default async function Footer({
 
     const year = new Date().getFullYear();
 
+    const footerBgColor = "#1a1a1a";
+    const footerTextColor = "#ffffff";
+    const footerSubtitleColor = globalSettings?.subtitle_color || "#f9f9f9";
+    const footerLabelSize = globalSettings?.global_label_size || undefined;
+
     return (
-      <footer className="w-full bg-[#1a1a1a] flex flex-col items-center overflow-hidden">
+      <footer className="w-full flex flex-col items-center overflow-hidden" style={{ backgroundColor: footerBgColor }}>
         {/* IG Feed section */}
         <ScrollReveal className="flex flex-col w-full max-w-[1512px] px-4 md:px-[55px] pt-8 md:pt-[55px] pb-12 box-border" delay={0.1}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-[20px] w-full">
             {/* Top text row inside grid to align with images */}
-            <div className="col-span-1 md:col-span-2 flex justify-start items-end font-sans font-extrabold text-[20px] md:text-[28px] uppercase text-white pb-[15px] leading-none tracking-wide">
+            <div 
+              className="col-span-1 md:col-span-2 flex justify-start items-end font-sans font-extrabold uppercase pb-[15px] leading-none tracking-wide"
+              style={{ color: footerTextColor, fontSize: footerLabelSize ? `${footerLabelSize}px` : '28px' }}
+            >
               {globalSettings.label || "FOLLOW US"}
             </div>
-            <div className="col-span-1 md:col-span-2 flex justify-end items-end font-sans font-extrabold text-[20px] md:text-[28px] uppercase text-[#c2b7a3] pb-[15px] leading-none tracking-wide wrap-break-word text-right">
+            <div 
+              className="col-span-1 md:col-span-2 flex justify-end items-end font-sans font-extrabold uppercase text-[#c2b7a3] pb-[15px] leading-none tracking-wide wrap-break-word text-right"
+              style={{ fontSize: footerLabelSize ? `${footerLabelSize}px` : '28px' }}
+            >
               @elevateyourchair
             </div>
 

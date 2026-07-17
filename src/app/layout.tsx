@@ -40,7 +40,7 @@ export default async function RootLayout({
           <NoticeBlock globalSettings={globalSettings} />
           <Navigation globalSettings={globalSettings} />
         </header>
-        <main className="mt-[-168px]">{children}</main>
+        <main className="mt-[-124px]">{children}</main>
         <Footer globalSettings={globalSettings} />
       </body>
     </html>
