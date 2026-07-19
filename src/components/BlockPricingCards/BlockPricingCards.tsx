@@ -69,10 +69,17 @@ export default function BlockPricingCards({
       )}
 
       <ScrollReveal className="relative z-10 max-w-[1512px] mx-auto w-full flex flex-col items-center">
-        {/* Title */}
+        {/* Title - Full WYSIWYG HTML from Directus */}
         {title && (
           <div
-            className="font-title font-light uppercase tracking-wide text-center [&>p]:m-0 [&>p]:leading-[1.1] [&>p>strong]:font-black [&>p>strong]:font-title prose-strong:text-black mb-6 text-black text-[32px] md:text-[48px]"
+            className="
+              prose
+              prose-p:m-0 prose-p:leading-[1.1] prose-p:text-black
+              prose-headings:m-0 prose-headings:text-black prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide prose-headings:font-light
+              prose-strong:text-black prose-strong:font-black prose-strong:font-title
+              prose-a:text-[#1a1a1a] prose-a:no-underline hover:prose-a:underline
+              font-title font-light uppercase tracking-wide text-center mb-6 text-black text-[32px] md:text-[48px]
+            "
             dangerouslySetInnerHTML={{ __html: title }}
           />
         )}
@@ -198,10 +205,25 @@ export default function BlockPricingCards({
                           </div>
                         )}
 
-                        {/* Content (Directus rich text output) */}
+                        {/* Content - Full WYSIWYG HTML from Directus */}
                         {card.content && (
                           <div
-                            className="prose prose-p:text-[17px] prose-p:leading-[1.6] prose-p:text-gray-600 prose-p:font-light font-sans max-w-[280px]"
+                            className="
+                              prose
+                              prose-p:text-[17px] prose-p:leading-[1.6] prose-p:text-gray-600 prose-p:font-light prose-p:m-0
+                              prose-headings:font-title prose-headings:text-[#1a1a1a] prose-headings:mt-4 prose-headings:mb-2
+                              prose-strong:text-[#1a1a1a] prose-strong:font-bold
+                              prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                              prose-ul:list-disc prose-ul:pl-5 prose-ul:text-left prose-li:leading-[1.6] prose-li:mb-1 prose-li:text-gray-600 prose-li:font-light
+                              prose-ol:list-decimal prose-ol:pl-5 prose-ol:text-left
+                              prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                              prose-img:rounded-lg prose-img:my-4 prose-img:mx-auto
+                              prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2 prose-th:bg-gray-50
+                              prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
+                              prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                              prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
+                              font-sans max-w-[280px]
+                            "
                             dangerouslySetInnerHTML={{ __html: card.content }}
                           />
                         )}

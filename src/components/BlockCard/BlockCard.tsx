@@ -21,8 +21,7 @@ export default function BlockCard({
   const bgColor = globalSettings?.bg_color || "#151515"; // Dark theme from the image
   const textColor = globalSettings?.text_color || "#ffffff";
   const subtitleColor = globalSettings?.subtitle_color || "#a3a3a3";
-  const cardBorderColor = "#404040";
-  const cardBgColor = "#151515"; // Updated to match the dark screenshot
+  const cardBgColor = "#151515";
 
   // Sizes
   const titleSize = data.title_size || globalSettings?.global_title_size || 48;
@@ -39,24 +38,46 @@ export default function BlockCard({
       <ScrollReveal className="max-w-[1512px] mx-auto flex flex-col items-center gap-[40px] md:gap-[60px]">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center gap-[20px] max-w-[800px]">
+          {/* Title - Full WYSIWYG HTML from Directus */}
           {title && (
             <div
-              className="font-title font-light uppercase tracking-wide [&>p]:m-0 [&>p]:leading-[1.1] [&>p>strong]:font-black [&>p>strong]:font-title prose-strong:text-white"
+              className="
+                prose prose-invert
+                prose-p:m-0 prose-p:leading-[1.1]
+                prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
+                prose-headings:font-light prose-headings:m-0 prose-headings:text-white
+                prose-strong:text-white prose-strong:font-black prose-strong:font-title
+                prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                font-title font-light uppercase tracking-wide
+              "
               style={{ fontSize: `${titleSize}px`, color: textColor }}
               dangerouslySetInnerHTML={{ __html: title }}
             />
           )}
 
+          {/* Subtitle - Full WYSIWYG HTML from Directus */}
           {subtitle && (
             <div
-              className="prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0"
-              style={
-                {
-                  color: subtitleColor,
-                  fontSize: `${subtitleSize}px`,
-                  "--tw-prose-body": "inherit",
-                } as any
-              }
+              className="
+                prose prose-invert
+                prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0
+                prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 prose-headings:text-white
+                prose-strong:text-white prose-strong:font-bold
+                prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                prose-li:leading-[1.6] prose-li:mb-1
+                prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                prose-img:rounded-lg prose-img:my-4
+                prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2 prose-th:bg-gray-800
+                prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
+                prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
+              "
+              style={{
+                color: subtitleColor,
+                fontSize: `${subtitleSize}px`,
+                "--tw-prose-body": subtitleColor,
+              } as any}
               dangerouslySetInnerHTML={{ __html: subtitle }}
             />
           )}
@@ -138,11 +159,21 @@ export default function BlockCard({
                             </h3>
                           )}
 
+                          {/* Card Content - Full WYSIWYG HTML from Directus */}
                           {card.content && (
                             <div
-                              className="font-sans font-light text-[15px] md:text-[16px] leading-normal [&>p]:my-0 text-center"
+                              className="
+                                prose prose-invert
+                                prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[15px] md:prose-p:text-[16px]
+                                prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-2 prose-headings:mb-1
+                                prose-strong:text-white prose-strong:font-bold
+                                prose-a:text-[#c2b7a3] prose-a:no-underline
+                                prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[15px] md:prose-li:text-[16px] prose-li:leading-normal
+                                prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded
+                                max-w-full
+                              "
                               style={{
-                                color: textColor, // SS uses white text for content
+                                color: textColor,
                               }}
                               dangerouslySetInnerHTML={{ __html: card.content }}
                             />

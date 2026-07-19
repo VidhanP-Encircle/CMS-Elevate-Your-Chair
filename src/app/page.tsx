@@ -5,6 +5,7 @@ import BlockMobile from '@/components/BlockMobile/BlockMobile';
 import BlockCard from '@/components/BlockCard/BlockCard';
 import BlockPricingCards from '@/components/BlockPricingCards/BlockPricingCards';
 import BlockTestimonials from '@/components/BlockTestimonials/BlockTestimonials';
+import BlockJourneyApp from '@/components/BlockJourneyApp/BlockJourneyApp';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
@@ -30,7 +31,10 @@ export default async function HomePage() {
           'pages_blocks.item.cards.*',
           'pages_blocks.item.pricing_cards.*',
           'pages_blocks.item.pricing_cards.pricing_cards_id.*',
-          'pages_blocks.item.background_image.*'
+          'pages_blocks.item.background_image.*',
+          'pages_blocks.item.image.*',
+          'pages_blocks.item.buttons.*',
+          'pages_blocks.item.buttons.logo.*'
         ] as any,
       })
     )) as any[];
@@ -108,6 +112,10 @@ export default async function HomePage() {
 
             if (collection === 'block_testimonials') {
               return <BlockTestimonials key={index} data={item} globalSettings={globalSettings} />;
+            }
+
+            if (collection === 'block_journey_app') {
+              return <BlockJourneyApp key={index} data={item} globalSettings={globalSettings} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;

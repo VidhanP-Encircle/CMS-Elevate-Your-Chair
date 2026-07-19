@@ -13,6 +13,7 @@ export default function BlockMobile({
 }) {
   const {
     title,
+    subtitle,
     content,
     image,
     image_position,
@@ -49,24 +50,71 @@ export default function BlockMobile({
             className="border-l-2 pl-[25px] md:pl-[35px] flex flex-col gap-[20px] md:gap-[25px]"
             style={{ borderColor: subtitleColor }}
           >
+            {/* Title - Full WYSIWYG HTML from Directus */}
             {title && (
               <div
-                className="font-title font-light uppercase tracking-wide [&>p]:m-0 [&>p]:leading-[1.1] [&>p>strong]:font-black [&>p>strong]:font-title"
-                style={{ fontSize: `${titleSize}px`, color: textColor }}
+                className="
+                  prose prose-p:m-0 prose-p:leading-[1.1]
+                  prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
+                  prose-headings:font-light prose-headings:text-[#1a1a1a] prose-headings:m-0
+                  prose-strong:font-black prose-strong:font-title prose-strong:text-[#1a1a1a]
+                  prose-a:text-[#c2b7a3] prose-a:no-underline
+                  font-title font-light uppercase tracking-wide
+                "
+                style={{
+                  fontSize: `${titleSize}px`,
+                  color: textColor,
+                }}
                 dangerouslySetInnerHTML={{ __html: title }}
               />
             )}
 
+            {/* Subtitle - Full WYSIWYG HTML from Directus */}
+            {subtitle && (
+              <div
+                className="
+                  prose prose-p:leading-[1.6] prose-p:font-normal prose-p:mt-0 prose-p:mb-2
+                  prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
+                  prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  prose-li:leading-[1.6] prose-li:mb-1
+                  prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                  prose-img:rounded-lg prose-img:my-4
+                  prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
+                  prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
+                  prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                  max-w-full md:max-w-[90%]
+                "
+                style={{
+                  color: subtitleColor,
+                  fontSize: contentSize ? `${contentSize}px` : undefined,
+                }}
+                dangerouslySetInnerHTML={{ __html: subtitle }}
+              />
+            )}
+
+            {/* Content - Full WYSIWYG HTML from Directus */}
             {content && (
               <div
-                className="prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0 max-w-full md:max-w-[90%]"
-                style={
-                  {
-                    color: subtitleColor,
-                    fontSize: contentSize ? `${contentSize}px` : undefined,
-                    "--tw-prose-body": "inherit",
-                  } as any
-                }
+                className="
+                  prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
+                  prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
+                  prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  prose-li:leading-[1.6] prose-li:mb-1
+                  prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                  prose-img:rounded-lg prose-img:my-4
+                  prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
+                  prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
+                  prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                  prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
+                  max-w-full md:max-w-[90%]
+                "
+                style={{
+                  color: subtitleColor,
+                  fontSize: contentSize ? `${contentSize}px` : undefined,
+                  "--tw-prose-body": subtitleColor,
+                } as any}
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             )}

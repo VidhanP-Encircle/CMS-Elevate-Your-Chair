@@ -92,11 +92,27 @@ export default function BlockTestimonials({
                             />
                           </div>
 
-                          {/* Text */}
+                          {/* Text - Full WYSIWYG HTML from Directus */}
                           <div className="flex-1 min-w-0 px-2 md:px-3">
-                            <p className="text-[16px] md:text-[18px] leading-[1.6] text-gray-500 font-light font-sans">
-                              {item.content}
-                            </p>
+                            {item.content && (
+                              <div
+                                className="
+                                  prose
+                                  prose-p:text-[16px] md:prose-p:text-[18px] prose-p:leading-[1.6] prose-p:text-gray-500 prose-p:font-light prose-p:m-0
+                                  prose-headings:font-title prose-headings:text-gray-600 prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-2
+                                  prose-strong:text-gray-600 prose-strong:font-bold
+                                  prose-em:text-gray-500
+                                  prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                                  prose-ul:list-disc prose-ul:pl-5 prose-li:leading-[1.6] prose-li:mb-1 prose-li:text-gray-500 prose-li:font-light
+                                  prose-ol:list-decimal prose-ol:pl-5
+                                  prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                                  prose-img:rounded-lg prose-img:my-4 prose-img:mx-auto
+                                  prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                                  prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
+                                "
+                                dangerouslySetInnerHTML={{ __html: item.content }}
+                              />
+                            )}
                           </div>
 
                           {/* Right Quote */}

@@ -53,7 +53,26 @@ export default async function Footer({
           {/* Newsletter Column */}
           <div className="flex flex-col w-full md:w-[300px] lg:w-[350px] xl:w-[400px] shrink-0 gap-[30px]">
             <div
-              className="flex flex-col gap-4 prose prose-invert prose-p:my-0 prose-h1:my-0 prose-h1:text-[32px] prose-h1:leading-[1.1] prose-h1:uppercase prose-h1:font-black prose-p:text-[14px] prose-p:leading-[22px] prose-p:text-[#f9f9f9]"
+              className="
+                flex flex-col gap-4
+                prose prose-invert
+                prose-p:my-0 prose-p:text-[14px] prose-p:leading-[22px] prose-p:text-[#f9f9f9]
+                prose-h1:my-0 prose-h1:text-[32px] prose-h1:leading-[1.1] prose-h1:uppercase prose-h1:font-black prose-h1:text-white
+                prose-h2:text-white prose-h2:font-title prose-h2:mt-4 prose-h2:mb-2
+                prose-h3:text-white prose-h3:font-title prose-h3:mt-3 prose-h3:mb-1
+                prose-headings:text-white prose-headings:font-title
+                prose-strong:text-white prose-strong:font-bold
+                prose-em:text-[#f9f9f9]
+                prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                prose-ul:list-disc prose-ul:pl-5 prose-li:text-[#f9f9f9] prose-li:leading-[1.6] prose-li:mb-1
+                prose-ol:list-decimal prose-ol:pl-5
+                prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#f9f9f9]
+                prose-img:rounded-lg prose-img:my-4
+                prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2
+                prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
+                prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#c2b7a3]
+                prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-700
+              "
               dangerouslySetInnerHTML={{ __html: globalSettings.content }}
             />
             <form className="flex flex-col gap-[20px] w-full mt-2">
