@@ -22,6 +22,9 @@ export default function BlockMobile({
     content_size,
   } = data;
 
+  // image can be a string UUID or an expanded Directus file object { id: "..." }
+  const imageId = typeof image === "object" && image !== null ? image.id : image;
+
   const isRight = image_position === "right";
 
   // Dynamic values strictly from global_settings (block doesn't have these fields)
@@ -47,7 +50,7 @@ export default function BlockMobile({
           className={`flex flex-col w-full md:w-2/3 order-2 ${isRight ? "md:order-1" : "md:order-2"}`}
         >
           <div
-            className="border-l-2 pl-[25px] md:pl-[35px] flex flex-col gap-[20px] md:gap-[25px]"
+            className="border-l-2 pl-[25px] md:pl-[35px] flex flex-col gap-[20px] md:gap-[25px] text-left"
             style={{ borderColor: subtitleColor }}
           >
             {/* Title - Full WYSIWYG HTML from Directus */}
@@ -76,7 +79,8 @@ export default function BlockMobile({
                   prose prose-p:leading-[1.6] prose-p:font-normal prose-p:mt-0 prose-p:mb-2
                   prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
                   prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  prose-ul:list-[disc] prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  marker:text-[#c2b7a3]
                   prose-li:leading-[1.6] prose-li:mb-1
                   prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
                   prose-img:rounded-lg prose-img:my-4
@@ -100,7 +104,8 @@ export default function BlockMobile({
                   prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
                   prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
                   prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  prose-ul:list-[disc] prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  marker:text-[#c2b7a3]
                   prose-li:leading-[1.6] prose-li:mb-1
                   prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
                   prose-img:rounded-lg prose-img:my-4
@@ -140,10 +145,10 @@ export default function BlockMobile({
         <div
           className={`w-full md:w-1/3 flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
         >
-          {image && (
+          {imageId && (
             <div className="w-full flex justify-center">
               <Image
-                src={`/api/assets/${image}`}
+                src={`/api/assets/${imageId}`}
                 alt="Mobile preview"
                 width={430}
                 height={544}

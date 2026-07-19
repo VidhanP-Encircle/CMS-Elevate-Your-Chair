@@ -36,7 +36,7 @@ export default function BlockJourneyApp({
       />
 
       <ScrollReveal className="relative z-10 max-w-[1512px] mx-auto w-full px-4 md:px-[55px]">
-        <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16 lg:gap-24">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
           {/* Left: Phone Mockup */}
           {imageId && (
             <div className="w-full max-w-[280px] md:max-w-[380px] lg:max-w-[420px] shrink-0 relative">
@@ -59,7 +59,7 @@ export default function BlockJourneyApp({
           )}
 
           {/* Right: Content */}
-          <div className="flex-1 min-w-0 flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="flex flex-col items-start text-left max-w-[620px]">
             {/* Title */}
             {title && (
               <div
@@ -87,13 +87,12 @@ export default function BlockJourneyApp({
                   prose-em:text-white
                   prose-a:text-[#c2b7a3] prose-a:no-underline prose-a:font-medium
                   hover:prose-a:underline hover:prose-a:opacity-90
-                  prose-ul:list-none prose-ul:pl-0 prose-ul:mb-6 prose-ul:mt-4
+                  prose-ul:list-disc prose-ul:pl-5 prose-ul:mb-6 prose-ul:mt-4
                   prose-ol:pl-6 prose-ol:mb-6 prose-ol:mt-4 prose-ol:text-[15px] md:prose-ol:text-[16px]
-                  prose-li:relative prose-li:pl-6 prose-li:mb-3 prose-li:leading-[1.6]
+                  marker:text-[#c2b7a3]
+                  prose-li:pl-0 prose-li:mb-3 prose-li:leading-[1.6]
                   prose-li:font-light prose-li:font-sans
                   prose-li:text-[15px] md:prose-li:text-[16px]
-                  [&_ul_li::before]:content-['✓'] [&_ul_li::before]:absolute [&_ul_li::before]:left-0
-                  [&_ul_li::before]:font-bold [&_ul_li::before]:text-[#c2b7a3]
                   prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2
                   prose-blockquote:pl-5 prose-blockquote:italic prose-blockquote:font-light
                   prose-blockquote:text-[#c2b7a3] prose-blockquote:my-6

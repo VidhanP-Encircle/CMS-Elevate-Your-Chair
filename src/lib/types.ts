@@ -178,6 +178,26 @@ export interface Page {
   pages_blocks: any[];
 }
 
+export interface TextImageItem {
+  id: string;
+  photo: string | null;
+  title: string | null;
+}
+
+export interface BlockTextImage {
+  id: string;
+  /** WYSIWYG - rich HTML title */
+  title: string | null;
+  initial_text: string | null;
+  bottom_text: string | null;
+  button_text: string | null;
+  button_url: string | null;
+  background_image: string | { id: string } | null;
+  text_image: Array<{
+    text_image_id: TextImageItem | string;
+  }>;
+}
+
 export interface Schema {
   block_notice: Notice[];
   global_settings: GlobalSettings;
@@ -189,7 +209,7 @@ export interface Schema {
   block_card: BlockCard[];
   block_pricing_cards: BlockPricingCard[];
   block_testimonials: BlockTestimonial[];
-  block_text_image: any[]; // Not yet implemented in frontend
+  block_text_image: BlockTextImage[];
   social_links: SocialLink[];
   footer_images: FooterImage[];
   pages: Page[];
