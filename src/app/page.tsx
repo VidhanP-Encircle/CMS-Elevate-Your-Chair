@@ -4,6 +4,7 @@ import BlockTitle from '@/components/BlockTitle/BlockTitle';
 import BlockMobile from '@/components/BlockMobile/BlockMobile';
 import BlockCard from '@/components/BlockCard/BlockCard';
 import BlockPricingCards from '@/components/BlockPricingCards/BlockPricingCards';
+import BlockTestimonials from '@/components/BlockTestimonials/BlockTestimonials';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
@@ -103,6 +104,10 @@ export default async function HomePage() {
 
             if (collection === 'block_pricing_cards_group') {
               return <BlockPricingCards key={index} data={blockWrap.items} globalSettings={globalSettings} />;
+            }
+
+            if (collection === 'block_testimonials') {
+              return <BlockTestimonials key={index} data={item} globalSettings={globalSettings} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;

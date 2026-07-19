@@ -52,7 +52,7 @@ export default function BlockPricingCards({
   const cards = currentBlock.pricing_cards || [];
 
   return (
-    <div className="relative w-full py-[60px] md:py-[100px] px-4 overflow-hidden min-h-[800px] flex flex-col items-center bg-[#fcfcfc]">
+    <div className="relative w-full py-[60px] md:py-[100px] px-4 overflow-hidden min-h-[800px] flex flex-col items-center bg-[#fcfcfc] border-b border-[#646464]">
       {/* Background Image & Gradient */}
       {bgImage && (
         <>
@@ -61,10 +61,10 @@ export default function BlockPricingCards({
               src={`/api/assets/${bgImage}`}
               alt="Pricing Background"
               fill
-              className="object-cover object-center mix-blend-multiply opacity-50"
+              className="object-cover object-center mix-blend-multiply opacity-80"
             />
           </div>
-          <div className="absolute inset-0 z-0 bg-linear-to-b from-[#fcfcfc]/95 via-[#fcfcfc]/80 to-[#fcfcfc]/95 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 z-0 bg-linear-to-b from-[#fcfcfc]/95 via-[#fcfcfc]/50 to-[#fcfcfc]/95 backdrop-blur-[2px]" />
         </>
       )}
 
@@ -157,7 +157,7 @@ export default function BlockPricingCards({
                         className="absolute inset-0 pointer-events-none z-20 p-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{
                           background:
-                            "linear-gradient(180deg, #222222 0%, #4f4f4f 40%, #7a7a7a 70%, #a3a3a3 100%)",
+                            "linear-gradient(180deg, #222222 0%, #4f4f4f 25%, #888888 50%, #cccccc 75%, #ffffff 100%)",
                           WebkitMask:
                             "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
                           WebkitMaskComposite: "xor",
