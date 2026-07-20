@@ -26,7 +26,8 @@ export default function BlockMobile({
   } = data;
 
   // image can be a string UUID or an expanded Directus file object { id: "..." }
-  const imageId = typeof image === "object" && image !== null ? image.id : image;
+  const imageId =
+    typeof image === "object" && image !== null ? image.id : image;
 
   const isRight = image_position === "right";
 
@@ -36,6 +37,7 @@ export default function BlockMobile({
   const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
   const contentSize =
     content_size || globalSettings?.global_content_size || undefined;
+  const subtitleSizeVal = contentSize ? contentSize + 4 : 20;
 
   // Background and Text colors (Hardcoded aesthetic defaults as requested)
   const hoverFillColor = globalSettings?.button_hover_fill_color;
@@ -47,16 +49,16 @@ export default function BlockMobile({
 
   return (
     <div
-      className="w-full py-[40px] md:py-[60px] px-4 md:px-[55px] overflow-hidden"
+      className="w-full py-10 md:py-15 px-4 md:px-13.75overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <ScrollReveal className="max-w-[1512px] mx-auto flex flex-col md:flex-row items-center gap-[40px] md:gap-[80px]">
+      <div className="max-w-378 mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
         {/* Content Column */}
         <div
-          className={`flex flex-col w-full md:w-2/3 order-2 ${isRight ? "md:order-1" : "md:order-2"}`}
+          className={`flex flex-col w-full max-w-170 order-2 ${isRight ? "md:order-1" : "md:order-2"}`}
         >
           <div
-            className="border-l-2 pl-[25px] md:pl-[35px] flex flex-col gap-[20px] md:gap-[25px] text-left"
+            className="border-l-2 pl-6.25 md:pl-8.75 flex flex-col gap-5 md:gap-6.25 text-left"
             style={{ borderColor: subtitleColor }}
           >
             {/* Title - Full WYSIWYG HTML from Directus */}
@@ -92,10 +94,10 @@ export default function BlockMobile({
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="
-                  prose prose-p:leading-[1.6] prose-p:font-normal prose-p:mt-0 prose-p:mb-2
+                  prose prose-p:leading-[1.4] prose-p:font-black prose-p:text-[#1a1a1a] prose-p:mt-0 prose-p:mb-2
                   prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
-                  prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-[disc] prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  prose-strong:font-black prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
                   marker:text-[#c2b7a3]
                   prose-li:leading-[1.6] prose-li:mb-1
                   prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
@@ -106,10 +108,8 @@ export default function BlockMobile({
                   max-w-full md:max-w-[90%]
                 "
                 style={{
-                  color: subtitleColor,
-                  fontSize: contentSize
-                    ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
-                    : undefined,
+                  color: "#1a1a1a",
+                  fontSize: `clamp(18px, ${(subtitleSizeVal / 12).toFixed(3)}vw, ${subtitleSizeVal}px)`,
                 }}
                 dangerouslySetInnerHTML={{ __html: subtitle }}
               />
@@ -126,7 +126,7 @@ export default function BlockMobile({
                   prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
                   prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
                   prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-[disc] prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
                   marker:text-[#c2b7a3]
                   prose-li:leading-[1.6] prose-li:mb-1
                   prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
@@ -137,13 +137,15 @@ export default function BlockMobile({
                   prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
                   max-w-full md:max-w-[90%]
                 "
-                style={{
-                  color: subtitleColor,
-                  fontSize: contentSize
-                    ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
-                    : undefined,
-                  "--tw-prose-body": subtitleColor,
-                } as any}
+                style={
+                  {
+                    color: subtitleColor,
+                    fontSize: contentSize
+                      ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
+                      : undefined,
+                    "--tw-prose-body": subtitleColor,
+                  } as any
+                }
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             )}
@@ -155,11 +157,11 @@ export default function BlockMobile({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-[10px]"
+                className="mt-2.5"
               >
                 <HoverButton
                   href={button_url}
-                  className="inline-flex justify-center items-center px-[40px] py-[15px] font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                  className="inline-flex justify-center items-center px-10 py-3.75 font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                   style={{
                     backgroundColor: buttonColor,
                     color: buttonTextColor,
@@ -179,22 +181,22 @@ export default function BlockMobile({
           initial={{ opacity: 0, x: isRight ? 20 : -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className={`w-full md:w-1/3 flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+          className={`w-full max-w-70 md:max-w-105 lg:max-w-120 shrink-0 flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
         >
           {imageId && (
             <div className="w-full flex justify-center">
               <Image
                 src={`/api/assets/${imageId}`}
                 alt="Mobile preview"
-                width={430}
-                height={544}
-                className="w-full h-auto max-w-[430px] object-contain object-center"
+                width={480}
+                height={600}
+                className="w-auto h-auto max-h-95 md:max-h-115 object-contain object-center"
               />
             </div>
           )}
         </motion.div>
-      </ScrollReveal>
+      </div>
     </div>
   );
 }

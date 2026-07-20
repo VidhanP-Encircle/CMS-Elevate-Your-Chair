@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,6 +17,7 @@ export default function BlockCard({
   globalSettings?: any;
 }) {
   const { title, subtitle, cards } = data;
+  const isWhiteTheme = data.theme === "white";
 
   // Background and Text colors
   const bgColor = globalSettings?.bg_color || "#151515"; // Dark theme from the image
@@ -32,17 +34,21 @@ export default function BlockCard({
 
   return (
     <div
-      className="w-full py-[60px] md:py-[100px] px-4 md:px-[55px] overflow-hidden"
+      className="w-full py-15 md:py-25 px-4 md:px-13.75 overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <ScrollReveal className="max-w-[1512px] mx-auto flex flex-col items-center gap-[40px] md:gap-[60px]">
+      <div className="max-w-378 mx-auto flex flex-col items-center gap-10 md:gap-15">
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center gap-[20px] max-w-[800px]">
+        <div className="flex flex-col items-center text-center gap-5 max-w-294 w-full">
           {/* Title - Full WYSIWYG HTML from Directus */}
           {title && (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
               className="
-                prose prose-invert
+                prose prose-invert max-w-none
                 prose-p:m-0 prose-p:leading-[1.1]
                 prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
                 prose-headings:font-light prose-headings:m-0 prose-headings:text-white
@@ -50,16 +56,25 @@ export default function BlockCard({
                 prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
                 font-title font-light uppercase tracking-wide
               "
-              style={{ fontSize: titleSize ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)` : undefined, color: textColor }}
+              style={{
+                fontSize: titleSize
+                  ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                  : undefined,
+                color: textColor,
+              }}
               dangerouslySetInnerHTML={{ __html: title }}
             />
           )}
 
           {/* Subtitle - Full WYSIWYG HTML from Directus */}
           {subtitle && (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
               className="
-                prose prose-invert
+                prose prose-invert max-w-220 w-full
                 prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0
                 prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 prose-headings:text-white
                 prose-strong:text-white prose-strong:font-bold
@@ -73,13 +88,15 @@ export default function BlockCard({
                 prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                 prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
               "
-              style={{
-                color: subtitleColor,
-                fontSize: subtitleSize
-                  ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
-                  : undefined,
-                "--tw-prose-body": subtitleColor,
-              } as any}
+              style={
+                {
+                  color: subtitleColor,
+                  fontSize: subtitleSize
+                    ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
+                    : undefined,
+                  "--tw-prose-body": subtitleColor,
+                } as any
+              }
               dangerouslySetInnerHTML={{ __html: subtitle }}
             />
           )}
@@ -87,11 +104,17 @@ export default function BlockCard({
 
         {/* Cards Section */}
         {cards && cards.length > 0 && (
-          <div className="w-full relative mt-10 flex flex-col items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            className="w-full relative mt-10 flex flex-col items-center"
+          >
             <motion.div
               layout
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="w-full max-w-[256px] min-[600px]:max-w-[536px] min-[900px]:max-w-[816px] min-[1200px]:max-w-[1096px] min-[1500px]:max-w-[1376px]"
+              className="w-full max-w-75 min-[500px]:max-w-94 min-[900px]:max-w-194 min-[1320px]:max-w-294 min-[1720px]:max-w-[1576px]"
             >
               <Swiper
                 modules={[Navigation]}
@@ -100,7 +123,13 @@ export default function BlockCard({
                   nextEl: ".swiper-button-next-custom",
                 }}
                 spaceBetween={24}
-                slidesPerView={"auto" as any}
+                slidesPerView={1}
+                breakpoints={{
+                  500: { slidesPerView: 1 },
+                  900: { slidesPerView: 2 },
+                  1320: { slidesPerView: 3 },
+                  1720: { slidesPerView: 4 },
+                }}
                 className="w-full"
               >
                 {cards.map((card: any, index: number) => {
@@ -112,76 +141,141 @@ export default function BlockCard({
                   return (
                     <SwiperSlide
                       key={card.id || index}
-                      className="w-[256px]! h-[306px]! shrink-0"
+                      className="min-h-70 md:min-h-85 h-auto! flex! items-stretch! shrink-0"
                     >
-                      {/* Layer 1: Outer Card Container (Dark) */}
-                      <div
-                        className="w-full h-full p-[8px] transition-all hover:brightness-110"
-                        style={{ backgroundColor: cardBgColor }}
-                      >
-                        {/* Layer 2 & 3: Inner Frame & Gradient Background Layer */}
+                      {isWhiteTheme ? (
+                        /* Light Theme Card */
                         <div
-                          className="w-full h-full relative flex flex-col items-center text-center px-[12px] py-[32px] md:px-[22px] md:py-[42px]"
-                          style={{
-                            background:
-                              "linear-gradient(0deg, rgba(26, 26, 26, 0.88) 23.44%, rgba(26, 26, 26, 0.70) 49.04%, rgba(26, 26, 26, 0.59) 60.42%, rgba(26, 26, 26, 0.00) 80.33%), rgba(94, 94, 94, 0.20)",
-                          }}
+                          className="w-full h-full p-4 md:p-6 transition-all hover:shadow-lg flex flex-col items-center justify-between"
+                          style={{ backgroundColor: "#ffffff" }}
                         >
-                          {/* Metallic Gradient Border Overlay */}
-                          <div
-                            className="absolute inset-0 pointer-events-none p-px"
-                            style={{
-                              background:
-                                "linear-gradient(180deg, #EAE0D0 0%, #C2B7A3 35%, #4A463E 100%)",
-                              WebkitMask:
-                                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                              WebkitMaskComposite: "xor",
-                              maskComposite: "exclude",
-                            }}
-                          ></div>
-                          {/* Layer 4: Content Layer */}
-                          {card.photo && (
-                            <div className="w-[80px] h-[80px] flex justify-center items-center mb-[30px]">
-                              <Image
-                                src={`/api/assets/${card.photo}`}
-                                alt={card.title || "Card Icon"}
-                                width={80}
-                                height={80}
-                                className="object-contain w-full h-full"
+                          <div className="w-full flex flex-col items-center">
+                            {/* Photo */}
+                            {card.photo && (
+                              <div className="w-full aspect-4/3 relative mb-6 overflow-hidden bg-gray-100">
+                                <Image
+                                  src={`/api/assets/${card.photo}`}
+                                  alt={card.title || "Card Photo"}
+                                  fill
+                                  sizes="(max-width: 768px) 300px, 376px"
+                                  className="object-cover"
+                                />
+                              </div>
+                            )}
+
+                            {/* Title */}
+                            {card.title && (
+                              <h3 className="font-title font-bold uppercase tracking-widest text-[16px] md:text-[18px] mb-3 leading-[1.3] text-[#1a1a1a]">
+                                {card.title}
+                              </h3>
+                            )}
+
+                            {/* Content */}
+                            {card.content && (
+                              <div
+                                className="
+                                  prose
+                                  prose-p:my-0 prose-p:leading-relaxed prose-p:text-center prose-p:text-[14px] md:prose-p:text-[15px] prose-p:text-[#555555]
+                                  prose-strong:text-[#1a1a1a] prose-strong:font-bold
+                                  prose-a:text-[#c2b7a3] prose-a:no-underline
+                                  prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[14px] md:prose-li:text-[15px] prose-li:leading-relaxed
+                                  prose-code:text-sm prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded
+                                  max-w-full
+                                "
+                                style={{
+                                  color: "#555555",
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: card.content,
+                                }}
                               />
-                            </div>
-                          )}
+                            )}
+                          </div>
 
-                          {card.title && (
-                            <h3
-                              className="font-title font-bold uppercase tracking-widest text-[16px] md:text-[18px] mb-[15px] leading-[1.3]"
-                              style={{ color: textColor }}
+                          {/* Action Button */}
+                          {card.button_text && card.button_url && (
+                            <Link
+                              href={card.button_url}
+                              className="mt-6 font-title font-bold uppercase text-[12px] md:text-[13px] tracking-widest text-[#1a1a1a] border-b border-black/20 hover:border-black transition-colors pb-0.5"
                             >
-                              {card.title}
-                            </h3>
-                          )}
-
-                          {/* Card Content - Full WYSIWYG HTML from Directus */}
-                          {card.content && (
-                            <div
-                              className="
-                                prose prose-invert
-                                prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[15px] md:prose-p:text-[16px]
-                                prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-2 prose-headings:mb-1
-                                prose-strong:text-white prose-strong:font-bold
-                                prose-a:text-[#c2b7a3] prose-a:no-underline
-                                prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[15px] md:prose-li:text-[16px] prose-li:leading-normal
-                                prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded
-                                max-w-full
-                              "
-                              style={{
-                                color: textColor,
-                              }}
-                              dangerouslySetInnerHTML={{ __html: card.content }}
-                            />
+                              {card.button_text}
+                            </Link>
                           )}
                         </div>
-                      </div>
+                      ) : (
+                        /* Dark Theme Card (Current Implementation) */
+                        <div
+                          className="w-full h-full flex flex-col items-stretch p-2 transition-all hover:brightness-110"
+                          style={{ backgroundColor: cardBgColor }}
+                        >
+                          {/* Layer 2 & 3: Inner Frame & Gradient Background Layer */}
+                          <div
+                            className="w-full flex-1 relative flex flex-col items-center text-center px-3 py-8 md:py-10.5"
+                            style={{
+                              background:
+                                "linear-gradient(0deg, rgba(26, 26, 26, 0.88) 23.44%, rgba(26, 26, 26, 0.70) 49.04%, rgba(26, 26, 26, 0.59) 60.42%, rgba(26, 26, 26, 0.00) 80.33%), rgba(94, 94, 94, 0.20)",
+                            }}
+                          >
+                            {/* Metallic Gradient Border Overlay */}
+                            <div
+                              className="absolute inset-0 pointer-events-none p-px"
+                              style={{
+                                background:
+                                  "linear-gradient(180deg, #EAE0D0 0%, #C2B7A3 35%, #4A463E 100%)",
+                                WebkitMask:
+                                  "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                                WebkitMaskComposite: "xor",
+                                maskComposite: "exclude",
+                              }}
+                            ></div>
+                            {/* Content Layer */}
+                            {/* Icon slot - always rendered with spacer to maintain consistent positioning */}
+                            <div className="w-20 h-20 mb-7.5 flex justify-center items-center">
+                              {card.photo ? (
+                                <Image
+                                  src={`/api/assets/${card.photo}`}
+                                  alt={card.title || "Card Icon"}
+                                  width={80}
+                                  height={80}
+                                  className="object-contain w-full h-full"
+                                />
+                              ) : (
+                                <div className="w-full h-full" />
+                              )}
+                            </div>
+
+                            {/* Title slot - min-h-[2.6em] reserves space for 2 lines so content below starts at same position */}
+                            <h3
+                              className="font-title font-bold uppercase tracking-widest text-[16px] md:text-[18px] mb-3.75 leading-[1.3] min-h-[2.6em]"
+                              style={{ color: textColor }}
+                            >
+                              {card.title || ""}
+                            </h3>
+
+                            {/* Content slot - only rendered when content exists */}
+                            {card.content && (
+                              <div
+                                className="
+                                  prose prose-invert
+                                  prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[15px] md:prose-p:text-[16px]
+                                  prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-2 prose-headings:mb-1
+                                  prose-strong:text-white prose-strong:font-bold
+                                  prose-a:text-[#c2b7a3] prose-a:no-underline
+                                  prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[15px] md:prose-li:text-[16px] prose-li:leading-normal
+                                  prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded
+                                  max-w-full
+                                "
+                                style={{
+                                  color: textColor,
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: card.content,
+                                }}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </SwiperSlide>
                   );
                 })}
@@ -218,9 +312,9 @@ export default function BlockCard({
                 </svg>
               </button>
             </div>
-          </div>
+          </motion.div>
         )}
-      </ScrollReveal>
+      </div>
     </div>
   );
 }

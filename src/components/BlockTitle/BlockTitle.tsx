@@ -21,6 +21,16 @@ export default function BlockTitle({
     subtitle_size,
   } = data;
 
+  const bgImageId =
+    typeof background_image === "string"
+      ? background_image
+      : background_image?.id || null;
+
+  const bgVideoId =
+    typeof background_video === "string"
+      ? background_video
+      : background_video?.id || null;
+
   // Render buttons
   const renderButtons = () => {
     if (!buttons || !Array.isArray(buttons)) return null;
@@ -28,14 +38,14 @@ export default function BlockTitle({
     return (
       <motion.div
         variants={{
-          hidden: { opacity: 0, y: 20 },
+          hidden: { opacity: 0, y: 15 },
           visible: {
             opacity: 1,
             y: 0,
-            transition: { duration: 0.6, ease: "easeOut" },
+            transition: { duration: 0.8, ease: "easeOut" },
           },
         }}
-        className="flex flex-col md:flex-row items-center justify-center gap-[16px] md:gap-[28px] mt-[20px] w-full md:w-auto"
+        className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-7 mt-5 w-full md:w-auto"
       >
         {buttons.map((btn: any, idx: number) => {
           const isFilled = !!btn.fill_color;
@@ -43,7 +53,7 @@ export default function BlockTitle({
             <HoverButton
               key={idx}
               href={btn.button_url || "#"}
-              className="box-border flex flex-row justify-center items-center px-[25px] py-[10px] gap-[10px] h-[40px] w-full md:w-auto no-underline transition-transform duration-300 hover:-translate-y-0.5"
+              className="box-border flex flex-row justify-center items-center px-6.25 py-2.5 gap-2.5 h-10 w-full md:w-auto no-underline transition-transform duration-300 hover:-translate-y-0.5"
               style={{
                 backgroundColor: btn.fill_color || "transparent",
                 borderColor:
@@ -55,7 +65,7 @@ export default function BlockTitle({
               hoverFill={globalSettings?.button_hover_fill_color}
               hoverText={globalSettings?.button_hover_text_color}
             >
-              <span className="font-sans font-extrabold text-[16px] leading-[20px] uppercase">
+              <span className="font-sans font-extrabold text-[16px] leading-5 uppercase">
                 {btn.button_text}
               </span>
             </HoverButton>
@@ -69,22 +79,30 @@ export default function BlockTitle({
     data.title_size || globalSettings?.global_title_size || undefined;
   const subtitleSize = globalSettings?.global_subtitle_size || undefined;
 
+  const hasButtons = buttons && Array.isArray(buttons) && buttons.length > 0;
+  const hasSubtitle = !!subtitle;
+  const isBanner = !hasButtons && !hasSubtitle;
+
   return (
-    <div className="relative w-full min-h-[500px] md:h-[880px] flex flex-col items-center justify-center max-w-[1512px] mx-auto z-10 overflow-hidden bg-black">
+    <div
+      className={`relative w-full flex flex-col items-center justify-center max-w-378 mx-auto z-10 overflow-hidden bg-black ${
+        isBanner ? "h-80 md:h-120" : "min-h-125 md:h-220"
+      }`}
+    >
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
-        {background_video ? (
+        {bgVideoId ? (
           <video
-            src={`/api/assets/${background_video}`}
+            src={`/api/assets/${bgVideoId}`}
             autoPlay
             loop
             muted
             playsInline
             className="w-full h-full object-cover"
           />
-        ) : background_image ? (
+        ) : bgImageId ? (
           <Image
-            src={`/api/assets/${background_image}`}
+            src={`/api/assets/${bgImageId}`}
             alt="Background"
             fill
             sizes="100vw"
@@ -92,44 +110,48 @@ export default function BlockTitle({
           />
         ) : null}
 
-        {/* Overlay gradient as requested in block-title.css */}
+        {/* Overlay gradient */}
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 50%), radial-gradient(69.68% 48.01% at 50% 51.99%, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%)`,
+            background: `linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.15) 100%)`,
           }}
         />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col justify-center items-center pt-[80px] md:pt-[120px] px-4 md:px-[100px] gap-8 md:gap-[55px] w-full h-full">
+      <div
+        className={`relative z-10 flex flex-col justify-center items-center px-4 md:px-25 gap-8 md:gap-13.75 w-full h-full ${
+          isBanner ? "pt-20 md:pt-25" : "pt-20 md:pt-30"
+        }`}
+      >
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true }}
           variants={{
             hidden: { opacity: 0 },
             visible: {
               opacity: 1,
-              transition: { staggerChildren: 0.2, delayChildren: 0.1 },
+              transition: { staggerChildren: 0.15, delayChildren: 0.2 },
             },
           }}
-          className="flex flex-col justify-center items-center gap-[20px] md:gap-[28px] w-full max-w-[1312px] backdrop-blur-[5px] p-[20px] rounded-xl"
+          className="flex flex-col justify-center items-center gap-5 md:gap-7 w-full max-w-328 p-5"
         >
-          <div className="flex flex-col items-center justify-center gap-[16px] md:gap-[20px] w-full">
+          <div className="flex flex-col items-center justify-center gap-4 md:gap-5 w-full">
             {/* Title - Full WYSIWYG HTML from Directus */}
             {title && (
               <motion.div
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
+                  hidden: { opacity: 0, y: 15 },
                   visible: {
                     opacity: 1,
                     y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
+                    transition: { duration: 0.8, ease: "easeOut" },
                   },
                 }}
                 className="
-                  flex flex-col justify-center items-center gap-[10px] w-full text-center
+                  flex flex-col justify-center items-center gap-2.5 w-full text-center
                   prose prose-invert
                   prose-p:my-0 prose-p:leading-[1.2] prose-p:uppercase prose-p:font-title
                   prose-h1:my-0 prose-h1:leading-[1.2] prose-h1:uppercase prose-h1:font-bold
@@ -165,14 +187,14 @@ export default function BlockTitle({
             {subtitle && (
               <motion.p
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
+                  hidden: { opacity: 0, y: 15 },
                   visible: {
                     opacity: 1,
                     y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
+                    transition: { duration: 0.8, ease: "easeOut" },
                   },
                 }}
-                className="font-sans font-normal leading-[1.4] text-center uppercase text-white m-0 max-w-[900px]"
+                className="font-sans font-normal leading-[1.4] text-center uppercase text-white m-0 max-w-225"
                 style={{
                   fontSize: subtitleSize
                     ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`

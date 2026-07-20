@@ -53,7 +53,7 @@ export default function BlockPricingCards({
   const cards = currentBlock.pricing_cards || [];
 
   return (
-    <div className="relative w-full py-[60px] md:py-[100px] px-4 overflow-hidden min-h-[800px] flex flex-col items-center bg-[#fcfcfc] border-b border-[#646464]">
+    <div className="relative w-full py-15 md:py-25 px-4 overflow-hidden min-h-200 flex flex-col items-center bg-[#fcfcfc] border-b border-[#646464]">
       {/* Background Image & Gradient */}
       {bgImage && (
         <>
@@ -70,10 +70,14 @@ export default function BlockPricingCards({
         </>
       )}
 
-      <ScrollReveal className="relative z-10 max-w-[1512px] mx-auto w-full flex flex-col items-center">
+      <div className="relative z-10 max-w-378 mx-auto w-full flex flex-col items-center">
         {/* Title - Full WYSIWYG HTML from Directus */}
         {title && (
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
             className="
               prose
               prose-p:m-0 prose-p:leading-[1.1] prose-p:text-black
@@ -88,7 +92,13 @@ export default function BlockPricingCards({
 
         {/* Toggle */}
         {monthlyBlock && yearlyBlock && (
-          <div className="flex items-center justify-center gap-6 md:gap-10 mb-16 text-[18px] md:text-[22px] font-sans font-black uppercase tracking-widest text-[#1a1a1a]">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+            className="flex items-center justify-center gap-6 md:gap-10 mb-16 text-[18px] md:text-[22px] font-sans font-black uppercase tracking-widest text-[#1a1a1a]"
+          >
             <button
               onClick={() => setActivePlan("monthly")}
               className={`outline-none pb-2 transition-all border-b-[3px] ${
@@ -99,7 +109,7 @@ export default function BlockPricingCards({
             >
               MONTHLY
             </button>
-            <div className="w-[2px] h-[28px] bg-[#1a1a1a]" />
+            <div className="w-0.5 h-7 bg-[#1a1a1a]" />
             <button
               onClick={() => setActivePlan("yearly")}
               className={`outline-none pb-2 transition-all border-b-[3px] ${
@@ -110,15 +120,21 @@ export default function BlockPricingCards({
             >
               YEARLY
             </button>
-          </div>
+          </motion.div>
         )}
 
         {/* Cards Carousel */}
-        <div className="w-full relative flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          className="w-full relative flex flex-col items-center"
+        >
           <motion.div
             layout
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="w-full max-w-[317px] min-[700px]:max-w-[658px] min-[1050px]:max-w-[999px] min-[1400px]:max-w-[1340px]"
+            className="w-full max-w-79.25 min-[700px]:max-w-164.5 min-[1050px]:max-w-249.75 min-[1400px]:max-w-335"
           >
             <Swiper
               modules={[Navigation]}
@@ -158,12 +174,12 @@ export default function BlockPricingCards({
                 return (
                   <SwiperSlide
                     key={card.id || index}
-                    className="w-[317px]! h-auto! flex shrink-0"
+                    className="w-79.25! h-auto! flex shrink-0"
                   >
-                    <div className="relative bg-white hover:bg-[#f0f0f0] flex flex-col text-center h-full min-h-[279px] w-full min-w-0 transition-all hover:-translate-y-1 shadow-lg hover:shadow-2xl duration-300 group">
+                    <div className="relative bg-white hover:bg-[#f0f0f0] flex flex-col text-center h-full min-h-69.75 w-full min-w-0 transition-all hover:-translate-y-1 shadow-lg hover:shadow-2xl duration-300 group">
                       {/* Elegant Thin Border Overlay */}
                       <div
-                        className="absolute inset-0 pointer-events-none z-20 p-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        className="absolute inset-0 pointer-events-none z-20 p-0.75 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{
                           background:
                             "linear-gradient(180deg, #222222 0%, #4f4f4f 25%, #888888 50%, #cccccc 75%, #ffffff 100%)",
@@ -176,7 +192,7 @@ export default function BlockPricingCards({
 
                       {/* Accent Label */}
                       {card.label && (
-                        <div className="absolute top-[10px] left-[2px] text-[10px] lg:text-[11px] font-black uppercase tracking-widest text-[#1a1a1a] bg-[#C2B7A3] py-1.5 px-3 z-30 shadow-sm max-w-[85%] whitespace-normal text-left">
+                        <div className="absolute top-2.5 left-0.5 text-[10px] lg:text-[11px] font-black uppercase tracking-widest text-[#1a1a1a] bg-[#C2B7A3] py-1.5 px-3 z-30 shadow-sm max-w-[85%] whitespace-normal text-left">
                           {card.label}
                         </div>
                       )}
@@ -184,7 +200,7 @@ export default function BlockPricingCards({
                       <div className="p-10 md:p-12 pt-16 md:pt-20 flex flex-col flex-1 items-center">
                         {/* Title */}
                         {card.title && (
-                          <h3 className="font-title font-black uppercase text-[22px] md:text-[26px] leading-[1.1] text-[#1a1a1a] mb-6 min-h-[70px] flex items-center justify-center tracking-wide wrap-break-word w-full px-1">
+                          <h3 className="font-title font-black uppercase text-[22px] md:text-[26px] leading-[1.1] text-[#1a1a1a] mb-6 min-h-17.5 flex items-center justify-center tracking-wide wrap-break-word w-full px-1">
                             {card.title}
                           </h3>
                         )}
@@ -224,7 +240,7 @@ export default function BlockPricingCards({
                               prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
                               prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                               prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
-                              font-sans max-w-[280px]
+                              font-sans max-w-70
                             "
                             dangerouslySetInnerHTML={{ __html: card.content }}
                           />
@@ -263,26 +279,38 @@ export default function BlockPricingCards({
               </svg>
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Learn More Button */}
         {button_text && button_url && (
-          <div className="mt-16">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+            className="mt-16"
+          >
             <HoverButton
               href={button_url}
-              className="inline-flex justify-center items-center px-[40px] py-[15px] font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5"
+              className="inline-flex justify-center items-center px-10 py-3.75 font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5"
               style={{
                 backgroundColor: button_fill || "#1a1a1a",
                 color: button_text_color || "#c2b7a3",
               }}
-              hoverFill={currentBlock.button_hover_fill_color || globalSettings?.button_hover_fill_color}
-              hoverText={currentBlock.button_hover_text_color || globalSettings?.button_hover_text_color}
+              hoverFill={
+                currentBlock.button_hover_fill_color ||
+                globalSettings?.button_hover_fill_color
+              }
+              hoverText={
+                currentBlock.button_hover_text_color ||
+                globalSettings?.button_hover_text_color
+              }
             >
               {button_text}
             </HoverButton>
-          </div>
+          </motion.div>
         )}
-      </ScrollReveal>
+      </div>
     </div>
   );
 }

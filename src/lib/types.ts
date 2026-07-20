@@ -120,6 +120,7 @@ export interface BlockCard {
   cards: CardItem[];
   title_size?: number;
   content_size?: number;
+  theme?: string | null;
 }
 
 export interface CardItem {
@@ -183,6 +184,7 @@ export interface FooterImage {
 export interface Page {
   id: string;
   inner_name: string;
+  slug: string | null;
   pages_blocks: any[];
 }
 
@@ -206,6 +208,24 @@ export interface BlockTextImage {
   }>;
 }
 
+export interface SlideItem {
+  id: string;
+  sort: number | null;
+  title: string | null;
+  subtitle: string | null;
+  background_image: string | { id: string } | null;
+}
+
+export interface BlockSlider {
+  id: string;
+  slides: Array<{
+    slides_id: SlideItem | string;
+  }>;
+  button: Array<{
+    buttons_id: BlockButton | number;
+  }>;
+}
+
 export interface Schema {
   block_notice: Notice[];
   global_settings: GlobalSettings;
@@ -218,6 +238,7 @@ export interface Schema {
   block_pricing_cards: BlockPricingCard[];
   block_testimonials: BlockTestimonial[];
   block_text_image: BlockTextImage[];
+  block_slider: BlockSlider[];
   social_links: SocialLink[];
   footer_images: FooterImage[];
   pages: Page[];
@@ -225,3 +246,4 @@ export interface Schema {
   pricing_cards: PricingCardItem[];
   buttons: BlockButton[];
 }
+

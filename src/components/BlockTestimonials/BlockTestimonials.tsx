@@ -21,22 +21,38 @@ export default function BlockTestimonials({
   const testimonials = Array.isArray(testimonial) ? testimonial : [];
 
   return (
-    <div className="relative w-full py-[60px] md:py-[100px] overflow-hidden bg-[#fcfcfc] flex flex-col items-center">
-      <ScrollReveal className="relative z-10 max-w-[1512px] mx-auto w-full flex flex-col items-center">
+    <div className="relative w-full py-15 md:py-25flow-hidden bg-[#fcfcfc] flex flex-col items-center">
+      <div className="relative z-10 max-w-378 mx-auto w-full flex flex-col items-center">
         {/* Title */}
         {title && (
-          <div className="w-full px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+            className="w-full px-4"
+          >
             <h2
               className="font-title font-black uppercase tracking-wide text-center text-[#1a1a1a] mb-12 md:mb-16"
-              style={{ fontSize: title_size ? `clamp(${Math.round(title_size * 0.35)}px, ${(title_size / 12).toFixed(3)}vw, ${title_size}px)` : "clamp(17px, 4vw, 48px)" }}
+              style={{
+                fontSize: title_size
+                  ? `clamp(${Math.round(title_size * 0.35)}px, ${(title_size / 12).toFixed(3)}vw, ${title_size}px)`
+                  : "clamp(17px, 4vw, 48px)",
+              }}
             >
               {title}
             </h2>
-          </div>
+          </motion.div>
         )}
 
         {/* Carousel */}
-        <div className="w-full relative flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+          className="w-full relative flex flex-col items-center"
+        >
           <motion.div
             layout
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -62,12 +78,12 @@ export default function BlockTestimonials({
                 return (
                   <SwiperSlide
                     key={index}
-                    className="w-[343px]! md:w-[677px]! h-auto! flex shrink-0"
+                    className="w-85.75! md:w-169.25! h-auto! flex shrink-0"
                   >
-                    <div className="relative bg-[#fafafa] flex flex-col text-center h-full min-h-[161px] w-full min-w-0 p-8 md:p-10">
+                    <div className="relative bg-[#fafafa] flex flex-col text-center h-full min-h-40.25 w-full min-w-0 p-8 md:p-10">
                       {/* Subtle gray gradient border overlay */}
                       <div
-                        className="absolute inset-0 pointer-events-none z-20 p-[3px] opacity-100"
+                        className="absolute inset-0 pointer-events-none z-20 p-0.75 opacity-100"
                         style={{
                           background:
                             "linear-gradient(180deg, #484848 0%, #999999 50%, #e3e3e3 100%)",
@@ -88,7 +104,7 @@ export default function BlockTestimonials({
                               alt="Quote open"
                               width={28}
                               height={28}
-                              className="w-[20px] h-[20px] md:w-[28px] md:h-[28px]"
+                              className="w-5 h-5 md:w-7 md:h-7"
                             />
                           </div>
 
@@ -110,7 +126,9 @@ export default function BlockTestimonials({
                                   prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                                   prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
                                 "
-                                dangerouslySetInnerHTML={{ __html: item.content }}
+                                dangerouslySetInnerHTML={{
+                                  __html: item.content,
+                                }}
                               />
                             )}
                           </div>
@@ -122,7 +140,7 @@ export default function BlockTestimonials({
                               alt="Quote close"
                               width={28}
                               height={28}
-                              className="w-[20px] h-[20px] md:w-[28px] md:h-[28px]"
+                              className="w-5 h-5 md:w-7 md:h-7"
                             />
                           </div>
                         </div>
@@ -170,8 +188,8 @@ export default function BlockTestimonials({
               </button>
             </div>
           )}
-        </div>
-      </ScrollReveal>
+        </motion.div>
+      </div>
     </div>
   );
 }

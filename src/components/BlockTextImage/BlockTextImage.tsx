@@ -18,6 +18,7 @@ export default function BlockTextImage({
   const {
     title,
     initial_text,
+    content,
     bottom_text,
     button_text,
     button_url,
@@ -52,7 +53,7 @@ export default function BlockTextImage({
   const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
   return (
-    <div className="relative w-full py-[40px] md:py-[60px] lg:py-[80px] overflow-hidden bg-[#f0ece8]">
+    <div className="relative w-full py-10 md:py-15 lg:py-20 overflow-hidden bg-[#f0ece8]">
       {/* Full Background Image with whitish opacity overlay */}
       {bgImageId && (
         <div className="absolute inset-0 z-0">
@@ -68,21 +69,20 @@ export default function BlockTextImage({
         </div>
       )}
 
-      {/* Content Box - sits above the background */}
-      <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8">
-        <ScrollReveal>
+      <div className="relative z-10 max-w-300 mx-auto px-4 md:px-8">
+        <div>
           <div className="w-full bg-white shadow-xl shadow-black/5 border border-black/5">
             {/* Inner padding */}
-            <div className="px-6 md:px-[50px] lg:px-[60px] py-8 md:py-[40px] lg:py-[50px]">
+            <div className="px-6 md:px-12.5 lg:px-15 py-8 md:py-10 lg:py-12.5">
               {/* Header */}
-              <div className="flex flex-col items-center text-center max-w-[800px] mx-auto mb-8 md:mb-[32px] lg:mb-[40px]">
+              <div className="flex flex-col items-center text-center max-w-200 mx-auto mb-8 md:mb-8 lg:mb-10">
                 {/* Title - Full WYSIWYG HTML from Directus */}
                 {title && (
                   <motion.div
                     initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.15 }}
+                    transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
                     className="
                       prose max-w-none
                       prose-p:m-0 prose-p:leading-[1.15]
@@ -103,7 +103,7 @@ export default function BlockTextImage({
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
                     className="font-sans text-[14px] md:text-[15px] font-black tracking-wider mt-5 md:mt-6 block text-[#1a1a1a]"
                   >
                     {initial_text}
@@ -111,9 +111,32 @@ export default function BlockTextImage({
                 )}
               </div>
 
+              {/* Content - WYSIWYG HTML from Directus */}
+              {content && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+                  className="
+                    prose max-w-220 mx-auto text-center mb-8 md:mb-8 lg:mb-10
+                    prose-p:font-sans prose-p:font-light prose-p:text-[14px] md:prose-p:text-[15px] prose-p:leading-[1.7] prose-p:text-[#555555] prose-p:mb-5 last:prose-p:mb-0
+                    prose-strong:text-[#1a1a1a] prose-strong:font-bold
+                    prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                  "
+                  dangerouslySetInnerHTML={{ __html: content }}
+                />
+              )}
+
               {/* Photo Grid - 4 items */}
               {items.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6 mb-8 md:mb-[32px] lg:mb-[40px]">
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6 mb-8 md:mb-8 lg:mb-10"
+                >
                   {items.map((item: any, index: number) => {
                     const photoId =
                       typeof item.photo === "string"
@@ -154,7 +177,7 @@ export default function BlockTextImage({
                         {/* Title */}
                         {itemTitle && (
                           <h3
-                            className="font-sans text-[14px] md:text-[16px] font-black leading-[1.4] px-2 max-w-[240px] uppercase tracking-wide"
+                            className="font-sans text-[14px] md:text-[16px] font-black leading-[1.4] px-2 max-w-60 uppercase tracking-wide"
                             style={{ color: textColor }}
                           >
                             {itemTitle}
@@ -163,7 +186,7 @@ export default function BlockTextImage({
                       </motion.div>
                     );
                   })}
-                </div>
+                </motion.div>
               )}
 
               {/* Bottom Text */}
@@ -172,7 +195,7 @@ export default function BlockTextImage({
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.25 }}
+                  transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
                 >
                   <span className="font-sans text-[14px] md:text-[15px] font-black tracking-wide text-[#1a1a1a] block text-center">
                     {bottom_text}
@@ -186,12 +209,12 @@ export default function BlockTextImage({
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.35 }}
+                  transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
                   className="flex justify-center mt-5"
                 >
                   <HoverButton
                     href={button_url}
-                    className="inline-flex justify-center items-center px-[30px] py-[12px] font-sans text-[14px] uppercase no-underline tracking-widest transition-transform duration-300 hover:-translate-y-0.5"
+                    className="inline-flex justify-center items-center px-7.5 py-3 font-sans text-[14px] uppercase no-underline tracking-widest transition-transform duration-300 hover:-translate-y-0.5"
                     style={{
                       backgroundColor: buttonColor,
                       color: buttonTextColor,
@@ -206,7 +229,7 @@ export default function BlockTextImage({
               )}
             </div>
           </div>
-        </ScrollReveal>
+        </div>
       </div>
     </div>
   );

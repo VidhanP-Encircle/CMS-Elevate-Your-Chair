@@ -16,28 +16,40 @@ export default function BlockJourneyApp({
   if (!data) return null;
 
   const { title, content, image, buttons } = data;
-  const buttonList = Array.isArray(buttons) ? buttons : [];
+
+  // Resolve buttons M2M
+  let buttonList: any[] = [];
+  if (Array.isArray(buttons)) {
+    buttonList = buttons
+      .map((junction: any) => junction.buttons_id || junction)
+      .filter((item: any) => typeof item === "object" && item !== null);
+  }
+
   const bgColor = globalSettings?.bg_color || "#151515";
   const textColor = globalSettings?.text_color || "#ffffff";
   const subtitleColor = globalSettings?.subtitle_color || "#a3a3a3";
   const accentColor = globalSettings?.button_text_color || "#a3a3a3";
+
+  // Dynamic font size fallbacks
   const titleSize = data.title_size || globalSettings?.global_title_size || 48;
+  const contentSize =
+    data.content_size || globalSettings?.global_content_size || 16;
 
   // Handle image field (string UUID or expanded object)
   const imageId = typeof image === "string" ? image : image?.id || null;
 
   return (
     <div
-      className="relative w-full py-[60px] md:py-[100px] overflow-hidden"
+      className="relative w-full py-15 md:py-25 overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
       {/* Subtle top glow */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] pointer-events-none opacity-30"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-75 rounded-full blur-[120px] pointer-events-none opacity-30"
         style={{ backgroundColor: subtitleColor }}
       />
 
-      <ScrollReveal className="relative z-10 max-w-[1512px] mx-auto w-full px-4 md:px-[55px]">
+      <div className="relative z-10 max-w-378 mx-auto w-full px-4 md:px-13.75">
         <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
           {/* Left: Phone Mockup */}
           {imageId && (
@@ -46,7 +58,7 @@ export default function BlockJourneyApp({
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="w-full max-w-[280px] md:max-w-[380px] lg:max-w-[420px] shrink-0 relative"
+              className="w-full max-w-70 md:max-w-95 lg:max-w-105 shrink-0 relative"
             >
               {/* Phone glow */}
               <div
@@ -67,7 +79,7 @@ export default function BlockJourneyApp({
           )}
 
           {/* Right: Content */}
-          <div className="flex flex-col items-start text-left max-w-[620px]">
+          <div className="flex flex-col items-start text-left max-w-155">
             {/* Title */}
             {title && (
               <motion.div
@@ -94,10 +106,9 @@ export default function BlockJourneyApp({
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.25 }}
                 className="
-                  mb-8 md:mb-10 w-full max-w-[620px]
+                  mb-8 md:mb-10 w-full max-w-155
                   prose prose-invert
                   prose-p:leading-[1.7] prose-p:font-light prose-p:font-sans prose-p:mb-4
-                  prose-p:text-[16px] md:prose-p:text-[18px]
                   prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
                   prose-headings:font-light prose-headings:text-white prose-headings:mb-4 prose-headings:mt-8
                   first:prose-headings:mt-0
@@ -106,11 +117,10 @@ export default function BlockJourneyApp({
                   prose-a:text-[#c2b7a3] prose-a:no-underline prose-a:font-medium
                   hover:prose-a:underline hover:prose-a:opacity-90
                   prose-ul:list-disc prose-ul:pl-5 prose-ul:mb-6 prose-ul:mt-4
-                  prose-ol:pl-6 prose-ol:mb-6 prose-ol:mt-4 prose-ol:text-[15px] md:prose-ol:text-[16px]
+                  prose-ol:pl-6 prose-ol:mb-6 prose-ol:mt-4
                   marker:text-[#c2b7a3]
                   prose-li:pl-0 prose-li:mb-3 prose-li:leading-[1.6]
                   prose-li:font-light prose-li:font-sans
-                  prose-li:text-[15px] md:prose-li:text-[16px]
                   prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2
                   prose-blockquote:pl-5 prose-blockquote:italic prose-blockquote:font-light
                   prose-blockquote:text-[#c2b7a3] prose-blockquote:my-6
@@ -120,14 +130,18 @@ export default function BlockJourneyApp({
                   prose-th:border prose-th:border-[#404040] prose-th:px-4 prose-th:py-2.5
                   prose-th:bg-[#1a1a1a] prose-th:text-white prose-th:font-bold prose-th:text-left
                   prose-td:border prose-td:border-[#404040] prose-td:px-4 prose-td:py-2.5
-                  prose-td:text-[14px] md:prose-td:text-[15px]
                   prose-code:bg-[#1a1a1a] prose-code:px-2 prose-code:py-0.5 prose-code:rounded-md
                   prose-code:text-sm prose-code:font-mono prose-code:text-[#c2b7a3]
                   prose-pre:bg-[#1a1a1a] prose-pre:border prose-pre:border-[#404040]
                   prose-pre:rounded-xl prose-pre:p-5 prose-pre:my-6
                   prose-pre:overflow-x-auto
                 "
-                style={{ color: subtitleColor }}
+                style={{
+                  color: subtitleColor,
+                  fontSize: contentSize
+                    ? `clamp(${Math.round(contentSize * 0.85)}px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
+                    : undefined,
+                }}
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             )}
@@ -148,19 +162,25 @@ export default function BlockJourneyApp({
                       ? btn.logo
                       : btn.logo?.id || null;
 
-                  // Resolve hover colors: button-level → block-level → global fallback
+                  // Resolve hover colors: button-level → global fallback
                   const btnHoverFill =
                     btn.button_hover_fill_color ||
-                    data.button_hover_fill_color ||
-                    globalSettings?.button_hover_fill_color;
+                    globalSettings?.button_hover_fill_color ||
+                    "#666666";
                   const btnHoverText =
                     btn.button_hover_text_color ||
-                    data.button_hover_text_color ||
-                    globalSettings?.button_hover_text_color;
+                    globalSettings?.button_hover_text_color ||
+                    "#ffffff";
 
                   const defaultBg = btn.button_fill_color || "transparent";
-                  const defaultText = btn.button_text_color || textColor;
-                  const defaultBorder = btn.button_border_color || accentColor;
+                  const defaultText =
+                    btn.button_text_color ||
+                    globalSettings?.button_text_color ||
+                    textColor;
+                  const defaultBorder =
+                    btn.button_border_color ||
+                    globalSettings?.button_color ||
+                    accentColor;
 
                   return (
                     <HoverButton
@@ -182,7 +202,7 @@ export default function BlockJourneyApp({
                           alt=""
                           width={18}
                           height={18}
-                          className="shrink-0 w-[18px] h-[18px] object-contain"
+                          className="shrink-0 w-4.5 h-4.5 object-contain"
                         />
                       )}
 
@@ -194,7 +214,7 @@ export default function BlockJourneyApp({
             )}
           </div>
         </div>
-      </ScrollReveal>
+      </div>
     </div>
   );
 }

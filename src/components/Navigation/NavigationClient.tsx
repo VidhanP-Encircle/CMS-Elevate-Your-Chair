@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlobalSettings } from "@/lib/types";
 import HoverButton from "@/components/HoverButton/HoverButton";
@@ -16,6 +17,9 @@ export default function NavigationClient({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +29,29 @@ export default function NavigationClient({
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        const target = event.target as HTMLElement;
+        if (!target.closest(".search-toggle-btn")) {
+          setIsSearchOpen(false);
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const navBgScrolled = "#1a1a1a";
@@ -39,48 +66,32 @@ export default function NavigationClient({
     <nav
       className="relative w-full transition-colors duration-300"
       style={{
-        backgroundColor: isScrolled || isOpen ? navBgScrolled : "transparent",
+        backgroundColor: isScrolled ? navBgScrolled : "transparent",
       }}
     >
-      <div className="flex items-center justify-between gap-[20px] xl:gap-[30px] px-4 xl:px-[55px] py-4 xl:py-[10px] w-full max-w-[1512px] mx-auto min-h-[80px] box-border">
+      <div className="flex items-center justify-between gap-5 xl:gap-7.5 px-4 xl:px-13.75 py-4 xl:py-2.5 w-full max-w-378 mx-auto min-h-20 box-border">
         {/* Hamburger (Mobile only) */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           role="button"
-          className="xl:hidden cursor-pointer flex-none"
+          className="xl:hidden cursor-pointer flex-none outline-none focus:outline-none"
           style={{ color: navTextColor }}
           aria-label="Menu"
         >
-          {isOpen ? (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          ) : (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          )}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
         </button>
 
         {/* Logo */}
@@ -92,7 +103,7 @@ export default function NavigationClient({
                 alt={globalSettings.brand_name || "Logo"}
                 width={320}
                 height={45}
-                className="object-contain w-[180px] md:w-[220px] lg:w-[280px] xl:w-[320px] h-auto"
+                className="object-contain w-45 md:w-55 lg:w-70 xl:w-[320px] h-auto"
               />
             </Link>
           ) : (
@@ -108,14 +119,14 @@ export default function NavigationClient({
         </div>
 
         {/* Nav Links (Desktop) */}
-        <div className="hidden xl:flex flex-row flex-wrap items-center justify-center gap-x-[20px] gap-y-[15px] xl:gap-x-[40px] nav-wrapper">
+        <div className="hidden xl:flex flex-row flex-wrap items-center justify-center gap-x-5 gap-y-3.75 xl:gap-x-10 nav-wrapper">
           {navigationData
             .filter((item: any) => item.name?.toLowerCase() !== "search")
             .map((item: any) => (
               <Link
                 key={item.id}
                 href={item.slug || "#"}
-                className="flex items-center font-sans font-normal text-[13px] leading-[18px] tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
+                className="flex items-center font-sans font-normal text-[13px] leading-4.5 tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
                 style={{ color: navTextColor }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.color = navTextHover)
@@ -130,7 +141,7 @@ export default function NavigationClient({
                     alt={item.name || "Icon"}
                     width={20}
                     height={20}
-                    className="object-contain w-[20px] h-[20px]"
+                    className="object-contain w-5 h-5"
                   />
                 ) : (
                   item.name
@@ -144,11 +155,16 @@ export default function NavigationClient({
           {navigationData
             .filter((item: any) => item.name?.toLowerCase() === "search")
             .map((searchItem: any) => (
-              <Link
+              <button
                 key={searchItem.id}
-                href={searchItem.slug || "#"}
-                className="cursor-pointer"
-                onClick={() => setIsOpen(false)}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsSearchOpen(!isSearchOpen);
+                  setIsOpen(false);
+                }}
+                className="search-toggle-btn cursor-pointer bg-transparent border-none p-0 outline-none flex items-center"
+                aria-label="Open search"
               >
                 {searchItem.logo ? (
                   <Image
@@ -156,7 +172,7 @@ export default function NavigationClient({
                     alt="Search"
                     width={20}
                     height={20}
-                    className="object-contain w-[20px] h-[20px]"
+                    className="object-contain w-5 h-5"
                   />
                 ) : (
                   <span
@@ -166,16 +182,17 @@ export default function NavigationClient({
                     {searchItem.name}
                   </span>
                 )}
-              </Link>
+              </button>
             ))}
-          {/* Fallback if no search item found */}
           {navigationData.filter(
             (item: any) => item.name?.toLowerCase() === "search",
           ).length === 0 && (
             <button
+              type="button"
               aria-label="search icon"
-              className="cursor-pointer"
+              className="search-toggle-btn cursor-pointer bg-transparent border-none p-0 outline-none flex items-center"
               style={{ color: navTextColor }}
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               <svg
                 width="24"
@@ -203,37 +220,47 @@ export default function NavigationClient({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="absolute top-full left-0 w-full shadow-lg xl:hidden flex flex-col py-[50px] px-[50px] overflow-hidden"
+            className="absolute top-full left-0 w-full shadow-lg xl:hidden flex flex-col overflow-hidden"
             style={{ backgroundColor: navDropdownBg }}
           >
-            <div className="flex flex-col gap-[35px] text-left">
+            {/* Indented links container with gap */}
+            <div className="flex flex-col gap-10 text-left px-8 py-12 md:px-12.5">
               {navigationData
                 .filter((item: any) => item.name?.toLowerCase() !== "search")
-                .map((item: any) => (
-                  <Link
-                    key={item.id}
-                    href={item.slug || "#"}
-                    onClick={() => setIsOpen(false)}
-                    className="font-sans font-normal text-[18px] leading-[22px] uppercase no-underline transition-colors"
-                    style={{ color: dropdownTextColor }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.color = navTextHover)
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = dropdownTextColor)
-                    }
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+                .map((item: any) => {
+                  const isActive =
+                    pathname === item.slug ||
+                    (item.slug === "/" && pathname === "") ||
+                    (pathname === "/home" && item.slug === "/");
+
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.slug || "#"}
+                      onClick={() => setIsOpen(false)}
+                      className="font-sans font-normal text-[18px] leading-5.5 uppercase no-underline transition-colors"
+                      style={{ color: isActive ? navTextHover : dropdownTextColor }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.color = navTextHover)
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.color = isActive ? navTextHover : dropdownTextColor)
+                      }
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
             </div>
-            <div className="mt-12 flex justify-center w-full">
+
+            {/* Solid dark banner at the bottom containing the button */}
+            <div className="w-full bg-[#151515] py-8 flex justify-center px-8 md:px-12.5">
               <HoverButton
                 href="http://elevate-by-blake-charles-salon.mn.co/plans/1896001"
                 target="_blank"
-                className="font-bold font-sans text-[16px] leading-[20px] uppercase px-8 py-[18px] w-full max-w-[300px] text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
-                style={{ 
-                  backgroundColor: buttonColor, 
+                className="font-bold font-sans text-[16px] leading-5 uppercase px-8 py-4.5 w-full max-w-75 text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
+                style={{
+                  backgroundColor: buttonColor,
                   color: buttonTextColor,
                 }}
                 hoverFill={globalSettings?.button_hover_fill_color}
@@ -242,6 +269,58 @@ export default function NavigationClient({
               >
                 Join Elevate
               </HoverButton>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Search Dropdown below the navigation bar */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            ref={searchRef}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="absolute top-full left-0 w-full z-45 bg-[#1a1a1a] py-4 border-t border-white/5 overflow-hidden"
+          >
+            <div className="px-4 xl:px-13.75 w-full max-w-378 mx-auto">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const query = formData.get("q");
+                  if (query) {
+                    window.location.href = `/search?q=${encodeURIComponent(query.toString())}`;
+                  }
+                }}
+                className="w-full"
+              >
+                {/* Input container matching screenshot */}
+                <div className="flex items-center bg-white h-11 md:h-12 rounded-none border border-transparent focus-within:border-[#c2b7a3] w-full">
+                  {/* Search Icon inside white bar */}
+                  <svg
+                    className="w-5 h-5 mr-3 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={navTextHover}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  {/* Input field */}
+                  <input
+                    type="text"
+                    name="q"
+                    placeholder="Search"
+                    autoFocus
+                    className="w-full bg-transparent border-none outline-none text-[#1a1a1a] font-sans text-[15px] md:text-[16px] placeholder:text-[#999999]"
+                  />
+                </div>
+              </form>
             </div>
           </motion.div>
         )}
