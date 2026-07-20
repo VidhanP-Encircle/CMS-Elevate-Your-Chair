@@ -23,7 +23,23 @@ export default function BlockMobile({
     button_text,
     button_url,
     content_size,
+    buttons,
   } = data;
+
+  // Resolve M2M buttons
+  let buttonList: any[] = [];
+  if (Array.isArray(buttons)) {
+    buttonList = buttons
+      .map((junction: any) => junction.buttons_id || junction)
+      .filter((item: any) => typeof item === "object" && item !== null);
+  }
+
+  // Use either legacy direct button fields or first M2M button
+  const primaryButton = buttonList.length > 0 ? buttonList[0] : null;
+  const primaryButtonText = primaryButton?.button_text || button_text;
+  const primaryButtonUrl = primaryButton?.button_url || button_url;
+  const primaryButtonFill = primaryButton?.button_fill_color || undefined;
+  const primaryButtonColor = primaryButton?.button_text_color || globalSettings?.button_text_color || "#1a1a1a";
 
   // image can be a string UUID or an expanded Directus file object { id: "..." }
   const imageId =
@@ -40,8 +56,11 @@ export default function BlockMobile({
   const subtitleSizeVal = contentSize ? contentSize + 4 : 20;
 
   // Background and Text colors (Hardcoded aesthetic defaults as requested)
-  const hoverFillColor = globalSettings?.button_hover_fill_color;
-  const hoverTextColor = globalSettings?.button_hover_text_color;
+  const globalHoverFill = globalSettings?.button_hover_fill_color;
+  const globalHoverText = globalSettings?.button_hover_text_color;
+  // Resolve per-button hover colors with global fallback
+  const resolvedHoverFill = primaryButton?.button_hover_fill_color || globalHoverFill;
+  const resolvedHoverText = primaryButton?.button_hover_text_color || globalHoverText;
 
   const bgColor = "#fcfcfc";
   const textColor = "#1a1a1a";
@@ -151,7 +170,7 @@ export default function BlockMobile({
             )}
 
             {/* Button */}
-            {button_text && button_url && (
+            {primaryButtonText && primaryButtonUrl && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -160,16 +179,16 @@ export default function BlockMobile({
                 className="mt-2.5"
               >
                 <HoverButton
-                  href={button_url}
+                  href={primaryButtonUrl}
                   className="inline-flex justify-center items-center px-10 py-3.75 font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                   style={{
-                    backgroundColor: buttonColor,
-                    color: buttonTextColor,
+                    backgroundColor: primaryButtonFill || buttonColor,
+                    color: primaryButtonColor,
                   }}
-                  hoverFill={hoverFillColor}
-                  hoverText={hoverTextColor}
+                  hoverFill={resolvedHoverFill}
+                  hoverText={resolvedHoverText}
                 >
-                  {button_text}
+                  {primaryButtonText}
                 </HoverButton>
               </motion.div>
             )}

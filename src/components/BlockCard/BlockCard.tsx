@@ -110,24 +110,20 @@ export default function BlockCard({
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             className="w-full relative mt-10 flex flex-col items-center"
           >
-            <motion.div
-              layout
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="w-full max-w-75 min-[500px]:max-w-94 min-[900px]:max-w-194 min-[1320px]:max-w-294 min-[1720px]:max-w-[1576px]"
-            >
+            <div className="w-full">
               <Swiper
                 modules={[Navigation]}
                 navigation={{
                   prevEl: ".swiper-button-prev-custom",
                   nextEl: ".swiper-button-next-custom",
                 }}
-                spaceBetween={24}
+                spaceBetween={16}
                 slidesPerView={1}
                 breakpoints={{
-                  500: { slidesPerView: 1 },
-                  900: { slidesPerView: 2 },
-                  1320: { slidesPerView: 3 },
-                  1720: { slidesPerView: 4 },
+                  640: { slidesPerView: 2 },
+                  900: { slidesPerView: 3 },
+                  1200: { slidesPerView: 4 },
+                  1500: { slidesPerView: 5 },
                 }}
                 className="w-full"
               >
@@ -139,23 +135,23 @@ export default function BlockCard({
                   return (
                     <SwiperSlide
                       key={card.id || index}
-                      className="min-h-70 md:min-h-85 h-auto! flex! items-stretch! shrink-0"
+                      className="h-auto! flex! items-stretch!"
                     >
                       {isWhiteTheme ? (
                         /* Light Theme Card */
                         <div
-                          className="w-full h-full flex flex-col items-center justify-between p-5 md:p-6"
+                          className="w-full h-full flex flex-col items-center justify-between p-4 md:p-5"
                           style={{ backgroundColor: "#ffffff" }}
                         >
                           <div className="w-full flex flex-col items-center text-center">
                             {/* Photo */}
                             {card.photo && (
-                              <div className="w-full aspect-4/3 relative mb-5 overflow-hidden">
+                              <div className="w-full aspect-4/3 relative mb-4 overflow-hidden">
                                 <Image
                                   src={`/api/assets/${card.photo}`}
                                   alt={card.title || "Card Photo"}
                                   fill
-                                  sizes="(max-width: 768px) 300px, 376px"
+                                  sizes="(max-width: 768px) 300px, 231px"
                                   className="object-cover"
                                 />
                               </div>
@@ -164,7 +160,7 @@ export default function BlockCard({
                             {/* Title */}
                             {card.title && (
                               <h3
-                                className="font-title font-bold uppercase tracking-widest text-[16px] md:text-[18px] mb-3 leading-[1.3]"
+                                className="font-title font-bold uppercase tracking-widest text-[15px] md:text-[16px] mb-2 leading-[1.3]"
                                 style={{
                                   color:
                                     textColor === "#ffffff"
@@ -183,7 +179,7 @@ export default function BlockCard({
                                 style={{
                                   color: "#555555",
                                   fontSize: contentSize
-                                    ? `clamp(13px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
+                                    ? `clamp(12px, ${(contentSize / 14).toFixed(3)}vw, 14px)`
                                     : undefined,
                                 }}
                                 dangerouslySetInnerHTML={{
@@ -197,7 +193,7 @@ export default function BlockCard({
                           {card.button_text && card.button_url && (
                             <Link
                               href={card.button_url}
-                              className="mt-5 font-title font-bold uppercase text-[12px] md:text-[13px] tracking-widest border-b border-black/20 hover:border-black transition-colors pb-0.5"
+                              className="mt-4 font-title font-bold uppercase text-[11px] md:text-[12px] tracking-widest border-b border-black/20 hover:border-black transition-colors pb-0.5"
                               style={{ color: "#1a1a1a" }}
                             >
                               {card.button_text}
@@ -206,12 +202,11 @@ export default function BlockCard({
                         </div>
                       ) : (
                         /* Dark Theme Card - gradient border via CSS mask */
-                        /* Border overlay only affects 2px edge, content stays crisp */
                         <div
-                          className="w-full h-full flex flex-col items-center text-center px-3 py-8 md:py-10.5 relative hover:brightness-110 transition-all"
+                          className="w-full h-full flex flex-col items-center text-center px-3 py-6 md:py-8 relative hover:brightness-110 transition-all"
                           style={{ backgroundColor: "#1a1a1a" }}
                         >
-                          {/* Border overlay with CSS mask - visible gold throughout */}
+                          {/* Border overlay with CSS mask */}
                           <div
                             className="absolute inset-0 pointer-events-none p-0.5"
                             style={{
@@ -227,13 +222,13 @@ export default function BlockCard({
                           {/* Content */}
                           <div className="w-full flex flex-col items-center">
                             {/* Icon slot */}
-                            <div className="w-16 h-16 md:w-20 md:h-20 mb-5 md:mb-7.5 flex justify-center items-center">
+                            <div className="w-12 h-12 md:w-14 md:h-14 mb-3 md:mb-4 flex justify-center items-center">
                               {card.photo ? (
                                 <Image
                                   src={`/api/assets/${card.photo}`}
                                   alt={card.title || "Card Icon"}
-                                  width={80}
-                                  height={80}
+                                  width={56}
+                                  height={56}
                                   className="object-contain w-full h-full"
                                 />
                               ) : (
@@ -241,31 +236,31 @@ export default function BlockCard({
                               )}
                             </div>
 
-                            {/* Title slot - white */}
+                            {/* Title slot */}
                             <h3
-                              className="font-title font-bold uppercase tracking-widest text-[15px] md:text-[18px] mb-3 md:mb-3.75 leading-[1.3] min-h-[2.6em] w-full text-white"
+                              className="font-title font-bold uppercase tracking-widest text-[14px] md:text-[15px] mb-2 leading-[1.3] min-h-[2.6em] w-full text-white"
                               style={{ color: textColor }}
                             >
                               {card.title || ""}
                             </h3>
 
-                            {/* Content - grayish */}
+                            {/* Content */}
                             {card.content && (
                               <div
                                 className="
                                   prose prose-invert
-                                  prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[15px] md:prose-p:text-[16px] prose-p:text-[#a3a3a3]
-                                  prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-2 prose-headings:mb-1
+                                  prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[13px] md:prose-p:text-[14px] prose-p:text-[#a3a3a3]
+                                  prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-1.5 prose-headings:mb-0.5
                                   prose-strong:text-white prose-strong:font-bold
                                   prose-a:text-[#c2b7a3] prose-a:no-underline
-                                  prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[15px] md:prose-li:text-[16px] prose-li:leading-normal prose-li:text-[#a3a3a3]
+                                  prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[13px] md:prose-li:text-[14px] prose-li:leading-normal prose-li:text-[#a3a3a3]
                                   prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded prose-code:text-[#a3a3a3]
                                   max-w-full
                                 "
                                 style={{
                                   color: "#a3a3a3",
                                   fontSize: contentSize
-                                    ? `clamp(13px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
+                                    ? `clamp(12px, ${(contentSize / 14).toFixed(3)}vw, 14px)`
                                     : undefined,
                                 }}
                                 dangerouslySetInnerHTML={{
@@ -280,13 +275,13 @@ export default function BlockCard({
                   );
                 })}
               </Swiper>
-            </motion.div>
+            </div>
             {/* Custom Navigation */}
-            <div className="flex justify-center items-center gap-6 mt-12">
-              <button className="swiper-button-prev-custom flex items-center justify-center w-12 h-12 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded disabled:opacity-30 disabled:cursor-not-allowed">
+            <div className="flex justify-center items-center gap-6 mt-8">
+              <button className="swiper-button-prev-custom flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded disabled:opacity-30 disabled:cursor-not-allowed">
                 <svg
-                  width="36"
-                  height="36"
+                  width="30"
+                  height="30"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -297,10 +292,10 @@ export default function BlockCard({
                   <path d="M19 12H5M5 12L12 5M5 12L12 19" />
                 </svg>
               </button>
-              <button className="swiper-button-next-custom flex items-center justify-center w-12 h-12 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded disabled:opacity-30 disabled:cursor-not-allowed">
+              <button className="swiper-button-next-custom flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded disabled:opacity-30 disabled:cursor-not-allowed">
                 <svg
-                  width="36"
-                  height="36"
+                  width="30"
+                  height="30"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"

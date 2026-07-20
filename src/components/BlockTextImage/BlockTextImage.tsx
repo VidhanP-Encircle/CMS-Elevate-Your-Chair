@@ -24,7 +24,23 @@ export default function BlockTextImage({
     button_url,
     background_image,
     text_image,
+    buttons,
   } = data;
+
+  // Resolve M2M buttons
+  let buttonList: any[] = [];
+  if (Array.isArray(buttons)) {
+    buttonList = buttons
+      .map((junction: any) => junction.buttons_id || junction)
+      .filter((item: any) => typeof item === "object" && item !== null);
+  }
+
+  // Use either legacy direct button fields or first M2M button
+  const primaryButton = buttonList.length > 0 ? buttonList[0] : null;
+  const primaryButtonText = primaryButton?.button_text || button_text;
+  const primaryButtonUrl = primaryButton?.button_url || button_url;
+  const primaryButtonFill = primaryButton?.button_fill_color || undefined;
+  const primaryButtonColor = primaryButton?.button_text_color || globalSettings?.button_text_color || "#1a1a1a";
 
   // Resolve text_image items - Directus M2M returns junction objects
   let items: any[] = [];
@@ -204,7 +220,7 @@ export default function BlockTextImage({
               )}
 
               {/* CTA Button */}
-              {button_text && button_url && (
+              {primaryButtonText && primaryButtonUrl && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -213,17 +229,17 @@ export default function BlockTextImage({
                   className="flex justify-center mt-5"
                 >
                   <HoverButton
-                    href={button_url}
+                    href={primaryButtonUrl}
                     className="inline-flex justify-center items-center px-7.5 py-3 font-sans text-[14px] uppercase no-underline tracking-widest transition-transform duration-300 hover:-translate-y-0.5"
                     style={{
-                      backgroundColor: buttonColor,
-                      color: buttonTextColor,
+                      backgroundColor: primaryButtonFill || buttonColor,
+                      color: primaryButtonColor,
                       fontWeight: 900,
                     }}
-                    hoverFill={globalSettings?.button_hover_fill_color}
-                    hoverText={globalSettings?.button_hover_text_color}
+                    hoverFill={primaryButton?.button_hover_fill_color || globalSettings?.button_hover_fill_color}
+                    hoverText={primaryButton?.button_hover_text_color || globalSettings?.button_hover_text_color}
                   >
-                    {button_text}
+                    {primaryButtonText}
                   </HoverButton>
                 </motion.div>
               )}

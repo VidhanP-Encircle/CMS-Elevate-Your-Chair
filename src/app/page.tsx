@@ -8,6 +8,7 @@ import BlockTestimonials from '@/components/BlockTestimonials/BlockTestimonials'
 import BlockJourneyApp from '@/components/BlockJourneyApp/BlockJourneyApp';
 import BlockTextImage from '@/components/BlockTextImage/BlockTextImage';
 import BlockSlider from '@/components/BlockSlider/BlockSlider';
+import BlockFaqs from '@/components/BlockFaqs/BlockFaqs';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
@@ -48,7 +49,7 @@ export default async function HomePage() {
           'pages_blocks.item.slides.slides_id.*',
           'pages_blocks.item.slides.slides_id.background_image.*',
           'pages_blocks.item.button.*',
-          'pages_blocks.item.button.buttons_id.*'
+          'pages_blocks.item.button.buttons_id.*',
         ] as any,
       })
     )) as any[];
@@ -59,6 +60,19 @@ export default async function HomePage() {
       globalSettings = await directus.request(readSingleton('global_settings')) || {};
     } catch (e) {
       console.warn('Could not fetch global settings', e);
+    }
+
+    // Fetch pricing benefits (used within pricing blocks)
+    let pricingBenefits: any[] = [];
+    try {
+      pricingBenefits = (await directus.request(
+        readItems('pricing_benefits', {
+          fields: ['*', 'plans.*', 'plans.pricing_cards_id.*'] as any,
+          sort: 'sort',
+        })
+      )) as any[];
+    } catch (e) {
+      console.warn('Could not fetch pricing benefits', e);
     }
 
     if (!pages || pages.length === 0) {
@@ -121,7 +135,7 @@ export default async function HomePage() {
             }
 
             if (collection === 'block_pricing_cards_group') {
-              return <BlockPricingCards key={index} data={blockWrap.items} globalSettings={globalSettings} />;
+              return <BlockPricingCards key={index} data={blockWrap.items} globalSettings={globalSettings} benefits={pricingBenefits} />;
             }
 
             if (collection === 'block_testimonials') {
@@ -138,6 +152,10 @@ export default async function HomePage() {
 
             if (collection === 'block_slider') {
               return <BlockSlider key={index} data={item} globalSettings={globalSettings} />;
+            }
+
+            if (collection === 'block_faqs') {
+              return <BlockFaqs key={index} data={item} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;

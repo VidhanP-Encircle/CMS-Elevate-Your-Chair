@@ -57,12 +57,7 @@ export interface BlockTitle {
   title: string;
   subtitle: string;
   buttons: Array<{
-    button_name: string;
-    button_url: string;
-    button_text: string;
-    text_color: string;
-    border_color?: string;
-    fill_color?: string;
+    buttons_id: BlockButton | number;
   }>;
   background_image: string | null;
   background_video: string | null;
@@ -108,6 +103,9 @@ export interface BlockMobile {
   button_text: string | null;
   button_url: string | null;
   content_size: number | null;
+  buttons: Array<{
+    buttons_id: BlockButton | number;
+  }>;
 }
 
 export interface BlockCard {
@@ -135,16 +133,21 @@ export interface BlockPricingCard {
   id: string;
   type_of_plan: string | null;
   background_image: string | { id: string } | null;
+  title: string | null;
+  /** WYSIWYG - rich HTML content */
+  content: string | null;
+  show_benefits: string | null;
   button_text: string | null;
   button_url: string | null;
-  /** WYSIWYG - rich HTML title */
-  title: string | null;
   button_text_color: string | null;
   button_fill: string | null;
   button_hover_text_color?: string | null;
   button_hover_fill_color?: string | null;
   pricing_cards: Array<{
     pricing_cards_id: PricingCardItem;
+  }>;
+  buttons: Array<{
+    buttons_id: BlockButton | number;
   }>;
 }
 
@@ -158,6 +161,12 @@ export interface PricingCardItem {
   yearly_price: string | null;
 }
 
+export interface PricingBenefit {
+  id: string;
+  sort: number | null;
+  title: string | null;
+}
+
 export interface BlockTestimonial {
   id: string;
   title: string | null;
@@ -167,6 +176,19 @@ export interface BlockTestimonial {
     content: string;
     name: string;
   }>;
+}
+
+export interface BlockFaqItem {
+  questions: string;
+  answers: string;
+}
+
+export interface BlockFaqs {
+  id: string;
+  title: string | null;
+  /** JSON list of FAQ items with questions and answers */
+  que_ans: BlockFaqItem[];
+  background_image?: string | { id: string } | null;
 }
 
 export interface SocialLink {
@@ -199,12 +221,17 @@ export interface BlockTextImage {
   /** WYSIWYG - rich HTML title */
   title: string | null;
   initial_text: string | null;
+  /** WYSIWYG - rich HTML content */
+  content: string | null;
   bottom_text: string | null;
   button_text: string | null;
   button_url: string | null;
   background_image: string | { id: string } | null;
   text_image: Array<{
     text_image_id: TextImageItem | string;
+  }>;
+  buttons: Array<{
+    buttons_id: BlockButton | number;
   }>;
 }
 
@@ -239,6 +266,8 @@ export interface Schema {
   block_testimonials: BlockTestimonial[];
   block_text_image: BlockTextImage[];
   block_slider: BlockSlider[];
+  block_faqs: BlockFaqs[];
+  pricing_benefits: PricingBenefit[];
   social_links: SocialLink[];
   footer_images: FooterImage[];
   pages: Page[];
@@ -246,4 +275,3 @@ export interface Schema {
   pricing_cards: PricingCardItem[];
   buttons: BlockButton[];
 }
-
