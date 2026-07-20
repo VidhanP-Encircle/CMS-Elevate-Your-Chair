@@ -28,7 +28,7 @@ export default function BlockTestimonials({
           <div className="w-full px-4">
             <h2
               className="font-title font-black uppercase tracking-wide text-center text-[#1a1a1a] mb-12 md:mb-16"
-              style={{ fontSize: title_size ? `${title_size}px` : "48px" }}
+              style={{ fontSize: title_size ? `clamp(${Math.round(title_size * 0.35)}px, ${(title_size / 12).toFixed(3)}vw, ${title_size}px)` : "clamp(17px, 4vw, 48px)" }}
             >
               {title}
             </h2>

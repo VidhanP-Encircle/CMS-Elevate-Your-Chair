@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlobalSettings } from "@/lib/types";
+import HoverButton from "@/components/HoverButton/HoverButton";
 
 export default function NavigationClient({
   globalSettings,
@@ -227,15 +228,20 @@ export default function NavigationClient({
                 ))}
             </div>
             <div className="mt-12 flex justify-center w-full">
-              <Link
+              <HoverButton
                 href="http://elevate-by-blake-charles-salon.mn.co/plans/1896001"
                 target="_blank"
-                className="font-bold font-sans text-[16px] leading-[20px] uppercase px-8 py-[18px] w-full max-w-[300px] text-center no-underline hover:opacity-80 transition-opacity"
-                style={{ backgroundColor: buttonColor, color: buttonTextColor }}
+                className="font-bold font-sans text-[16px] leading-[20px] uppercase px-8 py-[18px] w-full max-w-[300px] text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
+                style={{ 
+                  backgroundColor: buttonColor, 
+                  color: buttonTextColor,
+                }}
+                hoverFill={globalSettings?.button_hover_fill_color}
+                hoverText={globalSettings?.button_hover_text_color}
                 onClick={() => setIsOpen(false)}
               >
                 Join Elevate
-              </Link>
+              </HoverButton>
             </div>
           </motion.div>
         )}

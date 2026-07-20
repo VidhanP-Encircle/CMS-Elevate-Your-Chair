@@ -9,14 +9,7 @@ export default function AnimatedImageGrid({ images }: { images: any[] }) {
       {images.map((img: any) => (
         <motion.div
           key={img.id}
-          variants={{
-            hidden: { opacity: 0, scale: 0.95 },
-            visible: { 
-              opacity: 1, 
-              scale: 1,
-              transition: { duration: 0.5, ease: "easeOut" }
-            }
-          }}
+          initial={{ opacity: 1, scale: 1 }}
           className="w-full h-full"
         >
           <Image

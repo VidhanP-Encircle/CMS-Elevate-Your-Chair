@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import HoverButton from "@/components/HoverButton/HoverButton";
 
 export default function BlockTitle({
   data,
@@ -39,10 +40,10 @@ export default function BlockTitle({
         {buttons.map((btn: any, idx: number) => {
           const isFilled = !!btn.fill_color;
           return (
-            <Link
+            <HoverButton
               key={idx}
               href={btn.button_url || "#"}
-              className="box-border flex flex-row justify-center items-center px-[25px] py-[10px] gap-[10px] h-[40px] w-full md:w-auto no-underline transition-opacity hover:opacity-90"
+              className="box-border flex flex-row justify-center items-center px-[25px] py-[10px] gap-[10px] h-[40px] w-full md:w-auto no-underline transition-transform duration-300 hover:-translate-y-0.5"
               style={{
                 backgroundColor: btn.fill_color || "transparent",
                 borderColor:
@@ -51,11 +52,13 @@ export default function BlockTitle({
                 borderStyle: "solid",
                 color: btn.text_color || "#fff",
               }}
+              hoverFill={globalSettings?.button_hover_fill_color}
+              hoverText={globalSettings?.button_hover_text_color}
             >
               <span className="font-sans font-extrabold text-[16px] leading-[20px] uppercase">
                 {btn.button_text}
               </span>
-            </Link>
+            </HoverButton>
           );
         })}
       </motion.div>
@@ -84,6 +87,7 @@ export default function BlockTitle({
             src={`/api/assets/${background_image}`}
             alt="Background"
             fill
+            sizes="100vw"
             className="object-cover"
           />
         ) : null}
@@ -147,7 +151,9 @@ export default function BlockTitle({
                 "
                 style={
                   {
-                    fontSize: titleSize ? `${titleSize}px` : undefined,
+                    fontSize: titleSize
+                      ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                      : undefined,
                     "--tw-prose-headings": "inherit",
                     "--tw-prose-p": "inherit",
                   } as any
@@ -168,7 +174,9 @@ export default function BlockTitle({
                 }}
                 className="font-sans font-normal leading-[1.4] text-center uppercase text-white m-0 max-w-[900px]"
                 style={{
-                  fontSize: subtitleSize ? `${subtitleSize}px` : "18px",
+                  fontSize: subtitleSize
+                    ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
+                    : "clamp(14px, 1.5vw, 18px)",
                 }}
               >
                 {subtitle}

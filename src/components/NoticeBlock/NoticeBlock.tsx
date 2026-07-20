@@ -31,17 +31,26 @@ export default async function NoticeBlock({ globalSettings }: { globalSettings: 
             {notice.button_text && notice.button_url && (
               <Link 
                 href={notice.button_url} 
-                className="flex flex-row justify-center items-center px-[20px] py-[6px] min-h-[32px] box-border no-underline text-center transition-opacity hover:opacity-90"
+                className="group relative overflow-hidden flex flex-row justify-center items-center px-[20px] py-[6px] min-h-[32px] box-border no-underline text-center"
                 style={{ 
                   backgroundColor: buttonFill, 
                   borderColor: buttonBorder,
                   borderWidth: buttonBorder !== buttonFill ? '1px' : '0px',
-                  borderStyle: 'solid'
-                }}
+                  borderStyle: 'solid',
+                  '--btn-text': buttonTextColor,
+                  '--btn-hover-text': globalSettings?.button_hover_text_color || buttonTextColor,
+                } as any}
               >
-                <span className="font-sans font-bold text-[12px] leading-[16px] uppercase m-0" style={{ color: buttonTextColor }}>
+                <span 
+                  className="font-sans font-bold text-[12px] leading-[16px] uppercase m-0 transition-colors duration-300 text-[var(--btn-text)] group-hover:text-[var(--btn-hover-text)]"
+                >
                   {notice.button_text}
                 </span>
+                {/* Sliding overlay - after content, with -z-10 to sit behind text */}
+                <div
+                  className="absolute inset-0 -z-1 transition-transform duration-[400ms] ease-in-out -translate-x-full group-hover:translate-x-0"
+                  style={{ backgroundColor: globalSettings?.button_hover_fill_color || buttonFill }}
+                />
               </Link>
             )}
           </div>

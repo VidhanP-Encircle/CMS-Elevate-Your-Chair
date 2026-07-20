@@ -50,7 +50,7 @@ export default function BlockCard({
                 prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
                 font-title font-light uppercase tracking-wide
               "
-              style={{ fontSize: `${titleSize}px`, color: textColor }}
+              style={{ fontSize: titleSize ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)` : undefined, color: textColor }}
               dangerouslySetInnerHTML={{ __html: title }}
             />
           )}
@@ -75,7 +75,9 @@ export default function BlockCard({
               "
               style={{
                 color: subtitleColor,
-                fontSize: `${subtitleSize}px`,
+                fontSize: subtitleSize
+                  ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
+                  : undefined,
                 "--tw-prose-body": subtitleColor,
               } as any}
               dangerouslySetInnerHTML={{ __html: subtitle }}

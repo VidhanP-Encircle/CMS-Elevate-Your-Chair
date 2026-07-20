@@ -18,6 +18,8 @@ export interface GlobalSettings {
   content: string;
   button_color: string | null;
   button_text_color: string | null;
+  button_hover_text_color: string | null;
+  button_hover_fill_color: string | null;
   bg_color?: string | null;
   text_color?: string | null;
   subtitle_color?: string | null;
@@ -75,6 +77,8 @@ export interface BlockJourneyAppButton {
   button_border_color: string;
   button_text_color: string;
   button_fill_color?: string;
+  button_hover_text_color?: string | null;
+  button_hover_fill_color?: string | null;
   logo?: string | { id: string } | null;
 }
 
@@ -87,6 +91,8 @@ export interface BlockJourneyApp {
   content: string | null;
   buttons: BlockJourneyAppButton[];
   title_size?: number;
+  button_hover_text_color?: string | null;
+  button_hover_fill_color?: string | null;
 }
 
 export interface BlockMobile {
@@ -134,6 +140,8 @@ export interface BlockPricingCard {
   title: string | null;
   button_text_color: string | null;
   button_fill: string | null;
+  button_hover_text_color?: string | null;
+  button_hover_fill_color?: string | null;
   pricing_cards: Array<{
     pricing_cards_id: PricingCardItem;
   }>;

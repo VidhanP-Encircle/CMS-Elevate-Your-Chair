@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
+import HoverButton from "@/components/HoverButton/HoverButton";
 
 export default function BlockTextImage({
   data,
@@ -47,7 +48,8 @@ export default function BlockTextImage({
   // Colors
   const textColor = "#1a1a1a";
   const subtitleColor = "#666666";
-  const accentColor = "#c2b7a3";
+  const buttonColor = globalSettings?.button_color || "#c2b7a3";
+  const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
   return (
     <div className="relative w-full py-[40px] md:py-[60px] lg:py-[80px] overflow-hidden bg-[#f0ece8]">
@@ -58,6 +60,7 @@ export default function BlockTextImage({
             src={`/api/assets/${bgImageId}`}
             alt=""
             fill
+            sizes="100vw"
             className="object-cover object-center"
           />
           {/* Whitish overlay as seen in the reference design */}
@@ -68,9 +71,7 @@ export default function BlockTextImage({
       {/* Content Box - sits above the background */}
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8">
         <ScrollReveal>
-          <div
-            className="w-full bg-white shadow-xl shadow-black/5 border border-black/5"
-          >
+          <div className="w-full bg-white shadow-xl shadow-black/5 border border-black/5">
             {/* Inner padding */}
             <div className="px-6 md:px-[50px] lg:px-[60px] py-8 md:py-[40px] lg:py-[50px]">
               {/* Header */}
@@ -103,7 +104,7 @@ export default function BlockTextImage({
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="font-sans text-[14px] md:text-[15px] font-black tracking-wider mt-5 md:mt-6 block uppercase text-[#1a1a1a]"
+                    className="font-sans text-[14px] md:text-[15px] font-black tracking-wider mt-5 md:mt-6 block text-[#1a1a1a]"
                   >
                     {initial_text}
                   </motion.span>
@@ -123,22 +124,17 @@ export default function BlockTextImage({
                     return (
                       <motion.div
                         key={item.id || index}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 0.1 + index * 0.1,
-                        }}
+                        initial={{ opacity: 1, y: 0 }}
                         className="group relative flex flex-col items-center text-center"
                       >
                         {/* Photo */}
-                        <div className="relative w-full aspect-[4/3] overflow-hidden mb-3 md:mb-4 bg-[#f5f5f5]">
+                        <div className="relative w-full aspect-4/3 overflow-hidden mb-3 md:mb-4 bg-[#f5f5f5]">
                           {photoId ? (
                             <Image
                               src={`/api/assets/${photoId}`}
                               alt={itemTitle}
                               fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                               className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                             />
                           ) : (
@@ -170,37 +166,44 @@ export default function BlockTextImage({
                 </div>
               )}
 
-              {/* Bottom Text + CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex flex-col items-center text-center gap-5 md:gap-6"
-              >
-                {/* Bottom Text - comes BEFORE the button */}
-                {bottom_text && (
-                  <span
-                    className="font-sans text-[14px] md:text-[15px] font-black tracking-wide text-[#1a1a1a]"
-                  >
+              {/* Bottom Text */}
+              {bottom_text && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.25 }}
+                >
+                  <span className="font-sans text-[14px] md:text-[15px] font-black tracking-wide text-[#1a1a1a] block text-center">
                     {bottom_text}
                   </span>
-                )}
+                </motion.div>
+              )}
 
-                {/* CTA Button */}
-                {button_text && button_url && (
-                  <Link
+              {/* CTA Button */}
+              {button_text && button_url && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.35 }}
+                  className="flex justify-center mt-5"
+                >
+                  <HoverButton
                     href={button_url}
-                    className="inline-flex justify-center items-center px-[40px] py-[15px] font-sans font-black text-[14px] uppercase no-underline tracking-widest transition-all duration-300 hover:opacity-90 hover:-translate-y-0.5"
+                    className="inline-flex justify-center items-center px-[30px] py-[12px] font-sans text-[14px] uppercase no-underline tracking-widest transition-transform duration-300 hover:-translate-y-0.5"
                     style={{
-                      backgroundColor: accentColor,
-                      color: "#1a1a1a",
+                      backgroundColor: buttonColor,
+                      color: buttonTextColor,
+                      fontWeight: 900,
                     }}
+                    hoverFill={globalSettings?.button_hover_fill_color}
+                    hoverText={globalSettings?.button_hover_text_color}
                   >
                     {button_text}
-                  </Link>
-                )}
-              </motion.div>
+                  </HoverButton>
+                </motion.div>
+              )}
             </div>
           </div>
         </ScrollReveal>

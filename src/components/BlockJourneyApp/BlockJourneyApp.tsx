@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
+import HoverButton from "@/components/HoverButton/HoverButton";
 
 export default function BlockJourneyApp({
   data,
@@ -39,7 +41,13 @@ export default function BlockJourneyApp({
         <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
           {/* Left: Phone Mockup */}
           {imageId && (
-            <div className="w-full max-w-[280px] md:max-w-[380px] lg:max-w-[420px] shrink-0 relative">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="w-full max-w-[280px] md:max-w-[380px] lg:max-w-[420px] shrink-0 relative"
+            >
               {/* Phone glow */}
               <div
                 className="absolute inset-0 rounded-[40px] blur-2xl translate-y-4 scale-95 opacity-10"
@@ -55,17 +63,23 @@ export default function BlockJourneyApp({
                   priority
                 />
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Right: Content */}
           <div className="flex flex-col items-start text-left max-w-[620px]">
             {/* Title */}
             {title && (
-              <div
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.15 }}
                 className="font-title font-light uppercase tracking-wide mb-6 md:mb-8 [&>p]:m-0 [&>p]:leading-[1.15] [&>p>strong]:font-black [&>p>strong]:font-title"
                 style={{
-                  fontSize: `${titleSize}px`,
+                  fontSize: titleSize
+                    ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                    : undefined,
                   color: textColor,
                 }}
                 dangerouslySetInnerHTML={{ __html: title }}
@@ -74,7 +88,11 @@ export default function BlockJourneyApp({
 
             {/* Content - Full WYSIWYG HTML from Directus */}
             {content && (
-              <div
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.25 }}
                 className="
                   mb-8 md:mb-10 w-full max-w-[620px]
                   prose prose-invert
@@ -116,7 +134,13 @@ export default function BlockJourneyApp({
 
             {/* Buttons */}
             {buttonList.length > 0 && (
-              <div className="flex flex-wrap gap-4 md:gap-5">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="flex flex-wrap gap-4 md:gap-5"
+              >
                 {buttonList.map((btn: any, index: number) => {
                   // Handle logo image (string UUID or expanded object)
                   const logoSrc =
@@ -124,16 +148,32 @@ export default function BlockJourneyApp({
                       ? btn.logo
                       : btn.logo?.id || null;
 
+                  // Resolve hover colors: button-level → block-level → global fallback
+                  const btnHoverFill =
+                    btn.button_hover_fill_color ||
+                    data.button_hover_fill_color ||
+                    globalSettings?.button_hover_fill_color;
+                  const btnHoverText =
+                    btn.button_hover_text_color ||
+                    data.button_hover_text_color ||
+                    globalSettings?.button_hover_text_color;
+
+                  const defaultBg = btn.button_fill_color || "transparent";
+                  const defaultText = btn.button_text_color || textColor;
+                  const defaultBorder = btn.button_border_color || accentColor;
+
                   return (
-                    <Link
+                    <HoverButton
                       key={index}
                       href={btn.button_url || "#"}
-                      className="inline-flex items-center gap-2.5 px-6 md:px-8 py-3 md:py-3.5 font-sans font-bold text-[14px] md:text-[15px] uppercase tracking-widest no-underline transition-all duration-300 hover:brightness-110 border"
+                      className="inline-flex items-center gap-2.5 px-6 md:px-8 py-3 md:py-3.5 font-sans font-bold text-[14px] md:text-[15px] uppercase tracking-widest no-underline transition-transform duration-300 hover:-translate-y-0.5 border"
                       style={{
-                        borderColor: btn.button_border_color || accentColor,
-                        color: btn.button_text_color || textColor,
-                        backgroundColor: btn.button_fill_color || "transparent",
+                        borderColor: defaultBorder,
+                        color: defaultText,
+                        backgroundColor: defaultBg,
                       }}
+                      hoverFill={btnHoverFill}
+                      hoverText={btnHoverText}
                     >
                       {/* Logo Image */}
                       {logoSrc && (
@@ -147,10 +187,10 @@ export default function BlockJourneyApp({
                       )}
 
                       {btn.button_text}
-                    </Link>
+                    </HoverButton>
                   );
                 })}
-              </div>
+              </motion.div>
             )}
           </div>
         </div>

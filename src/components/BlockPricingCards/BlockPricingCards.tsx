@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import { motion } from "framer-motion";
+import HoverButton from "@/components/HoverButton/HoverButton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -61,6 +62,7 @@ export default function BlockPricingCards({
               src={`/api/assets/${bgImage}`}
               alt="Pricing Background"
               fill
+              sizes="100vw"
               className="object-cover object-center mix-blend-multiply opacity-80"
             />
           </div>
@@ -266,16 +268,18 @@ export default function BlockPricingCards({
         {/* Learn More Button */}
         {button_text && button_url && (
           <div className="mt-16">
-            <Link
+            <HoverButton
               href={button_url}
-              className="inline-flex justify-center items-center px-[40px] py-[15px] font-sans font-extrabold text-[16px] uppercase no-underline hover:opacity-90 transition-opacity"
+              className="inline-flex justify-center items-center px-[40px] py-[15px] font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5"
               style={{
                 backgroundColor: button_fill || "#1a1a1a",
                 color: button_text_color || "#c2b7a3",
               }}
+              hoverFill={currentBlock.button_hover_fill_color || globalSettings?.button_hover_fill_color}
+              hoverText={currentBlock.button_hover_text_color || globalSettings?.button_hover_text_color}
             >
               {button_text}
-            </Link>
+            </HoverButton>
           </div>
         )}
       </ScrollReveal>

@@ -32,13 +32,13 @@ export default async function Footer({
             {/* Top text row inside grid to align with images */}
             <div 
               className="col-span-1 md:col-span-2 flex justify-start items-end font-title font-extrabold uppercase pb-[15px] leading-none tracking-wide"
-              style={{ color: footerTextColor, fontSize: footerLabelSize ? `${footerLabelSize}px` : '28px' }}
+              style={{ color: footerTextColor, fontSize: footerLabelSize ? `clamp(${Math.round(footerLabelSize * 0.35)}px, ${(footerLabelSize / 12).toFixed(3)}vw, ${footerLabelSize}px)` : 'clamp(10px, 2.333vw, 28px)' }}
             >
               {globalSettings.label || "FOLLOW US"}
             </div>
             <div 
               className="col-span-1 md:col-span-2 flex justify-end items-end font-title font-extrabold uppercase text-[#c2b7a3] pb-[15px] leading-none tracking-wide wrap-break-word text-right"
-              style={{ fontSize: footerLabelSize ? `${footerLabelSize}px` : '28px' }}
+              style={{ fontSize: footerLabelSize ? `clamp(${Math.round(footerLabelSize * 0.35)}px, ${(footerLabelSize / 12).toFixed(3)}vw, ${footerLabelSize}px)` : 'clamp(10px, 2.333vw, 28px)' }}
             >
               @elevateyourchair
             </div>
@@ -88,13 +88,24 @@ export default async function Footer({
               </div>
               <button
                 type="submit"
-                className="w-full md:w-auto md:max-w-[240px] px-6 py-[14px] font-sans font-extrabold text-[15px] uppercase border-none cursor-pointer transition-opacity hover:opacity-90 tracking-wide mt-2"
+                className="group relative overflow-hidden w-full md:w-auto md:max-w-[240px] px-6 py-[14px] font-sans font-extrabold text-[15px] uppercase border-none cursor-pointer tracking-wide mt-2"
                 style={{
                   backgroundColor: globalSettings.button_color || "#c2b7a3",
                   color: globalSettings.button_text_color || "#1a1a1a",
-                }}
+                  '--btn-text': globalSettings.button_text_color || "#1a1a1a",
+                  '--btn-hover-text': globalSettings?.button_hover_text_color || globalSettings.button_text_color || "#1a1a1a",
+                } as any}
               >
-                JOIN THE COMMUNITY
+                <span
+                  className="transition-colors duration-300 text-[var(--btn-text)] group-hover:text-[var(--btn-hover-text)]"
+                >
+                  JOIN THE COMMUNITY
+                </span>
+                {/* Sliding overlay - after content, with -z-10 to sit behind text */}
+                <div
+                  className="absolute inset-0 -z-1 transition-transform duration-[400ms] ease-in-out -translate-x-full group-hover:translate-x-0"
+                  style={{ backgroundColor: globalSettings?.button_hover_fill_color || globalSettings.button_color || "#c2b7a3" }}
+                />
               </button>
             </form>
           </div>
