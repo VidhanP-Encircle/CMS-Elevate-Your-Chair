@@ -89,23 +89,26 @@ export default async function Footer({
               <button
                 type="submit"
                 className="group relative overflow-hidden w-full md:w-auto md:max-w-[240px] px-6 py-[14px] font-sans font-extrabold text-[15px] uppercase border-none cursor-pointer tracking-wide mt-2"
-                style={{
-                  backgroundColor: globalSettings.button_color || "#c2b7a3",
-                  color: globalSettings.button_text_color || "#1a1a1a",
-                  '--btn-text': globalSettings.button_text_color || "#1a1a1a",
-                  '--btn-hover-text': globalSettings?.button_hover_text_color || globalSettings.button_text_color || "#1a1a1a",
-                } as any}
               >
+                {/* Base background - always visible */}
+                <div className="absolute inset-0" style={{ backgroundColor: globalSettings.button_color || "#c2b7a3" }} />
+                
+                {/* Sliding overlay - left to right on hover, right to left on hover out */}
+                <div 
+                  className="absolute inset-0 transition-transform duration-[400ms] ease-in-out -translate-x-full group-hover:translate-x-0"
+                  style={{ backgroundColor: globalSettings?.button_hover_fill_color || globalSettings.button_color || "#c2b7a3" }}
+                />
+                
+                {/* Text - above overlay */}
                 <span
-                  className="transition-colors duration-300 text-[var(--btn-text)] group-hover:text-[var(--btn-hover-text)]"
+                  className="relative z-10 font-sans font-extrabold text-[15px] uppercase transition-colors duration-[400ms] text-[var(--btn-text)] group-hover:text-[var(--btn-hover-text)]"
+                  style={{
+                    '--btn-text': globalSettings.button_text_color || "#1a1a1a",
+                    '--btn-hover-text': globalSettings?.button_hover_text_color || globalSettings.button_text_color || "#1a1a1a",
+                  } as any}
                 >
                   JOIN THE COMMUNITY
                 </span>
-                {/* Sliding overlay - after content, with -z-10 to sit behind text */}
-                <div
-                  className="absolute inset-0 -z-1 transition-transform duration-[400ms] ease-in-out -translate-x-full group-hover:translate-x-0"
-                  style={{ backgroundColor: globalSettings?.button_hover_fill_color || globalSettings.button_color || "#c2b7a3" }}
-                />
               </button>
             </form>
           </div>

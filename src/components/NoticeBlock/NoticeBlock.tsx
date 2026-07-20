@@ -33,24 +33,30 @@ export default async function NoticeBlock({ globalSettings }: { globalSettings: 
                 href={notice.button_url} 
                 className="group relative overflow-hidden flex flex-row justify-center items-center px-[20px] py-[6px] min-h-[32px] box-border no-underline text-center"
                 style={{ 
-                  backgroundColor: buttonFill, 
                   borderColor: buttonBorder,
                   borderWidth: buttonBorder !== buttonFill ? '1px' : '0px',
                   borderStyle: 'solid',
-                  '--btn-text': buttonTextColor,
-                  '--btn-hover-text': globalSettings?.button_hover_text_color || buttonTextColor,
-                } as any}
+                }}
               >
+                {/* Base background - always visible */}
+                <div className="absolute inset-0" style={{ backgroundColor: buttonFill }} />
+                
+                {/* Sliding overlay - left to right on hover, right to left on hover out */}
+                <div 
+                  className="absolute inset-0 transition-transform duration-[400ms] ease-in-out -translate-x-full group-hover:translate-x-0"
+                  style={{ backgroundColor: globalSettings?.button_hover_fill_color || buttonFill }}
+                />
+                
+                {/* Text - above overlay */}
                 <span 
-                  className="font-sans font-bold text-[12px] leading-[16px] uppercase m-0 transition-colors duration-300 text-[var(--btn-text)] group-hover:text-[var(--btn-hover-text)]"
+                  className="relative z-10 font-sans font-bold text-[12px] leading-[16px] uppercase m-0 transition-colors duration-[400ms] text-[var(--btn-text)] group-hover:text-[var(--btn-hover-text)]"
+                  style={{
+                    '--btn-text': buttonTextColor,
+                    '--btn-hover-text': globalSettings?.button_hover_text_color || buttonTextColor,
+                  } as any}
                 >
                   {notice.button_text}
                 </span>
-                {/* Sliding overlay - after content, with -z-10 to sit behind text */}
-                <div
-                  className="absolute inset-0 -z-1 transition-transform duration-[400ms] ease-in-out -translate-x-full group-hover:translate-x-0"
-                  style={{ backgroundColor: globalSettings?.button_hover_fill_color || buttonFill }}
-                />
               </Link>
             )}
           </div>
