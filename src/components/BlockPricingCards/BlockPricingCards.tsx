@@ -58,10 +58,12 @@ export default function BlockPricingCards({
   const primaryButton = buttonList.length > 0 ? buttonList[0] : null;
   const primaryButtonText = primaryButton?.button_text || button_text;
   const primaryButtonUrl = primaryButton?.button_url || button_url;
-  const primaryButtonFill = primaryButton?.button_fill_color || button_fill || "#1a1a1a";
-  const primaryButtonColor = primaryButton?.button_text_color || button_text_color || "#c2b7a3";
+  const primaryButtonFill =
+    primaryButton?.button_fill_color || button_fill || "#1a1a1a";
+  const primaryButtonColor =
+    primaryButton?.button_text_color || button_text_color || "#c2b7a3";
 
-  const shouldShowBenefits = show_benefits === 'true';
+  const shouldShowBenefits = show_benefits === "true";
 
   // Use first available background image if current doesn't have one
   const bgImageObj =
@@ -217,7 +219,7 @@ export default function BlockPricingCards({
                     key={card.id || index}
                     className="h-auto! flex! items-stretch!"
                   >
-                    <div className="relative bg-white hover:bg-[#f0f0f0] flex flex-col text-center h-full min-h-[280px] w-full min-w-0 transition-all hover:-translate-y-1 shadow-lg hover:shadow-2xl duration-300 group">
+                    <div className="relative bg-white hover:bg-[#f0f0f0] flex flex-col text-center h-full min-h-70 w-full min-w-0 transition-all hover:-translate-y-1 shadow-lg hover:shadow-2xl duration-300 group">
                       {/* Elegant Thin Border Overlay */}
                       <div
                         className="absolute inset-0 pointer-events-none z-20 p-0.75 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -238,7 +240,9 @@ export default function BlockPricingCards({
                         </div>
                       )}
 
-                      <div className={`p-4 md:p-5 flex flex-col flex-1 items-center ${card.label ? 'pt-14 md:pt-16' : 'pt-4 md:pt-5'}`}>
+                      <div
+                        className={`p-4 md:p-5 flex flex-col flex-1 items-center ${card.label ? "pt-14 md:pt-16" : "pt-4 md:pt-5"}`}
+                      >
                         {/* Title */}
                         {card.title && (
                           <h3 className="font-title font-black uppercase text-[24px] leading-[1.2] text-[#1a1a1a] mb-3 min-h-[2.4em] flex items-center justify-center tracking-wide wrap-break-word w-full px-1">
@@ -268,7 +272,7 @@ export default function BlockPricingCards({
                         {card.content && (
                           <div
                             className="
-                              prose                              prose-p:leading-[1.5] prose-p:text-gray-600 prose-p:font-light prose-p:m-0
+                              prose prose-p:leading-normal prose-p:text-gray-600 prose-p:font-light prose-p:m-0
                               prose-headings:font-title prose-headings:text-[#1a1a1a] prose-headings:mt-2 prose-headings:mb-1 prose-headings:text-[16px]
                               prose-strong:text-[#1a1a1a] prose-strong:font-bold
                               prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
@@ -320,24 +324,23 @@ export default function BlockPricingCards({
             </button>
           </div>
         </motion.div>
-
       </div>
 
-        {/* Benefits Section — moved outside inner container for edge-to-edge full width */}
-        {shouldShowBenefits && benefits && benefits.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-            className="w-[calc(100%+32px)] -mx-4 mt-16 md:mt-20"
-          >
-            <PricingBenefits benefits={benefits} pricingCards={cards} />
-          </motion.div>
-        )}
+      {/* Benefits Section — moved outside inner container for edge-to-edge full width */}
+      {shouldShowBenefits && benefits && benefits.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          className="w-[calc(100%+32px)] -mx-4 mt-16 md:mt-20"
+        >
+          <PricingBenefits benefits={benefits} pricingCards={cards} />
+        </motion.div>
+      )}
 
-        {/* Learn More Button */}
-        <div className="relative z-10 max-w-270 mx-auto w-full flex flex-col items-center">
+      {/* Learn More Button */}
+      <div className="relative z-10 max-w-270 mx-auto w-full flex flex-col items-center">
         {primaryButtonText && primaryButtonUrl && (
           <motion.div
             initial={{ opacity: 0, y: 15 }}

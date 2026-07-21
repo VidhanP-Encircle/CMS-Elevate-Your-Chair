@@ -68,10 +68,10 @@ export default function BlockMobile({
 
   return (
     <div
-      className="w-full py-10 md:py-15 px-4 md:px-13.75overflow-hidden"
+      className="w-full py-10 md:py-15 px-4 md:px-13.75 overflow-hidden min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-7.5rem)]"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="max-w-378 mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
+      <div className="max-w-378 mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24 min-h-full">
         {/* Content Column */}
         <div
           className={`flex flex-col w-full max-w-170 order-2 ${isRight ? "md:order-1" : "md:order-2"}`}

@@ -221,6 +221,7 @@ export interface BlockTextImage {
   /** WYSIWYG - rich HTML title */
   title: string | null;
   initial_text: string | null;
+  label: string | null;
   /** WYSIWYG - rich HTML content */
   content: string | null;
   bottom_text: string | null;

@@ -1,12 +1,12 @@
 "use client";
 
+import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import type { Swiper as SwiperClass } from "swiper/types";
 import "swiper/css";
-import "swiper/css/navigation";
 
 export default function BlockCard({
   data,
@@ -17,6 +17,14 @@ export default function BlockCard({
 }) {
   const { title, subtitle, cards } = data;
   const isWhiteTheme = data.theme === "white";
+  const [showNav, setShowNav] = useState(false);
+  const swiperRef = useRef<SwiperClass | null>(null);
+
+  const checkNavVisibility = useCallback((swiper: SwiperClass) => {
+    if (!swiper) return;
+    const fullyVisible = Math.floor(swiper.slidesPerViewDynamic());
+    setShowNav(swiper.slides.length > fullyVisible);
+  }, []);
 
   // Background and Text colors
   const bgColor = globalSettings?.bg_color || "#151515";
@@ -112,11 +120,6 @@ export default function BlockCard({
           >
             <div className="w-full">
               <Swiper
-                modules={[Navigation]}
-                navigation={{
-                  prevEl: ".swiper-button-prev-custom",
-                  nextEl: ".swiper-button-next-custom",
-                }}
                 spaceBetween={16}
                 slidesPerView={1}
                 breakpoints={{
@@ -125,7 +128,14 @@ export default function BlockCard({
                   1200: { slidesPerView: 4 },
                   1500: { slidesPerView: 5 },
                 }}
-                className="w-full"
+                onSwiper={(swiper) => {
+                  swiperRef.current = swiper;
+                  checkNavVisibility(swiper);
+                }}
+                onInit={checkNavVisibility}
+                onResize={checkNavVisibility}
+                onSlidesLengthChange={checkNavVisibility}
+                className={`w-full ${!showNav ? 'cards-centered' : ''}`}
               >
                 {cards.map((card: any, index: number) => {
                   const isFullObject =
@@ -140,7 +150,7 @@ export default function BlockCard({
                       {isWhiteTheme ? (
                         /* Light Theme Card */
                         <div
-                          className="w-full h-full flex flex-col items-center justify-between p-4 md:p-5"
+                          className="w-full h-full min-h-70 min-w-0 flex flex-col items-center justify-between p-4 md:p-5"
                           style={{ backgroundColor: "#ffffff" }}
                         >
                           <div className="w-full flex flex-col items-center text-center">
@@ -203,7 +213,7 @@ export default function BlockCard({
                       ) : (
                         /* Dark Theme Card - gradient border via CSS mask */
                         <div
-                          className="w-full h-full flex flex-col items-center text-center px-3 py-6 md:py-8 relative hover:brightness-110 transition-all"
+                          className="w-full h-full min-h-70 min-w-0 flex flex-col items-center text-center px-3 py-6 md:py-8 relative hover:brightness-110 transition-all"
                           style={{ backgroundColor: "#1a1a1a" }}
                         >
                           {/* Border overlay with CSS mask */}
@@ -276,9 +286,19 @@ export default function BlockCard({
                 })}
               </Swiper>
             </div>
-            {/* Custom Navigation */}
+            {/* Centering style for when cards don't fill viewport */}
+            <style>{`
+              .cards-centered .swiper-wrapper {
+                justify-content: center;
+              }
+            `}</style>
+            {/* Custom Navigation — only shown when cards overflow the viewport */}
+            {showNav && (
             <div className="flex justify-center items-center gap-6 mt-8">
-              <button className="swiper-button-prev-custom flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded disabled:opacity-30 disabled:cursor-not-allowed">
+              <button
+                className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
+                onClick={() => swiperRef.current?.slidePrev()}
+              >
                 <svg
                   width="30"
                   height="30"
@@ -292,7 +312,10 @@ export default function BlockCard({
                   <path d="M19 12H5M5 12L12 5M5 12L12 19" />
                 </svg>
               </button>
-              <button className="swiper-button-next-custom flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded disabled:opacity-30 disabled:cursor-not-allowed">
+              <button
+                className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
+                onClick={() => swiperRef.current?.slideNext()}
+              >
                 <svg
                   width="30"
                   height="30"
@@ -307,6 +330,7 @@ export default function BlockCard({
                 </svg>
               </button>
             </div>
+            )}
           </motion.div>
         )}
       </div>

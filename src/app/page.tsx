@@ -9,6 +9,7 @@ import BlockJourneyApp from '@/components/BlockJourneyApp/BlockJourneyApp';
 import BlockTextImage from '@/components/BlockTextImage/BlockTextImage';
 import BlockSlider from '@/components/BlockSlider/BlockSlider';
 import BlockFaqs from '@/components/BlockFaqs/BlockFaqs';
+import BlockContent from '@/components/BlockContent/BlockContent';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
@@ -156,6 +157,10 @@ export default async function HomePage() {
 
             if (collection === 'block_faqs') {
               return <BlockFaqs key={index} data={item} />;
+            }
+
+            if (collection === 'block_content') {
+              return <BlockContent key={index} data={item} globalSettings={globalSettings} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;
