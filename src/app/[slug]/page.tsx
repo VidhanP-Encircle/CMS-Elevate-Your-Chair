@@ -10,6 +10,7 @@ import BlockTextImage from "@/components/BlockTextImage/BlockTextImage";
 import BlockSlider from "@/components/BlockSlider/BlockSlider";
 import BlockFaqs from "@/components/BlockFaqs/BlockFaqs";
 import BlockContent from "@/components/BlockContent/BlockContent";
+import BlockBlogs from "@/components/BlockBlogs/BlockBlogs";
 import { draftMode } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
@@ -59,6 +60,10 @@ export default async function DynamicPage({
           "pages_blocks.item.slides.slides_id.background_image.*",
           "pages_blocks.item.button.*",
           "pages_blocks.item.button.buttons_id.*",
+          "pages_blocks.item.blogs.*",
+          "pages_blocks.item.blogs.blogs_id.*",
+          "pages_blocks.item.blogs.blogs_id.photo.*",
+          "pages_blocks.item.blogs.blogs_id.authors.*",
         ] as any,
       }),
     )) as any[];
@@ -83,6 +88,34 @@ export default async function DynamicPage({
       )) as any[];
     } catch (e) {
       console.warn("Could not fetch pricing benefits", e);
+    }
+
+    // Fetch all categories and authors for blog filtering
+    let allCategories: string[] = [];
+    let allAuthors: string[] = [];
+    try {
+      const blogsData = (await directus.request(readItems('blogs' as any, { fields: ['categories'] }))) as any[];
+      const uniqueCats = new Set<string>();
+      blogsData.forEach((b: any) => {
+        if (b.categories) {
+          if (Array.isArray(b.categories)) {
+            b.categories.forEach((c: string) => uniqueCats.add(c));
+          } else {
+            uniqueCats.add(b.categories);
+          }
+        }
+      });
+      allCategories = Array.from(uniqueCats).filter(Boolean);
+      
+      const authorsData = (await directus.request(readItems('authors' as any, { fields: ['id', 'name'] }))) as any[];
+      allAuthors = authorsData.map((a: any) => a.name).filter(Boolean);
+      
+      // Store the raw authors array to pass as a lookup map to BlockBlogs
+      (global as any).__authorsMapData = authorsData;
+      
+    } catch (e: any) {
+      console.warn('Could not fetch categories or authors', e);
+      allCategories = ["Error: " + e.message];
     }
 
     if (!pages || pages.length === 0) {
@@ -256,6 +289,19 @@ export default async function DynamicPage({
                   key={index}
                   data={item}
                   globalSettings={globalSettings}
+                />
+              );
+            }
+
+            if (collection === "block_blogs") {
+              return (
+                <BlockBlogs
+                  key={index}
+                  data={item}
+                  globalSettings={globalSettings}
+                  allCategories={allCategories}
+                  allAuthors={allAuthors}
+                  authorsMapData={(global as any).__authorsMapData}
                 />
               );
             }

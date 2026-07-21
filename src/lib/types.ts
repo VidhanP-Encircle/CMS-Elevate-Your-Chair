@@ -255,6 +255,30 @@ export interface BlockSlider {
   }>;
 }
 
+export interface BlogItem {
+  id: string;
+  photo: string | { id: string } | null;
+  main_title: string | null;
+  slug_button_text: string | null;
+  slug_button_url: string | null;
+  categories: string | null;
+  authors: string[] | null;
+  blog_details: Array<{ title: string | null; content: string | null }> | null;
+  date_created?: string | null;
+}
+
+export interface BlockBlogs {
+  id: string;
+  title: string | null;
+  background_color: string | null;
+  buttons: Array<{
+    buttons_id: BlockButton | number;
+  }>;
+  blogs: Array<{
+    blogs_id: BlogItem | string;
+  }>;
+}
+
 export interface Schema {
   block_notice: Notice[];
   global_settings: GlobalSettings;
@@ -276,4 +300,6 @@ export interface Schema {
   card: CardItem[];
   pricing_cards: PricingCardItem[];
   buttons: BlockButton[];
+  block_blogs: BlockBlogs[];
+  blogs: BlogItem[];
 }
