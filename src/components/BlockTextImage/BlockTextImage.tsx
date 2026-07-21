@@ -244,7 +244,7 @@ export default function BlockTextImage({
   );
 
   return (
-    <div className="relative w-full py-10 md:py-15 lg:py-20 overflow-hidden bg-[#f0ece8]">
+    <div className={`relative w-full py-10 md:py-15 lg:py-20 overflow-hidden ${hasBgImage ? 'bg-[#f0ece8]' : 'bg-white'}`}>
       {/* Full Background Image with whitish opacity overlay */}
       {hasBgImage && (
         <div className="absolute inset-0 z-0">
