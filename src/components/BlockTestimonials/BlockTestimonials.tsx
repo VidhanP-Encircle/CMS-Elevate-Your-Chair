@@ -17,11 +17,45 @@ export default function BlockTestimonials({
 }) {
   if (!data) return null;
 
-  const { title, title_size, testimonial } = data;
-  const testimonials = Array.isArray(testimonial) ? testimonial : [];
+  const { title, title_size, testimonial, background_image } = data;
+
+  const testimonials = Array.isArray(testimonial)
+    ? testimonial
+        .map((junction: any) => junction.testimonial_id || junction)
+        .filter(Boolean)
+    : [];
+
+  const bgImageId =
+    typeof background_image === "string"
+      ? background_image
+      : background_image?.id || null;
+
+  const hasBgImage = !!bgImageId;
 
   return (
-    <div className="relative w-full py-15 md:py-25flow-hidden bg-[#fcfcfc] flex flex-col items-center">
+    <div className={`relative w-full py-15 md:py-25 overflow-hidden flex flex-col items-center ${hasBgImage ? 'bg-[#f0ece8]' : 'bg-[#fcfcfc]'}`}>
+      {/* Background Image */}
+      {hasBgImage && (
+        <>
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={`/api/assets/${bgImageId}`}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-center mix-blend-multiply opacity-80"
+            />
+          </div>
+          <div
+            className="absolute inset-0 z-0 backdrop-blur-[2px]"
+            style={{
+              background:
+                "linear-gradient(to bottom, #D6CFC9 0%, #D6CFC9F1 25%, #D6CFC9DF 50%, #D6CFC9C6 75%, #D6CFC900 100%)",
+            }}
+          />
+        </>
+      )}
+
       <div className="relative z-10 max-w-378 mx-auto w-full flex flex-col items-center">
         {/* Title */}
         {title && (
@@ -33,15 +67,14 @@ export default function BlockTestimonials({
             className="w-full px-4"
           >
             <h2
-              className="font-title font-black uppercase tracking-wide text-center text-[#1a1a1a] mb-12 md:mb-16"
+              className="font-title uppercase tracking-wide text-center text-[#1a1a1a] mb-12 md:mb-16"
               style={{
                 fontSize: title_size
                   ? `clamp(${Math.round(title_size * 0.35)}px, ${(title_size / 12).toFixed(3)}vw, ${title_size}px)`
                   : "clamp(17px, 4vw, 48px)",
               }}
-            >
-              {title}
-            </h2>
+              dangerouslySetInnerHTML={{ __html: title }}
+            />
           </motion.div>
         )}
 
@@ -75,26 +108,50 @@ export default function BlockTestimonials({
               className="pt-4! pb-4!"
             >
               {testimonials.map((item: any, index: number) => {
+                const authorImgId =
+                  typeof item.image === "string"
+                    ? item.image
+                    : item.image?.id || null;
+
+                const hasAuthorImg = !!authorImgId;
+
                 return (
                   <SwiperSlide
                     key={index}
                     className="w-85.75! md:w-169.25! h-auto! flex shrink-0"
                   >
-                    <div className="relative bg-[#fafafa] flex flex-col text-center h-full min-h-40.25 w-full min-w-0 p-8 md:p-10">
-                      {/* Subtle gray gradient border overlay */}
-                      <div
-                        className="absolute inset-0 pointer-events-none z-20 p-0.75 opacity-100"
-                        style={{
-                          background:
-                            "linear-gradient(180deg, #484848 0%, #999999 50%, #e3e3e3 100%)",
-                          WebkitMask:
-                            "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                          WebkitMaskComposite: "xor",
-                          maskComposite: "exclude",
-                        }}
-                      />
+                    <div className="relative bg-[#fafafa] flex flex-col text-center h-full min-h-40.25 w-full min-w-0">
+                      {/* Subtle gray gradient border overlay — only when no author image */}
+                      {!hasAuthorImg && (
+                        <div
+                          className="absolute inset-0 pointer-events-none z-20 p-0.75 opacity-100"
+                          style={{
+                            background:
+                              "linear-gradient(180deg, #484848 0%, #999999 50%, #e3e3e3 100%)",
+                            WebkitMask:
+                              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                            WebkitMaskComposite: "xor",
+                            maskComposite: "exclude",
+                          }}
+                        />
+                      )}
 
-                      <div className="flex flex-col flex-1 relative z-10">
+                      {/* Author photo banner — padded rectangular image at top of card */}
+                      {hasAuthorImg && (
+                        <div className="px-5 md:px-6 pt-5 md:pt-6 pb-0">
+                          <div className="relative w-4/5 mx-auto h-50 md:h-75 overflow-hidden">
+                            <Image
+                              src={`/api/assets/${authorImgId}`}
+                              alt={item.name || ""}
+                              fill
+                              sizes="(max-width: 768px) 295px, 613px"
+                              className="object-cover object-center"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={`flex flex-col flex-1 relative z-10 ${hasAuthorImg ? 'px-5 md:px-6 pb-5 md:pb-6 pt-4 md:pt-5' : 'p-8 md:p-10'}`}>
                         {/* Row: Left Quote | Text | Right Quote */}
                         <div className="flex flex-row items-start flex-1 w-full px-3 md:px-4 gap-3 md:gap-4">
                           {/* Left Quote */}

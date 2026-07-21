@@ -171,6 +171,7 @@ export interface BlockTestimonial {
   id: string;
   title: string | null;
   title_size: number | null;
+  background_image: string | { id: string } | null;
   /** JSON list of testimonial items */
   testimonial: Array<{
     content: string;

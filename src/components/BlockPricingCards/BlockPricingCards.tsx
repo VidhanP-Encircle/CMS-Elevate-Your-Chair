@@ -180,12 +180,13 @@ export default function BlockPricingCards({
               }}
               spaceBetween={12}
               slidesPerView={1}
+              centerInsufficientSlides={true}
               breakpoints={{
-                640: { slidesPerView: 2 },
-                900: { slidesPerView: 3 },
-                1100: { slidesPerView: 4 },
-                1400: { slidesPerView: 5 },
-                1700: { slidesPerView: 6 },
+                640: { slidesPerView: Math.min(2, cards.length) },
+                900: { slidesPerView: Math.min(3, cards.length) },
+                1100: { slidesPerView: Math.min(4, cards.length) },
+                1400: { slidesPerView: Math.min(5, cards.length) },
+                1700: { slidesPerView: Math.min(6, cards.length) },
               }}
               className="w-full pt-8! pb-12!"
             >
