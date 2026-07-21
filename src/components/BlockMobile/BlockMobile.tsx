@@ -39,7 +39,10 @@ export default function BlockMobile({
   const primaryButtonText = primaryButton?.button_text || button_text;
   const primaryButtonUrl = primaryButton?.button_url || button_url;
   const primaryButtonFill = primaryButton?.button_fill_color || undefined;
-  const primaryButtonColor = primaryButton?.button_text_color || globalSettings?.button_text_color || "#1a1a1a";
+  const primaryButtonColor =
+    primaryButton?.button_text_color ||
+    globalSettings?.button_text_color ||
+    "#1a1a1a";
 
   // image can be a string UUID or an expanded Directus file object { id: "..." }
   const imageId =
@@ -59,8 +62,10 @@ export default function BlockMobile({
   const globalHoverFill = globalSettings?.button_hover_fill_color;
   const globalHoverText = globalSettings?.button_hover_text_color;
   // Resolve per-button hover colors with global fallback
-  const resolvedHoverFill = primaryButton?.button_hover_fill_color || globalHoverFill;
-  const resolvedHoverText = primaryButton?.button_hover_text_color || globalHoverText;
+  const resolvedHoverFill =
+    primaryButton?.button_hover_fill_color || globalHoverFill;
+  const resolvedHoverText =
+    primaryButton?.button_hover_text_color || globalHoverText;
 
   const bgColor = "#fcfcfc";
   const textColor = "#1a1a1a";
@@ -68,13 +73,13 @@ export default function BlockMobile({
 
   return (
     <div
-      className="w-full py-10 md:py-15 px-4 md:px-13.75 overflow-hidden min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-7.5rem)]"
+      className="w-full py-10 md:py-15 px-4 md:px-13.75 overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="max-w-378 mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24 min-h-full">
+      <div className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
         {/* Content Column */}
         <div
-          className={`flex flex-col w-full max-w-170 order-2 ${isRight ? "md:order-1" : "md:order-2"}`}
+          className={`flex-1 flex flex-col w-full max-w-170 order-2 ${isRight ? "md:order-1" : "md:order-2"}`}
         >
           <div
             className="border-l-2 pl-6.25 md:pl-8.75 flex flex-col gap-5 md:gap-6.25 text-left"
@@ -201,7 +206,7 @@ export default function BlockMobile({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
-          className={`w-full max-w-70 md:max-w-105 lg:max-w-120 shrink-0 flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
+          className={`w-full max-w-70 md:max-w-105 lg:max-w-120 shrink flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
         >
           {imageId && (
             <div className="w-full flex justify-center">

@@ -76,7 +76,7 @@ export default function BlockPricingCards({
   const cards = currentBlock.pricing_cards || [];
 
   return (
-    <div className="relative w-full py-15 md:py-25 px-4 overflow-hidden min-h-200 flex flex-col items-center bg-[#fcfcfc] border-b border-[#646464]">
+    <div className="relative w-full pt-15 md:pt-25 pb-0 px-4 md:px-12 lg:px-20 2xl:px-32 overflow-hidden min-h-200 flex flex-col items-center bg-[#fcfcfc]">
       {/* Background Image & Gradient */}
       {bgImage && (
         <>
@@ -93,7 +93,7 @@ export default function BlockPricingCards({
         </>
       )}
 
-      <div className="relative z-10 max-w-270 mx-auto w-full flex flex-col items-center">
+      <div className="relative z-10 w-full flex flex-col items-center">
         {/* Title - Full WYSIWYG HTML from Directus */}
         {title && (
           <motion.div
@@ -121,7 +121,7 @@ export default function BlockPricingCards({
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
             className="
-              prose max-w-220 mx-auto text-center mb-10 md:mb-14
+              prose max-w-none text-center mb-10 md:mb-14
               prose-p:font-sans prose-p:font-light prose-p:text-[15px] md:prose-p:text-[16px] prose-p:leading-[1.7] prose-p:text-[#555555] prose-p:mb-4 last:prose-p:mb-0
               prose-strong:text-[#1a1a1a] prose-strong:font-bold
               prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
@@ -188,7 +188,7 @@ export default function BlockPricingCards({
                 1400: { slidesPerView: Math.min(5, cards.length) },
                 1700: { slidesPerView: Math.min(6, cards.length) },
               }}
-              className="w-full pt-8! pb-12!"
+              className="w-full pt-8! pb-4!"
             >
               {cards.map((item: any, index: number) => {
                 const card = item.pricing_cards_id || item;
@@ -298,7 +298,7 @@ export default function BlockPricingCards({
             </Swiper>
           </div>
           {/* Custom Navigation */}
-          <div className="flex justify-center items-center gap-6 mt-8">
+          <div className="flex justify-center items-center gap-6 mt-2 md:mt-4">
             <button className="swiper-button-prev-pricing flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded disabled:opacity-30 disabled:cursor-not-allowed">
               <svg
                 width="36"
@@ -327,28 +327,15 @@ export default function BlockPricingCards({
         </motion.div>
       </div>
 
-      {/* Benefits Section — moved outside inner container for edge-to-edge full width */}
-      {shouldShowBenefits && benefits && benefits.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-          className="w-[calc(100%+32px)] -mx-4 mt-16 md:mt-20"
-        >
-          <PricingBenefits benefits={benefits} pricingCards={cards} />
-        </motion.div>
-      )}
-
       {/* Learn More Button */}
-      <div className="relative z-10 max-w-270 mx-auto w-full flex flex-col items-center">
+      <div className="relative z-10 w-full flex flex-col items-center">
         {primaryButtonText && primaryButtonUrl && (
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-            className="mt-16"
+            className="mt-4 md:mt-6"
           >
             <HoverButton
               href={primaryButtonUrl}
@@ -371,6 +358,19 @@ export default function BlockPricingCards({
           </motion.div>
         )}
       </div>
+
+      {/* Benefits Section — moved outside inner container for edge-to-edge full width */}
+      {shouldShowBenefits && benefits && benefits.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          className="w-auto self-stretch -mx-4 md:-mx-12 lg:-mx-20 2xl:-mx-32 mt-16 md:mt-20"
+        >
+          <PricingBenefits benefits={benefits} pricingCards={cards} />
+        </motion.div>
+      )}
     </div>
   );
 }

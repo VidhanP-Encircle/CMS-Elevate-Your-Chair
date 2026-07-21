@@ -49,7 +49,7 @@ export default function BlockJourneyApp({
         style={{ backgroundColor: subtitleColor }}
       />
 
-      <div className="relative z-10 max-w-378 mx-auto w-full px-4 md:px-13.75">
+      <div className="relative z-10 w-full px-4 md:px-12 lg:px-20 2xl:px-32">
         <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
           {/* Left: Phone Mockup */}
           {imageId && (
@@ -58,7 +58,7 @@ export default function BlockJourneyApp({
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="w-full max-w-70 md:max-w-95 lg:max-w-105 shrink-0 relative"
+              className="w-full max-w-70 md:max-w-95 lg:max-w-105 shrink relative"
             >
               {/* Phone glow */}
               <div
@@ -79,7 +79,7 @@ export default function BlockJourneyApp({
           )}
 
           {/* Right: Content */}
-          <div className="flex flex-col items-start text-left max-w-155">
+          <div className="flex-1 flex flex-col items-start text-left max-w-155">
             {/* Title */}
             {title && (
               <motion.div

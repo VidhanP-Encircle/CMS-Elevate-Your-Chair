@@ -56,7 +56,7 @@ export default function BlockTestimonials({
         </>
       )}
 
-      <div className="relative z-10 max-w-378 mx-auto w-full flex flex-col items-center">
+      <div className="relative z-10 w-full flex flex-col items-center">
         {/* Title */}
         {title && (
           <motion.div

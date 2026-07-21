@@ -40,7 +40,7 @@ export default function BlockContent({
             transition: { duration: 0.8, ease: "easeOut" },
           },
         }}
-        className="flex flex-col items-center max-w-7xl w-full gap-5 md:gap-8"
+        className="flex flex-col items-center w-full gap-5 md:gap-8"
       >
         {title && (
           <div
@@ -69,13 +69,15 @@ export default function BlockContent({
           <div
             className={`
               w-full text-center
-              prose ${isDarkBg ? "prose-invert" : ""}
-              max-w-6xl mx-auto
+              prose max-w-none ${isDarkBg ? "prose-invert" : ""}
+              mx-auto
               prose-p:text-[16px] prose-p:font-sans prose-p:font-light prose-p:leading-[1.8] ${
                 isDarkBg ? "prose-p:text-gray-300" : "prose-p:text-gray-600"
               }
               prose-strong:font-bold ${
-                isDarkBg ? "prose-strong:text-white" : "prose-strong:text-gray-800"
+                isDarkBg
+                  ? "prose-strong:text-white"
+                  : "prose-strong:text-gray-800"
               }
               prose-a:underline hover:prose-a:opacity-80
             `}

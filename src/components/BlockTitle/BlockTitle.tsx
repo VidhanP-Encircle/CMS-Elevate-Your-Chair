@@ -99,7 +99,7 @@ export default function BlockTitle({
 
   return (
     <div
-      className={`relative w-full flex flex-col items-center justify-center max-w-378 mx-auto z-10 overflow-hidden bg-black ${
+      className={`relative w-full flex flex-col items-center justify-center z-10 overflow-hidden bg-black ${
         isBanner ? "h-80 md:h-120" : "min-h-125 md:h-220"
       }`}
     >

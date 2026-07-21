@@ -62,11 +62,14 @@ export default function NavigationClient({
   const buttonColor = globalSettings?.button_color || "#c2b7a3";
   const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
+  const isHomePage = pathname === "/";
+  const shouldBeSolid = isScrolled || !isHomePage;
+
   return (
     <nav
       className="relative w-full transition-colors duration-300"
       style={{
-        backgroundColor: isScrolled ? navBgScrolled : "transparent",
+        backgroundColor: shouldBeSolid ? navBgScrolled : "transparent",
       }}
     >
       <div className="flex items-center justify-between gap-5 xl:gap-7.5 px-4 xl:px-13.75 py-4 xl:py-2.5 w-full max-w-378 mx-auto min-h-20 box-border">

@@ -67,20 +67,22 @@ export default function PricingBenefits({
   );
 
   const CrossIcon = () => (
-    <span className="text-[#5E5E5E] font-sans text-[18px] leading-none">&mdash;</span>
+    <span className="text-[#5E5E5E] font-sans text-[18px] leading-none">
+      &mdash;
+    </span>
   );
 
   return (
     <section className="include-section relative w-full bg-[#1a1a1a]">
-      <div className="w-full flex flex-col items-center px-4 sm:px-8 lg:px-[55px] py-16 md:py-20 lg:py-[80px] gap-8 md:gap-12 lg:gap-[55px]">
+      <div className="w-full flex flex-col items-center px-4 sm:px-8 lg:px-13.75 py-16 md:py-20 lg:py-20-8 md:gap-12 lg:gap-13.75">
         {/* ── Title: "What's Included" ── */}
-        <div className="title title-white inline-title text-center w-full max-w-[1000px]">
+        <div className="title title-white inline-title text-center w-full max-w-250">
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-            className="font-title font-normal uppercase tracking-normal text-white text-[36px] leading-[44px] sm:text-[42px] sm:leading-[50px] lg:text-[48px] lg:leading-[58px]"
+            className="font-title font-normal uppercase tracking-normal text-white text-[36px] leading-11 sm:text-[42px] sm:leading-12.5 lg:text-[48px] lg:leading-14.5"
           >
             What&apos;s <span className="font-black text-white">Included</span>
           </motion.h2>
@@ -113,8 +115,8 @@ export default function PricingBenefits({
                   <th
                     scope="col"
                     className="bg-[#5E5E5E] text-white font-title font-bold text-center uppercase w-[48%]
-                               px-5 pt-5 pb-[14px]
-                               text-[20px] leading-[24px] lg:text-[24px] lg:leading-[29px]"
+                               px-5 pt-5 pb-3.5
+                               text-[20px] leading-6 lg:text-[24px] lg:leading-7.25"
                   >
                     Benefits &amp; Advantages
                   </th>
@@ -123,8 +125,8 @@ export default function PricingBenefits({
                       key={card.id}
                       scope="col"
                       className="bg-[#5E5E5E] text-white font-sans font-extrabold text-center uppercase
-                                 px-4 lg:px-5 pt-5 pb-[14px]
-                                 text-[14px] leading-[18px] lg:text-[16px] lg:leading-5"
+                                 px-4 lg:px-5 pt-5 pb-3.5
+                                 text-[14px] leading-4.5 lg:text-[16px] lg:leading-5"
                     >
                       {card.title || ""}
                     </th>
@@ -137,8 +139,8 @@ export default function PricingBenefits({
                     <td
                       data-label="Benefits &amp; Advantages"
                       className={`font-sans font-extrabold text-[#5E5E5E] w-[48%]
-                                  text-[15px] leading-[19px] lg:text-[16px] lg:leading-5
-                                  px-5 pt-[15px] pb-3
+                                  text-[15px] leading-4.75 lg:text-[16px] lg:leading-5
+                                  px-5 pt-3.75b-3
                                   transition-colors duration-200
                                   ${
                                     index % 2 === 0
@@ -153,7 +155,7 @@ export default function PricingBenefits({
                         key={card.id}
                         data-label={card.title || ""}
                         className={`text-center
-                                    px-4 lg:px-5 pt-[15px] pb-3
+                                    px-4 lg:px-5 pt-3.75 pb-3
                                     transition-colors duration-200
                                     ${
                                       index % 2 === 0
@@ -183,7 +185,7 @@ export default function PricingBenefits({
                   }`}
                 >
                   {/* Benefit Title */}
-                  <div className="px-4 pt-3.5 pb-2 font-sans font-extrabold text-[#5E5E5E] text-[15px] leading-[19px]">
+                  <div className="px-4 pt-3.5 pb-2 font-sans font-extrabold text-[#5E5E5E] text-[15px] leading-4.75">
                     {benefit.title || ""}
                   </div>
 

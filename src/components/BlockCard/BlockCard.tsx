@@ -40,10 +40,10 @@ export default function BlockCard({
 
   return (
     <div
-      className="w-full py-15 md:py-25 px-4 md:px-13.75 overflow-hidden"
+      className="w-full py-15 md:py-25 overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="max-w-378 mx-auto flex flex-col items-center gap-10 md:gap-15">
+      <div className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col items-center gap-10 md:gap-15">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center gap-5 max-w-294 w-full">
           {/* Title */}
@@ -135,7 +135,8 @@ export default function BlockCard({
                 onInit={checkNavVisibility}
                 onResize={checkNavVisibility}
                 onSlidesLengthChange={checkNavVisibility}
-                className={`w-full ${!showNav ? 'cards-centered' : ''}`}
+                centerInsufficientSlides={true}
+                className="w-full px-0.5! py-0.5!"
               >
                 {cards.map((card: any, index: number) => {
                   const isFullObject =
@@ -287,49 +288,45 @@ export default function BlockCard({
               </Swiper>
             </div>
             {/* Centering style for when cards don't fill viewport */}
-            <style>{`
-              .cards-centered .swiper-wrapper {
-                justify-content: center;
-              }
-            `}</style>
+
             {/* Custom Navigation — only shown when cards overflow the viewport */}
             {showNav && (
-            <div className="flex justify-center items-center gap-6 mt-8">
-              <button
-                className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
-                onClick={() => swiperRef.current?.slidePrev()}
-              >
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  strokeLinecap="square"
-                  strokeLinejoin="miter"
+              <div className="flex justify-center items-center gap-6 mt-8">
+                <button
+                  className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
+                  onClick={() => swiperRef.current?.slidePrev()}
                 >
-                  <path d="M19 12H5M5 12L12 5M5 12L12 19" />
-                </svg>
-              </button>
-              <button
-                className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
-                onClick={() => swiperRef.current?.slideNext()}
-              >
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  strokeLinecap="square"
-                  strokeLinejoin="miter"
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                  >
+                    <path d="M19 12H5M5 12L12 5M5 12L12 19" />
+                  </svg>
+                </button>
+                <button
+                  className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
+                  onClick={() => swiperRef.current?.slideNext()}
                 >
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" />
-                </svg>
-              </button>
-            </div>
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                  >
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" />
+                  </svg>
+                </button>
+              </div>
             )}
           </motion.div>
         )}

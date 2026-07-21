@@ -54,7 +54,7 @@ export default function BlockSlider({
   };
 
   return (
-    <div className="relative w-full h-screen min-h-125 max-w-378 mx-auto z-10 overflow-hidden bg-black block-slider-container">
+    <div className="relative w-full h-screen min-h-125 z-10 overflow-hidden bg-black block-slider-container">
       <Swiper
         modules={[Autoplay, EffectFade]}
         effect="fade"
