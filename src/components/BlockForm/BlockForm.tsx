@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 import { BlockFormProps, BlockButton, FormField } from "@/lib/types";
 import { submitFormData } from "@/lib/utils";
 
@@ -113,21 +114,21 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="
-              prose prose-p:m-0 prose-p:leading-[1.1]
-              prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
-              prose-headings:font-light prose-headings:text-[#1a1a1a] prose-headings:m-0
-              prose-strong:font-black prose-strong:font-title prose-strong:text-[#1a1a1a]
-              font-title font-light uppercase tracking-wide text-center mb-12
-            "
-            style={{
-              fontSize: titleSize
-                ? `clamp(${Math.round(titleSize * 0.4)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
-                : undefined,
-              color: "#1a1a1a",
-            }}
-            dangerouslySetInnerHTML={{ __html: title }}
-          />
+          >
+            <RichText
+              variant="title"
+              theme="custom"
+              align="center"
+              content={title}
+              className="prose-p:m-0 prose-p:leading-[1.1] prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide prose-headings:font-light prose-headings:text-[#1a1a1a] prose-headings:m-0 prose-strong:font-black prose-strong:font-title prose-strong:text-[#1a1a1a] font-title font-light uppercase tracking-wide mb-12 m-0"
+              style={{
+                fontSize: titleSize
+                  ? `clamp(${Math.round(titleSize * 0.4)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                  : undefined,
+                color: "#1a1a1a",
+              }}
+            />
+          </motion.div>
         )}
 
         {/* Form Container */}
@@ -260,14 +261,16 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
                     className="absolute top-0 left-0 right-0 h-0.75 bg-[#1e5622]"
                   />
 
-                  <div
-                    className="prose prose-p:m-0 prose-p:text-[#1e5622] prose-p:font-sans prose-p:text-base sm:prose-p:text-lg prose-p:font-medium text-center pt-1"
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        (typeof form === "object" && form !== null && "success_message" in form && form.success_message)
-                          ? form.success_message
-                          : "<p>Thank you! Your response has been successfully submitted.</p>",
-                    }}
+                  <RichText
+                    variant="content"
+                    theme="custom"
+                    align="center"
+                    content={
+                      (typeof form === "object" && form !== null && "success_message" in form && form.success_message)
+                        ? (form as { success_message: string }).success_message
+                        : "<p>Thank you! Your response has been successfully submitted.</p>"
+                    }
+                    className="prose-p:m-0 prose-p:text-[#1e5622] prose-p:font-sans prose-p:text-base sm:prose-p:text-lg prose-p:font-medium pt-1 m-0"
                   />
                   <button
                     type="button"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 import { FormField, BlockButton, GlobalSettings } from "@/lib/types";
 import { submitFormData } from "@/lib/utils";
 
@@ -81,9 +82,11 @@ export default function FooterSubscribeForm({
 
       {/* Success message */}
       {isSubmitted && successMessage && (
-        <div
-          className="text-[13px] font-sans text-[#c2b7a3]"
-          dangerouslySetInnerHTML={{ __html: successMessage }}
+        <RichText
+          variant="content"
+          theme="custom"
+          content={successMessage}
+          className="text-[13px] font-sans text-[#c2b7a3] prose-p:text-[#c2b7a3] m-0"
         />
       )}
 

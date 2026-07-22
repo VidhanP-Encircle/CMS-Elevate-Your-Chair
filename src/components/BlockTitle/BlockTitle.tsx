@@ -1,33 +1,23 @@
 "use client";
 
-
 import { motion } from "framer-motion";
-
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import RichText from "@/components/RichText/RichText";
 import { BlockTitleProps, BlockButton } from "@/lib/types";
 
-export default function BlockTitle({
-  data,
-  globalSettings,
-}: BlockTitleProps) {
-  const {
-    title,
-    subtitle,
-    buttons,
-    background_image,
-    background_video,
-
-  } = data;
+export default function BlockTitle({ data, globalSettings }: BlockTitleProps) {
+  const { title, subtitle, buttons, background_image, background_video } = data;
 
   // Resolve M2M buttons (Directus returns junction array with buttons_id)
   let buttonList: BlockButton[] = [];
   if (Array.isArray(buttons)) {
     buttonList = buttons
       .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
-        typeof junction === "object" && junction !== null && "buttons_id" in junction
+        typeof junction === "object" &&
+        junction !== null &&
+        "buttons_id" in junction
           ? (junction.buttons_id as BlockButton)
-          : (junction as BlockButton)
+          : (junction as BlockButton),
       )
       .filter((item: BlockButton) => typeof item === "object" && item !== null);
   }
@@ -60,12 +50,12 @@ export default function BlockTitle({
       >
         {buttonList.map((btn: BlockButton, idx: number) => {
           return (
-            <DynamicButton 
-              key={idx} 
-              btn={btn} 
+            <DynamicButton
+              key={idx}
+              btn={btn}
               fallbackFill="transparent"
               fallbackText="#ffffff"
-              globalSettings={globalSettings} 
+              globalSettings={globalSettings}
               className="w-full md:w-auto"
             />
           );
@@ -151,27 +141,13 @@ export default function BlockTitle({
                 <RichText
                   variant="title"
                   content={title}
-                  className="
-                    flex flex-col justify-center items-center gap-2.5 w-full text-center
-                    prose-invert
-                    prose-headings:text-white prose-strong:text-white prose-em:text-white
-                    prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                    prose-ul:list-disc prose-ul:pl-5 prose-ul:text-left prose-li:leading-[1.6] prose-li:mb-1
-                    prose-ol:list-decimal prose-ol:pl-5 prose-ol:text-left
-                    prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                    prose-img:rounded-lg prose-img:my-4
-                    prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2
-                    prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
-                    prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#c2b7a3]
-                    prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-700
-                  "
+                  theme="dark"
+                  align="center"
                   style={
                     {
                       fontSize: titleSize
                         ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
                         : undefined,
-                      "--tw-prose-headings": "inherit",
-                      "--tw-prose-p": "inherit",
                     } as React.CSSProperties
                   }
                 />

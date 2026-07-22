@@ -16,6 +16,7 @@ import BlockLegal from '@/components/BlockLegal/BlockLegal';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { Page, GlobalSettings, PricingBenefitItem } from '@/lib/types';
 
 export const dynamic = "force-dynamic";
@@ -124,7 +125,7 @@ export default async function HomePage() {
     }
 
     if (!pages || pages.length === 0) {
-      return <div>Home page not found</div>;
+      notFound();
     }
 
     const homePage = pages[0];
@@ -229,7 +230,10 @@ export default async function HomePage() {
       </div>
       </>
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest === "NEXT_HTTP_ERROR_FALLBACK;404" || error?.message === "NEXT_HTTP_ERROR_FALLBACK;404") {
+      throw error;
+    }
     console.error('Error fetching home page blocks:', error);
     return <div>Error loading page content</div>;
   }

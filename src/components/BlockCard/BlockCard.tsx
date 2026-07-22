@@ -44,6 +44,8 @@ export default function BlockCard({
   const contentSize =
     data.content_size || globalSettings?.global_content_size || 16;
 
+  const isDarkBg = ["#1a1a1a", "#151515", "#000000"].includes(bgColor.toLowerCase());
+
   return (
     <div
       className="w-full py-15 md:py-25 overflow-hidden"
@@ -70,13 +72,14 @@ export default function BlockCard({
             >
               <RichText
                 variant="title"
+                theme="custom"
                 content={title}
-                className="prose prose-invert max-w-none text-center prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide prose-headings:font-light prose-headings:m-0 prose-headings:text-white font-title font-light uppercase tracking-wide"
+                className="prose prose-invert max-w-none text-center prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide prose-headings:font-light prose-headings:m-0 font-title font-light uppercase tracking-wide"
                 style={{
                   fontSize: titleSize
                     ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
                     : undefined,
-                  color: textColor,
+                  color: isDarkBg ? "#ffffff" : textColor,
                 }}
               />
             </motion.div>
@@ -93,15 +96,17 @@ export default function BlockCard({
             >
               <RichText
                 variant="subtitle"
+                theme="custom"
+                align="center"
                 content={subtitle}
-                className="prose prose-invert max-w-220 w-full prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0 prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 prose-headings:text-white"
+                className="prose prose-invert max-w-220 w-full prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0 prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 mx-auto"
                 style={
                   {
-                    color: subtitleColor,
+                    color: isDarkBg ? "#ffffff" : subtitleColor,
                     fontSize: subtitleSize
                       ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
                       : undefined,
-                    "--tw-prose-body": subtitleColor,
+                    "--tw-prose-body": isDarkBg ? "#ffffff" : subtitleColor,
                   } as React.CSSProperties & { [key: string]: string }
                 }
               />
@@ -198,6 +203,7 @@ export default function BlockCard({
                             {card.content && (
                               <RichText
                                 variant="content"
+                                theme="custom"
                                 content={card.content}
                                 className="prose max-w-full"
                                 style={{
@@ -269,6 +275,7 @@ export default function BlockCard({
                             {card.content && (
                               <RichText
                                 variant="content"
+                                theme="custom"
                                 content={card.content}
                                 className="prose prose-invert max-w-full prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[13px] md:prose-p:text-[14px] prose-p:text-[#a3a3a3] prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-1.5 prose-headings:mb-0.5 prose-strong:text-white prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[13px] md:prose-li:text-[14px] prose-li:leading-normal prose-li:text-[#a3a3a3] prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded prose-code:text-[#a3a3a3]"
                                 style={{

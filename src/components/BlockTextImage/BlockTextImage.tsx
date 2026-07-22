@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 import { BlockTextImageProps, BlockButton, TextImageItem } from "@/lib/types";
 
 export default function BlockTextImage({
@@ -87,20 +88,15 @@ export default function BlockTextImage({
       <div className="flex flex-col items-center text-center max-w-200 mx-auto mb-8 md:mb-8 lg:mb-10">
         {/* Title - Full WYSIWYG HTML from Directus */}
         {title && (
-          <motion.div
-            variants={childVariant(0)}
-            className="
-              prose max-w-none
-              prose-p:m-0 prose-p:leading-[1.15]
-              prose-headings:m-0 prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
-              prose-headings:font-light prose-headings:text-[#1a1a1a]
-              prose-strong:text-[#1a1a1a] prose-strong:font-black prose-strong:font-title
-              prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-              font-title font-light uppercase tracking-wide
-              text-[28px] md:text-[38px] lg:text-[48px]
-            "
-            dangerouslySetInnerHTML={{ __html: title }}
-          />
+          <motion.div variants={childVariant(0)}>
+            <RichText
+              variant="title"
+              content={title}
+              theme="light"
+              align="center"
+              className="text-[#1a1a1a] text-[28px] md:text-[38px] lg:text-[48px] prose-p:leading-[1.15] prose-headings:text-[#1a1a1a] prose-strong:text-[#1a1a1a]"
+            />
+          </motion.div>
         )}
 
         {/* Initial Text - appears AFTER the title */}
@@ -126,16 +122,15 @@ export default function BlockTextImage({
 
       {/* Content - WYSIWYG HTML from Directus */}
       {content && (
-        <motion.div
-          variants={childVariant(0)}
-          className="
-            prose max-w-220 mx-auto text-center mb-8 md:mb-8 lg:mb-10
-            prose-p:font-sans prose-p:font-light prose-p:text-[14px] md:prose-p:text-[15px] prose-p:leading-[1.7] prose-p:text-[#555555] prose-p:mb-5 last:prose-p:mb-0
-            prose-strong:text-[#1a1a1a] prose-strong:font-bold
-            prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-          "
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+          <motion.div variants={childVariant(0)}>
+            <RichText
+              variant="content"
+              content={content}
+              theme="light"
+              align="center"
+              className="max-w-220 mx-auto mb-8 md:mb-8 lg:mb-10 prose-p:text-[14px] md:prose-p:text-[15px]"
+            />
+          </motion.div>
       )}
 
       {/* Photo Grid - 4 items */}

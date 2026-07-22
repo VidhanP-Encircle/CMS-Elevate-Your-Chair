@@ -1,17 +1,27 @@
 import { getDirectus } from "@/lib/directus";
 import { readSingleton } from "@directus/sdk";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { GlobalSettings } from "@/lib/types";
+import ForceSolidNav from "@/components/ForceSolidNav/ForceSolidNav";
 
 export const dynamic = "force-dynamic";
 
 export default async function NotFound() {
-  let settings: (GlobalSettings & { not_found_title?: string; not_found_subtitle?: string }) | undefined = undefined;
+  let settings:
+    | (GlobalSettings & {
+        not_found_title?: string;
+        not_found_subtitle?: string;
+      })
+    | undefined = undefined;
 
   try {
     const directus = await getDirectus();
-    settings = (await directus.request(readSingleton("global_settings" as never))) as unknown as (GlobalSettings & { not_found_title?: string; not_found_subtitle?: string });
+    settings = (await directus.request(
+      readSingleton("global_settings" as never),
+    )) as unknown as GlobalSettings & {
+      not_found_title?: string;
+      not_found_subtitle?: string;
+    };
   } catch (e) {
     console.error("Failed to fetch global settings for 404 page", e);
   }
@@ -27,9 +37,10 @@ export default async function NotFound() {
 
   return (
     <div
-      className="flex flex-col md:flex-row items-center justify-center min-h-[calc(100vh-80px)] w-full px-6 md:px-12 lg:px-24 py-16 gap-10 md:gap-20"
+      className="flex flex-col md:flex-row items-center justify-center min-h-screen w-full px-6 md:px-12 lg:px-24 pb-16 pt-37.5 gap-10 md:gap-20"
       style={{ backgroundColor: bgColor }}
     >
+      <ForceSolidNav />
       <div className="flex flex-col items-center md:items-start text-center md:text-left shrink-0 z-10">
         <h1
           className="font-title font-black text-4xl md:text-[3rem] lg:text-[4rem] tracking-wide mb-2 uppercase"

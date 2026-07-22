@@ -4,7 +4,9 @@ import BlockBlogDetail from "@/components/BlockBlogs/BlockBlogDetail";
 import { draftMode } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { BlogItem, GlobalSettings, BlockBlogs } from "@/lib/types";
+import ForceSolidNav from "@/components/ForceSolidNav/ForceSolidNav";
 
 export const dynamic = "force-dynamic";
 
@@ -36,20 +38,7 @@ export default async function BlogDetailPage({
     )) as unknown as BlogItem[];
 
     if (!blogs || blogs.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center min-h-125 text-center pt-37.5 pb-20 bg-black text-white">
-          <h1 className="text-4xl font-title font-bold mb-4">404 - Blog Not Found</h1>
-          <p className="font-sans text-white/70 mb-8">
-            The blog post you are looking for does not exist.
-          </p>
-          <Link
-            href="/"
-            className="px-6 py-3 bg-[#c2b7a3] text-black font-sans font-bold uppercase tracking-wider hover:bg-[#c2b7a3]/90 transition-colors"
-          >
-            Back Home
-          </Link>
-        </div>
-      );
+      notFound();
     }
 
     const currentBlog = blogs[0];
@@ -164,6 +153,7 @@ export default async function BlogDetailPage({
           </div>
         )}
         <div className="flex flex-col w-full">
+          <ForceSolidNav />
           <BlockBlogDetail
             data={mockBlockData}
             globalSettings={globalSettings}
@@ -172,7 +162,10 @@ export default async function BlogDetailPage({
         </div>
       </>
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest === "NEXT_HTTP_ERROR_FALLBACK;404" || error?.message === "NEXT_HTTP_ERROR_FALLBACK;404") {
+      throw error;
+    }
     console.error("Error fetching blog details:", error);
     return (
       <div className="flex flex-col items-center justify-center min-h-125 text-center pt-37.5 pb-20 bg-black text-white">

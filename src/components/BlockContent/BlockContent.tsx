@@ -44,7 +44,8 @@ export default function BlockContent({
           <RichText
             variant="title"
             content={title}
-            className={`w-full text-center ${isDarkBg ? "prose-invert" : ""}`}
+            theme={isDarkBg ? "dark" : "light"}
+            align="center"
           />
         )}
 
@@ -62,18 +63,9 @@ export default function BlockContent({
           <RichText
             variant="content"
             content={content}
-            className={`
-              w-full max-w-4xl xl:max-w-6xl 2xl:max-w-7xl
-              mx-auto
-              prose-p:font-light prose-p:leading-[1.8] ${
-                isDarkBg ? "prose-p:text-gray-300" : "prose-p:text-gray-600"
-              }
-              ${
-                isDarkBg
-                  ? "prose-strong:text-white"
-                  : "prose-strong:text-gray-800"
-              }
-            `}
+            theme={isDarkBg ? "dark" : "light"}
+            align="center"
+            className="max-w-4xl xl:max-w-6xl 2xl:max-w-7xl mx-auto"
           />
         )}
       </motion.div>

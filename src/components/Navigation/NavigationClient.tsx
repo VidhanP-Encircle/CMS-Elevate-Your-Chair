@@ -15,6 +15,7 @@ export default function NavigationClient({
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [forceSolid, setForceSolid] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
@@ -33,7 +34,18 @@ export default function NavigationClient({
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // Listen for force-solid events (e.g. from 404 page)
+    const handleForceSolid = () => setForceSolid(true);
+    const handleUnforceSolid = () => setForceSolid(false);
+    document.addEventListener("force-solid-nav", handleForceSolid);
+    document.addEventListener("unforce-solid-nav", handleUnforceSolid);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("force-solid-nav", handleForceSolid);
+      document.removeEventListener("unforce-solid-nav", handleUnforceSolid);
+    };
   }, []);
 
   useEffect(() => {
@@ -67,7 +79,7 @@ export default function NavigationClient({
   const buttonColor = globalSettings?.button_color || "#c2b7a3";
   const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
-  const shouldBeSolid = isScrolled;
+  const shouldBeSolid = isScrolled || forceSolid;
 
   return (
     <nav

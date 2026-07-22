@@ -16,6 +16,7 @@ import BlockLegal from "@/components/BlockLegal/BlockLegal";
 import { draftMode } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Page, GlobalSettings, PricingBenefitItem } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -135,22 +136,7 @@ export default async function DynamicPage({
     }
 
     if (!pages || pages.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center min-h-125 text-center pt-37.5 pb-20 bg-black text-white">
-          <h1 className="text-4xl font-title font-bold mb-4">
-            404 - Page Not Found
-          </h1>
-          <p className="font-sans text-white/70 mb-8">
-            The page you are looking for does not exist.
-          </p>
-          <Link
-            href="/"
-            className="px-6 py-3 bg-[#c2b7a3] text-black font-sans font-bold uppercase tracking-wider hover:bg-[#c2b7a3]/90 transition-colors"
-          >
-            Back Home
-          </Link>
-        </div>
-      );
+      notFound();
     }
 
     const currentPage = pages[0];
@@ -344,7 +330,10 @@ export default async function DynamicPage({
         </div>
       </>
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest === "NEXT_HTTP_ERROR_FALLBACK;404" || error?.message === "NEXT_HTTP_ERROR_FALLBACK;404") {
+      throw error;
+    }
     console.error("Error fetching page blocks:", error);
     return (
       <div className="flex flex-col items-center justify-center min-h-125 text-center pt-37.5 pb-20 bg-black text-white">

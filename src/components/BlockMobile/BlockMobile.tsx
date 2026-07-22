@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 import { BlockMobileProps, BlockButton, SocialLink } from "@/lib/types";
 import { getDirectusImageUrl } from "@/lib/utils";
 
@@ -93,22 +93,19 @@ export default function BlockMobile({
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.1 } }
                 }}
-                className="
-                  prose prose-p:m-0 prose-p:leading-[1.1]
-                  prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
-                  prose-headings:font-light prose-headings:text-[#1a1a1a] prose-headings:m-0
-                  prose-strong:font-black prose-strong:font-title prose-strong:text-[#1a1a1a]
-                  prose-a:text-[#c2b7a3] prose-a:no-underline
-                  font-title font-light uppercase tracking-wide
-                "
-                style={{
-                  fontSize: titleSize
-                    ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
-                    : undefined,
-                  color: textColor,
-                }}
-                dangerouslySetInnerHTML={{ __html: title }}
-              />
+                >
+                  <RichText
+                    variant="title"
+                    content={title}
+                    theme="light"
+                    style={{
+                      fontSize: titleSize
+                        ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                        : undefined,
+                      color: textColor,
+                    }}
+                  />
+                </motion.div>
             )}
 
             {isContactInfo ? (
@@ -217,26 +214,17 @@ export default function BlockMobile({
                       hidden: { opacity: 0, y: 15 },
                       visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 } }
                     }}
-                    className="
-                      prose prose-p:leading-[1.4] prose-p:font-black prose-p:text-[#1a1a1a] prose-p:mt-0 prose-p:mb-2
-                      prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
-                      prose-strong:font-black prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                      prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
-                      marker:text-[#c2b7a3]
-                      prose-li:leading-[1.6] prose-li:mb-1
-                      prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                      prose-img:rounded-lg prose-img:my-4
-                      prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
-                      prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
-                      prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                      max-w-full md:max-w-[90%]
-                    "
-                    style={{
-                      color: "#1a1a1a",
-                      fontSize: `clamp(18px, ${(subtitleSizeVal / 12).toFixed(3)}vw, ${subtitleSizeVal}px)`,
-                    }}
-                    dangerouslySetInnerHTML={{ __html: subtitle }}
-                  />
+                    >
+                      <RichText
+                        variant="subtitle"
+                        content={subtitle}
+                        className="max-w-full md:max-w-[90%]"
+                        style={{
+                          color: "#1a1a1a",
+                          fontSize: `clamp(18px, ${(subtitleSizeVal / 12).toFixed(3)}vw, ${subtitleSizeVal}px)`,
+                        }}
+                      />
+                    </motion.div>
                 )}
 
                 {/* Content - Full WYSIWYG HTML from Directus */}
@@ -246,32 +234,22 @@ export default function BlockMobile({
                       hidden: { opacity: 0, y: 15 },
                       visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.3 } }
                     }}
-                    className="
-                      prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
-                      prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
-                      prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                      prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
-                      marker:text-[#c2b7a3]
-                      prose-li:leading-[1.6] prose-li:mb-1
-                      prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                      prose-img:rounded-lg prose-img:my-4
-                      prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
-                      prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
-                      prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                      prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
-                      max-w-full md:max-w-[90%]
-                    "
-                    style={
-                      {
-                        color: subtitleColor,
-                        fontSize: contentSize
-                          ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
-                          : undefined,
-                        "--tw-prose-body": subtitleColor,
-                      } as React.CSSProperties
-                    }
-                    dangerouslySetInnerHTML={{ __html: content }}
-                  />
+                    >
+                      <RichText
+                        variant="content"
+                        content={content}
+                        className="max-w-full md:max-w-[90%]"
+                        style={
+                          {
+                            color: subtitleColor,
+                            fontSize: contentSize
+                              ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
+                              : undefined,
+                            "--tw-prose-body": subtitleColor,
+                          } as React.CSSProperties
+                        }
+                      />
+                    </motion.div>
                 )}
               </>
             )}

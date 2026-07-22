@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 import { getDirectusImageUrl } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -263,8 +264,12 @@ export default function BlockBlogs({
 
       <div className="flex flex-col flex-1 items-center text-center gap-3.5">
         {blog.main_title && (
-          <div
-            className="prose max-w-none prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[20px] prose-headings:leading-6 prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[20px] prose-p:leading-6 prose-headings:m-0 prose-p:m-0 prose-strong:font-black font-bold"
+          <RichText
+            variant="title"
+            align="center"
+            theme="custom"
+            content={blog.main_title}
+            className="prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[20px] prose-headings:leading-6 prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[20px] prose-p:leading-6 prose-headings:m-0 prose-p:m-0 prose-strong:font-black font-bold m-0"
             style={
               {
                 color:
@@ -285,7 +290,6 @@ export default function BlockBlogs({
                     : "#1a1a1a",
               } as React.CSSProperties
             }
-            dangerouslySetInnerHTML={{ __html: blog.main_title }}
           />
         )}
 
@@ -347,15 +351,12 @@ export default function BlockBlogs({
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full flex justify-center mb-10 md:mb-16"
           >
-            <div
-              className="
-                prose max-w-none text-center
-                prose-p:m-0 prose-p:leading-[1.1]
-                prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
-                prose-headings:font-light prose-headings:m-0 
-                prose-strong:font-black prose-strong:font-title
-                font-title font-light uppercase tracking-wide
-              "
+            <RichText
+              variant="title"
+              theme="custom"
+              align="center"
+              content={title}
+              className="prose-p:m-0 prose-p:leading-[1.1] prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide prose-headings:font-light prose-headings:m-0 prose-strong:font-black prose-strong:font-title font-title font-light uppercase tracking-wide m-0"
               style={
                 {
                   fontSize: titleSize
@@ -387,7 +388,6 @@ export default function BlockBlogs({
                       : "#1a1a1a",
                 } as React.CSSProperties
               }
-              dangerouslySetInnerHTML={{ __html: title }}
             />
           </motion.div>
         )}
@@ -646,8 +646,11 @@ export default function BlockBlogs({
             {/* Right Column (Content) */}
             <div className="flex flex-col justify-center w-full">
               {rawBlogs[0].main_title && (
-                <div
-                  className="prose max-w-none prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[24px] md:prose-headings:text-[32px] prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[24px] md:prose-p:text-[32px] prose-headings:m-0 prose-p:m-0 prose-strong:font-black mb-6 font-bold"
+                <RichText
+                  variant="title"
+                  theme="custom"
+                  content={rawBlogs[0].main_title}
+                  className="prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[24px] md:prose-headings:text-[32px] prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[24px] md:prose-p:text-[32px] prose-headings:m-0 prose-p:m-0 prose-strong:font-black mb-6 font-bold m-0"
                   style={
                     {
                       color:
@@ -676,7 +679,6 @@ export default function BlockBlogs({
                           : "#1a1a1a",
                     } as React.CSSProperties
                   }
-                  dangerouslySetInnerHTML={{ __html: rawBlogs[0].main_title }}
                 />
               )}
 
@@ -697,8 +699,11 @@ export default function BlockBlogs({
                     <div className="flex flex-col gap-4 mb-8">
                       <div className="flex flex-col gap-2">
                         {parsedDetails[0].title && (
-                          <div
-                            className="prose max-w-none prose-p:font-bold text-[#555]"
+                          <RichText
+                            variant="title"
+                            theme="custom"
+                            content={parsedDetails[0].title}
+                            className="prose-p:font-bold text-[#555] m-0"
                             style={
                               {
                                 color:
@@ -715,14 +720,14 @@ export default function BlockBlogs({
                                     : "#555",
                               } as React.CSSProperties
                             }
-                            dangerouslySetInnerHTML={{
-                              __html: parsedDetails[0].title,
-                            }}
                           />
                         )}
                         {parsedDetails[0].content && (
-                          <div
-                            className="prose max-w-none text-[#555] prose-p:leading-relaxed"
+                          <RichText
+                            variant="content"
+                            theme="custom"
+                            content={parsedDetails[0].content}
+                            className="text-[#555] prose-p:leading-relaxed m-0"
                             style={
                               {
                                 color:
@@ -739,9 +744,6 @@ export default function BlockBlogs({
                                     : "#555",
                               } as React.CSSProperties
                             }
-                            dangerouslySetInnerHTML={{
-                              __html: parsedDetails[0].content,
-                            }}
                           />
                         )}
                       </div>

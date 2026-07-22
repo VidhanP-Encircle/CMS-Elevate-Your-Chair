@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import RichText from "@/components/RichText/RichText";
 import { BlockFaqsProps, BlockFaqItem } from "@/lib/types";
 
 export default function BlockFaqs({ data }: BlockFaqsProps) {
@@ -92,9 +93,11 @@ export default function BlockFaqs({ data }: BlockFaqsProps) {
                   className="w-full flex items-center justify-between px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4.5 text-left cursor-pointer bg-[#1a1a1a] outline-none group"
                   aria-expanded={isActive}
                 >
-                  <div
-                    className="font-title font-black uppercase text-white leading-[1.2] pr-2 sm:pr-3 flex-1 m-0 text-[15px] sm:text-[17px] md:text-[20px]"
-                    dangerouslySetInnerHTML={{ __html: question }}
+                  <RichText
+                    variant="title"
+                    content={question}
+                    theme="dark"
+                    className="pr-2 sm:pr-3 flex-1 m-0 text-[24px] prose-p:text-[24px] prose-p:text-white prose-p:leading-[1.2] prose-strong:text-white"
                   />
                   <div className="shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8">
                     <svg
@@ -125,20 +128,11 @@ export default function BlockFaqs({ data }: BlockFaqsProps) {
                       className="overflow-hidden bg-white"
                     >
                       <div className="px-4 sm:px-5 md:px-6 pb-4 sm:pb-5 md:pb-6 pt-3 sm:pt-4 md:pt-5 border-t border-black/30">
-                        <div
-                          className="
-                        prose max-w-none
-                        prose-p:text-[14px] sm:prose-p:text-[15px] md:prose-p:text-[16px] prose-p:leading-[1.6] sm:prose-p:leading-[1.7] prose-p:text-[#333333] prose-p:font-light prose-p:m-0
-                        prose-headings:font-title prose-headings:text-[#1a1a1a] prose-headings:mt-4 prose-headings:mb-2
-                        prose-strong:text-[#1a1a1a] prose-strong:font-bold
-                        prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                        prose-ul:list-disc prose-ul:pl-5 prose-li:leading-[1.6] prose-li:mb-1 prose-li:text-[#333333]
-                        prose-ol:list-decimal prose-ol:pl-5
-                        prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#555555]
-                        prose-img:rounded-lg prose-img:my-4
-                        prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#1a1a1a]
-                      "
-                          dangerouslySetInnerHTML={{ __html: answer }}
+                        <RichText
+                          variant="content"
+                          content={answer}
+                          theme="light"
+                          className="prose-p:text-[16px] prose-p:leading-[1.6] sm:prose-p:leading-[1.7] prose-p:text-[#333333] prose-p:font-light prose-p:m-0"
                         />
                       </div>
                     </motion.div>

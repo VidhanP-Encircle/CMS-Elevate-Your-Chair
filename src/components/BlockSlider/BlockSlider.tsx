@@ -6,11 +6,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper";
 import { Autoplay, EffectFade } from "swiper/modules";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/effect-fade";
-import { BlockSliderProps, SlideItem, BlockButton } from '@/lib/types';
+import { BlockSliderProps, SlideItem, BlockButton } from "@/lib/types";
 
 export default function BlockSlider({
   data,
@@ -28,11 +29,16 @@ export default function BlockSlider({
   if (Array.isArray(slides)) {
     slideItems = slides
       .map((junction: { slides_id?: SlideItem | string } | SlideItem) =>
-        typeof junction === "object" && junction !== null && "slides_id" in junction && typeof junction.slides_id === "object"
+        typeof junction === "object" &&
+        junction !== null &&
+        "slides_id" in junction &&
+        typeof junction.slides_id === "object"
           ? (junction.slides_id as SlideItem)
-          : (junction as SlideItem)
+          : (junction as SlideItem),
       )
-      .filter((item): item is SlideItem => typeof item === "object" && item !== null);
+      .filter(
+        (item): item is SlideItem => typeof item === "object" && item !== null,
+      );
   }
 
   // Resolve button M2M
@@ -40,7 +46,10 @@ export default function BlockSlider({
   if (Array.isArray(button) && button.length > 0) {
     const junction = button[0];
     ctaButton =
-      typeof junction === "object" && junction !== null && "buttons_id" in junction && typeof junction.buttons_id === "object"
+      typeof junction === "object" &&
+      junction !== null &&
+      "buttons_id" in junction &&
+      typeof junction.buttons_id === "object"
         ? (junction.buttons_id as BlockButton)
         : (junction as unknown as BlockButton);
   }
@@ -126,15 +135,19 @@ export default function BlockSlider({
                   {hasLines && (
                     <div className="flex flex-col items-center justify-center gap-2 md:gap-3 w-full">
                       {lines[0] && (
-                        <div
-                          className="font-title font-light uppercase tracking-[0.15em] text-[24px] sm:text-[34px] md:text-[50px] lg:text-[62px] text-white leading-none opacity-0 translate-y-6 transition-all duration-800 delay-100 ease-out group-[.swiper-slide-active]/slide:opacity-100 group-[.swiper-slide-active]/slide:translate-y-0"
-                          dangerouslySetInnerHTML={{ __html: lines[0] }}
+                        <RichText
+                          variant="title"
+                          theme="custom"
+                          content={lines[0]}
+                          className="font-title font-light uppercase tracking-[0.15em] text-[24px] sm:text-[34px] md:text-[50px] lg:text-[62px] text-white leading-none opacity-0 translate-y-6 transition-all duration-800 delay-100 ease-out group-[.swiper-slide-active]/slide:opacity-100 group-[.swiper-slide-active]/slide:translate-y-0 prose-p:leading-none prose-p:text-white prose-p:text-inherit m-0"
                         />
                       )}
                       {lines[1] && (
-                        <div
-                          className="font-title font-black uppercase tracking-[0.08em] text-[28px] sm:text-[40px] md:text-[62px] lg:text-[80px] text-white leading-none opacity-0 translate-y-6 transition-all duration-800 delay-300 ease-out group-[.swiper-slide-active]/slide:opacity-100 group-[.swiper-slide-active]/slide:translate-y-0"
-                          dangerouslySetInnerHTML={{ __html: lines[1] }}
+                        <RichText
+                          variant="title"
+                          theme="custom"
+                          content={lines[1]}
+                          className="font-title font-black uppercase tracking-[0.08em] text-[28px] sm:text-[40px] md:text-[62px] lg:text-[80px] text-white leading-none opacity-0 translate-y-6 transition-all duration-800 delay-300 ease-out group-[.swiper-slide-active]/slide:opacity-100 group-[.swiper-slide-active]/slide:translate-y-0 prose-p:leading-none prose-p:text-white prose-p:text-inherit m-0"
                         />
                       )}
                     </div>
@@ -148,11 +161,11 @@ export default function BlockSlider({
 
                   {ctaButton && (
                     <div className="mt-3 md:mt-4 opacity-0 translate-y-4 transition-all duration-800 delay-700 ease-out group-[.swiper-slide-active]/slide:opacity-100 group-[.swiper-slide-active]/slide:translate-y-0">
-                      <DynamicButton 
-                        btn={ctaButton} 
+                      <DynamicButton
+                        btn={ctaButton}
                         fallbackFill="transparent"
                         fallbackText="#c2b7a3"
-                        globalSettings={globalSettings} 
+                        globalSettings={globalSettings}
                       />
                     </div>
                   )}
