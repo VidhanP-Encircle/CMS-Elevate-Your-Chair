@@ -18,6 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BlockBlogsProps, BlogItem, BlockButton } from "@/lib/types";
 
 export default function BlockBlogs({
   data,
@@ -25,13 +26,7 @@ export default function BlockBlogs({
   allCategories,
   allAuthors,
   authorsMapData,
-}: {
-  data: any;
-  globalSettings?: any;
-  allCategories?: string[];
-  allAuthors?: string[];
-  authorsMapData?: { id: string; name: string }[];
-}) {
+}: BlockBlogsProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedAuthor, setSelectedAuthor] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -42,11 +37,15 @@ export default function BlockBlogs({
     setVisibleCount(6);
   }, [selectedCategory, selectedAuthor, selectedDate]);
 
-  const rawBlogs = useMemo(() => {
+  const rawBlogs: BlogItem[] = useMemo(() => {
     return (
       data.blogs
-        ?.map((b: any) => b.blogs_id)
-        .filter((b: any) => b !== null && b !== undefined) || []
+        ?.map((b: { blogs_id?: BlogItem | string } | BlogItem) =>
+          typeof b === "object" && b !== null && "blogs_id" in b
+            ? (b.blogs_id as BlogItem)
+            : (b as BlogItem)
+        )
+        .filter((b): b is BlogItem => Boolean(b && typeof b === "object")) || []
     );
   }, [data]);
 
@@ -60,26 +59,28 @@ export default function BlockBlogs({
       !allCategories[0].startsWith("Error:")
     )
       return allCategories;
-    const cats = rawBlogs.flatMap((b: any) => b.categories || []);
+    const cats = rawBlogs.flatMap((b: BlogItem) => ((b as unknown as Record<string, unknown>).categories as string[]) || []);
     const unique = Array.from(new Set(cats)).filter(Boolean);
     return unique.length > 0 ? unique : ["Test Category"];
   }, [rawBlogs, allCategories]);
 
   const authors = useMemo(() => {
     if (allAuthors && allAuthors.length > 0) return allAuthors;
-    const auths = rawBlogs.flatMap((b: any) => {
-      if (b.authors && Array.isArray(b.authors)) {
-        return b.authors.map((a: any) => {
+    const auths = rawBlogs.flatMap((b: BlogItem) => {
+      const bObj = b as unknown as Record<string, unknown>;
+      if (bObj.authors && Array.isArray(bObj.authors)) {
+        return bObj.authors.map((a: unknown) => {
           if (a && typeof a === "object") {
-            if (a.name) return a.name;
+            const aObj = a as Record<string, unknown>;
+            if (aObj.name) return aObj.name as string;
             if (
-              a.authors_id &&
-              typeof a.authors_id === "object" &&
-              a.authors_id.name
+              aObj.authors_id &&
+              typeof aObj.authors_id === "object" &&
+              (aObj.authors_id as Record<string, unknown>).name
             )
-              return a.authors_id.name;
-            if (a.id && authorsMapData) {
-              const found = authorsMapData.find((mapA) => mapA.id === a.id);
+              return (aObj.authors_id as Record<string, unknown>).name as string;
+            if (aObj.id && authorsMapData) {
+              const found = authorsMapData.find((mapA) => mapA.id === aObj.id);
               if (found) return found.name;
             }
           }
@@ -90,7 +91,7 @@ export default function BlockBlogs({
           return "Unknown Author Structure";
         });
       }
-      return b.author?.name || null;
+      return (bObj.author as { name?: string } | undefined)?.name || null;
     });
     return Array.from(new Set(auths)).filter(Boolean);
   }, [rawBlogs, allAuthors, authorsMapData]);
@@ -100,19 +101,24 @@ export default function BlockBlogs({
 
     // Filter by Category
     if (selectedCategory) {
-      list = list.filter((b: any) => b.categories?.includes(selectedCategory));
+      list = list.filter((b: BlogItem) => {
+        const cats = (b as unknown as Record<string, unknown>).categories;
+        return Array.isArray(cats) && cats.includes(selectedCategory);
+      });
     }
 
     // Filter by Author
     if (selectedAuthor) {
-      list = list.filter((b: any) => {
-        if (b.authors && Array.isArray(b.authors)) {
-          return b.authors.some((a: any) => {
+      list = list.filter((b: BlogItem) => {
+        const bObj = b as unknown as Record<string, unknown>;
+        if (bObj.authors && Array.isArray(bObj.authors)) {
+          return bObj.authors.some((a: unknown) => {
             if (a && typeof a === "object") {
-              if (a.name === selectedAuthor) return true;
-              if (a.authors_id && typeof a.authors_id === "object" && a.authors_id.name === selectedAuthor) return true;
-              if (a.id && authorsMapData) {
-                const found = authorsMapData.find((mapA) => mapA.id === a.id);
+              const aObj = a as Record<string, unknown>;
+              if (aObj.name === selectedAuthor) return true;
+              if (aObj.authors_id && typeof aObj.authors_id === "object" && (aObj.authors_id as Record<string, unknown>).name === selectedAuthor) return true;
+              if (aObj.id && authorsMapData) {
+                const found = authorsMapData.find((mapA) => mapA.id === aObj.id);
                 if (found && found.name === selectedAuthor) return true;
               }
             }
@@ -166,7 +172,7 @@ export default function BlockBlogs({
   const bgColor = background_color || globalSettings?.bg_color || "#ffffff";
   const titleSize = globalSettings?.global_title_size || 48;
 
-  const getSnippet = (html: any) => {
+  const getSnippet = (html: unknown) => {
     if (!html) return "";
 
     let parsed = html;
@@ -188,12 +194,14 @@ export default function BlockBlogs({
       typeof parsed === "object" &&
       parsed !== null &&
       !Array.isArray(parsed) &&
-      (parsed as any).blocks
+      "blocks" in parsed &&
+      Array.isArray((parsed as { blocks: unknown[] }).blocks)
     ) {
-      const textBlocks = (parsed as any).blocks.filter(
-        (b: any) => b.type === "paragraph" || b.type === "header",
+      const blocks = (parsed as { blocks: Array<{ type?: string; data?: { text?: string } }> }).blocks;
+      const textBlocks = blocks.filter(
+        (b) => b.type === "paragraph" || b.type === "header",
       );
-      const texts = textBlocks.map((b: any) => b.data?.text || "").join(" ");
+      const texts = textBlocks.map((b) => b.data?.text || "").join(" ");
       const text = texts
         .replace(/<[^>]+>/g, "")
         .replace(/&nbsp;/g, " ")
@@ -203,7 +211,7 @@ export default function BlockBlogs({
 
     // Handle Array of { content } (Directus Repeater)
     if (Array.isArray(parsed)) {
-      const texts = parsed.map((p: any) => p.content || "").join(" ");
+      const texts = parsed.map((p: { content?: string }) => p.content || "").join(" ");
       const text = texts
         .replace(/<[^>]+>/g, "")
         .replace(/&nbsp;/g, " ")
@@ -223,7 +231,7 @@ export default function BlockBlogs({
     return "";
   };
 
-  const renderBlogCard = (blog: any, index: number) => (
+  const renderBlogCard = (blog: BlogItem, index: number) => (
     <motion.div
       key={blog.id || `blog-${index}`}
       initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -478,7 +486,7 @@ export default function BlockBlogs({
                                 No Categories Found
                               </DropdownMenuItem>
                             ) : (
-                              categories.map((c: any, i: number) => (
+                              categories.map((c: string, i: number) => (
                                 <DropdownMenuItem
                                   key={i}
                                   onClick={() => setSelectedCategory(c)}
@@ -523,7 +531,9 @@ export default function BlockBlogs({
                                 No Authors Found
                               </DropdownMenuItem>
                             ) : (
-                              authors.map((a: any, i: number) => (
+                              authors.map((a: string | null, i: number) => {
+                                if (!a) return null;
+                                return (
                                 <DropdownMenuItem
                                   key={i}
                                   onClick={() => setSelectedAuthor(a)}
@@ -536,7 +546,8 @@ export default function BlockBlogs({
                                     </span>
                                   )}
                                 </DropdownMenuItem>
-                              ))
+                              );
+                            })
                             )}
                           </DropdownMenuSubContent>
                         </DropdownMenuPortal>
@@ -773,7 +784,7 @@ export default function BlockBlogs({
           <div className="w-full flex flex-col items-center max-w-7xl">
             {/* First 6 Blogs */}
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-              {filteredBlogs.slice(0, 6).map((blog: any, index: number) => renderBlogCard(blog, index))}
+              {filteredBlogs.slice(0, 6).map((blog: BlogItem, index: number) => renderBlogCard(blog, index))}
             </div>
 
             {/* Extra Blogs (Expandable Height) */}
@@ -785,7 +796,7 @@ export default function BlockBlogs({
                 {filteredBlogs.length > 6 && (
                   <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 pt-16">
                     <AnimatePresence>
-                      {filteredBlogs.slice(6, visibleCount).map((blog: any, idx: number) => renderBlogCard(blog, idx + 6))}
+                      {filteredBlogs.slice(6, visibleCount).map((blog: BlogItem, idx: number) => renderBlogCard(blog, idx + 6))}
                     </AnimatePresence>
                   </div>
                 )}
@@ -805,9 +816,9 @@ export default function BlockBlogs({
                 }}
                 className="mt-16 w-full flex justify-center items-center flex-wrap gap-4"
               >
-                {buttons.map((btn: any, idx: number) => {
-                  const b = btn.buttons_id;
-                  if (!b) return null;
+                {buttons.map((btn: { buttons_id?: BlockButton | number } | BlockButton, idx: number) => {
+                  const b = (typeof btn === "object" && btn !== null && "buttons_id" in btn && typeof btn.buttons_id === "object" ? btn.buttons_id : btn) as BlockButton;
+                  if (!b || typeof b !== "object") return null;
 
                   // If it's a more_less button or action button without a URL
                   if (b.type === "more_less" || !b.button_url || b.button_url === "" || b.button_url === "#") {

@@ -2,15 +2,16 @@ import { getDirectus } from "@/lib/directus";
 import { readSingleton } from "@directus/sdk";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { GlobalSettings } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function NotFound() {
-  let settings: any = {};
+  let settings: (GlobalSettings & { not_found_title?: string; not_found_subtitle?: string }) | undefined = undefined;
 
   try {
     const directus = await getDirectus();
-    settings = await directus.request(readSingleton("global_settings"));
+    settings = (await directus.request(readSingleton("global_settings" as never))) as unknown as (GlobalSettings & { not_found_title?: string; not_found_subtitle?: string });
   } catch (e) {
     console.error("Failed to fetch global settings for 404 page", e);
   }

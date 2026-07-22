@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import { BlockTextImageProps } from '@/lib/types';
+import { BlockTextImageProps, BlockButton, TextImageItem } from "@/lib/types";
 
 export default function BlockTextImage({
   data,
@@ -27,11 +27,15 @@ export default function BlockTextImage({
   } = data;
 
   // Resolve M2M buttons
-  let buttonList: any[] = [];
+  let buttonList: BlockButton[] = [];
   if (Array.isArray(buttons)) {
     buttonList = buttons
-      .map((junction: any) => junction.buttons_id || junction)
-      .filter((item: any) => typeof item === "object" && item !== null);
+      .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
+        typeof junction === "object" && junction !== null && "buttons_id" in junction
+          ? (junction.buttons_id as BlockButton)
+          : (junction as BlockButton)
+      )
+      .filter((item: BlockButton) => typeof item === "object" && item !== null);
   }
 
   // Use either legacy direct button fields or first M2M button
@@ -42,17 +46,19 @@ export default function BlockTextImage({
   const primaryButtonColor = primaryButton?.button_text_color || globalSettings?.button_text_color || "#1a1a1a";
 
   // Resolve text_image items - Directus M2M returns junction objects
-  let items: any[] = [];
+  let items: TextImageItem[] = [];
   if (Array.isArray(text_image)) {
     items = text_image
-      .map((junction: any) => {
-        const item = junction.text_image_id || junction;
+      .map((junction: { text_image_id?: TextImageItem | string } | TextImageItem) => {
+        const item = typeof junction === "object" && junction !== null && "text_image_id" in junction
+          ? junction.text_image_id
+          : junction;
         if (typeof item === "object" && item !== null) {
-          return item;
+          return item as TextImageItem;
         }
         return null;
       })
-      .filter(Boolean);
+      .filter((item): item is TextImageItem => item !== null);
   }
 
   // Background image
@@ -148,11 +154,11 @@ export default function BlockTextImage({
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6 mb-8 md:mb-8 lg:mb-10"
         >
-          {items.map((item: any, index: number) => {
+          {items.map((item: TextImageItem, index: number) => {
             const photoId =
               typeof item.photo === "string"
                 ? item.photo
-                : item.photo?.id || null;
+                : (item.photo as { id: string } | null)?.id || null;
             const itemTitle = item.title || "";
 
             return (

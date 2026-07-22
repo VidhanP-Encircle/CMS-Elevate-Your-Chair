@@ -36,12 +36,12 @@ export default function HoverButton({
   // Place the dynamic text classes AFTER the parent's className so they take precedence.
   const combinedClassName = `${className} relative overflow-hidden text-[var(--btn-text)] hover:text-[var(--btn-hover-text)]`;
 
-  const handleMouseEnter = (e: any) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
     setIsHovered(true);
     props.onMouseEnter?.(e);
   };
 
-  const handleMouseLeave = (e: any) => {
+  const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
     setIsHovered(false);
     props.onMouseLeave?.(e);
   };
@@ -63,7 +63,7 @@ export default function HoverButton({
     ...cleanStyle,
     "--btn-text": originalColor,
     "--btn-hover-text": resolvedHoverText,
-  } as any;
+  } as React.CSSProperties & { [key: string]: string };
 
   if (href) {
     return (

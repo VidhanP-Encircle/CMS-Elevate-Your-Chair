@@ -2,29 +2,75 @@ import { getDirectus } from "@/lib/directus";
 import Link from "next/link";
 import Image from "next/image";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import { GlobalSettings } from "@/lib/types";
+import FooterSubscribeForm from "@/components/Footer/FooterSubscribeForm";
+import { FooterProps, BlockButton, SocialLink, FormField, Form } from "@/lib/types";
 import { readItems } from "@directus/sdk";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
-
 import AnimatedImageGrid from "@/components/AnimatedImageGrid/AnimatedImageGrid";
 
 export default async function Footer({
   globalSettings,
-}: {
-  globalSettings: GlobalSettings;
-}) {
+}: FooterProps) {
   try {
     const directus = await getDirectus();
-    const socialLinksData = await directus.request(readItems("social_links"));
+    const socialLinksData: SocialLink[] = await directus.request(readItems("social_links"));
     const footerImagesData = await directus.request(readItems("footer_images"));
+
+    // Resolve dynamic footer form from globalSettings.footer_form
+    let subscribeForm: Form | null = null;
+    const footerFormSetting = globalSettings?.footer_form;
+
+    if (typeof footerFormSetting === "object" && footerFormSetting !== null) {
+      subscribeForm = footerFormSetting as Form;
+    } else if (typeof footerFormSetting === "string" && footerFormSetting) {
+      const forms = (await directus.request(
+        readItems("form", {
+          fields: ["id", "name", "success_message"],
+          filter: { id: { _eq: footerFormSetting } },
+          limit: 1,
+        })
+      )) as Form[];
+      subscribeForm = forms?.[0] ?? null;
+    }
+
+    // Fallback: If no footer_form selected in globalSettings, fetch default form
+    if (!subscribeForm) {
+      const forms = (await directus.request(
+        readItems("form", {
+          fields: ["id", "name", "success_message"],
+          limit: 1,
+        })
+      )) as Form[];
+      subscribeForm = forms?.[0] ?? null;
+    }
+
+    // Fetch all form_fields objects dynamically for the resolved form
+    const subscribeFields: FormField[] = subscribeForm
+      ? ((await directus.request(
+          readItems("form_fields", {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            filter: { form_id: { _eq: subscribeForm.id } } as any,
+            sort: ["sort"],
+          })
+        )) as FormField[])
+      : [];
 
     const year = new Date().getFullYear();
 
-    let buttonList: any[] = [];
+    const madeByLogoId =
+      typeof globalSettings?.made_by_logo === "object" && globalSettings?.made_by_logo !== null
+        ? (globalSettings.made_by_logo as { id?: string }).id
+        : (globalSettings?.made_by_logo as string | undefined);
+
+    let buttonList: BlockButton[] = [];
     if (Array.isArray(globalSettings.buttons)) {
       buttonList = globalSettings.buttons
-        .map((junction: any) => junction.buttons_id || junction)
-        .filter((item: any) => typeof item === "object" && item !== null);
+        .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
+          typeof junction === "object" && junction !== null && "buttons_id" in junction && typeof junction.buttons_id === "object"
+            ? (junction.buttons_id as BlockButton)
+            : (junction as BlockButton)
+        )
+        .filter((item): item is BlockButton => typeof item === "object" && item !== null && "button_text" in item);
     }
 
     const footerBgColor = "#1a1a1a";
@@ -101,30 +147,14 @@ export default async function Footer({
               "
               dangerouslySetInnerHTML={{ __html: globalSettings.content }}
             />
-            <form className="flex flex-col gap-5 w-full mt-2">
-              <div className="flex flex-col gap-2.5">
-                <label className="text-[14px] text-white font-sans">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full px-5 py-3.5 bg-white text-[#1a1a1a] font-sans text-[16px] border-none outline-none placeholder:text-[#1a1a1a]/40"
-                />
-              </div>
-              <div className="flex flex-wrap gap-4 mt-2">
-                {buttonList.map((btn: any, idx: number) => (
-                  <DynamicButton
-                    key={idx}
-                    btn={btn}
-                    fallbackFill="#c2b7a3"
-                    fallbackText="#1a1a1a"
-                    globalSettings={globalSettings}
-                    className="w-full md:w-auto md:max-w-60 px-6 py-3.5 font-sans font-extrabold text-[15px] uppercase border-none cursor-pointer tracking-wide"
-                  />
-                ))}
-              </div>
-            </form>
+            <FooterSubscribeForm
+              formId={subscribeForm?.id ?? ""}
+              fields={subscribeFields}
+              successMessage={subscribeForm?.success_message}
+              buttons={buttonList}
+              globalSettings={globalSettings}
+            />
+
           </div>
 
           {/* Links and Logo Column */}
@@ -146,7 +176,7 @@ export default async function Footer({
             <div className="flex flex-col w-full gap-6.25">
               {/* Links - Justify Between */}
               <div className="flex flex-wrap justify-between items-center gap-x-5 gap-y-2.5 w-full">
-                {globalSettings.link_details?.map((link: any, idx: number) => (
+                {globalSettings.link_details?.map((link: { link_text: string; link_url: string }, idx: number) => (
                   <Link
                     key={idx}
                     href={link.link_url}
@@ -160,16 +190,36 @@ export default async function Footer({
               {/* Horizontal Line */}
               <hr className="w-full h-px bg-white/20 border-none m-0" />
 
-              {/* Copyright & Socials */}
-              <div className="flex flex-col md:flex-row justify-between items-center gap-5 md:gap-0 pt-1.25 w-full">
+              {/* Copyright, Made By, & Socials */}
+              <div className="flex flex-col md:flex-row justify-between items-center gap-5 md:gap-4 pt-1.25 w-full">
                 {/* Copyright (LEFT) */}
                 <div className="font-sans font-bold text-[14px] text-white tracking-wide">
                   ©{year} {globalSettings.brand_name}
                 </div>
 
+                {/* Made By (CENTER HIGHLIGHTED BLOCK) */}
+                {(globalSettings?.made_by || madeByLogoId) && (
+                  <div className="flex items-center gap-2.5 px-3 py-1 text-white font-sans text-xs uppercase tracking-widest font-normal">
+                    {madeByLogoId && (
+                      <Image
+                        src={`/api/assets/${madeByLogoId}`}
+                        alt={globalSettings?.made_by || "Made by logo"}
+                        width={20}
+                        height={20}
+                        className="object-contain w-5 h-5"
+                      />
+                    )}
+                    {globalSettings?.made_by && (
+                      <span className="font-sans font-medium text-white tracking-wider">
+                        // {globalSettings.made_by}
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 {/* Socials (RIGHT) */}
                 <div className="flex flex-wrap gap-4 items-center justify-end">
-                  {socialLinksData.map((social: any) => (
+                  {socialLinksData.map((social: SocialLink) => (
                     <Link
                       key={social.id}
                       href={social.url || "#"}

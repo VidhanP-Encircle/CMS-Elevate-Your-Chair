@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PricingBenefitsProps, PricingBenefitItem } from '@/lib/types';
+import { PricingBenefitsProps, PricingBenefitItem, PricingCardItem } from "@/lib/types";
 
 export default function PricingBenefits({
   benefits,
@@ -17,14 +17,18 @@ export default function PricingBenefits({
   });
 
   // Resolve junction objects and use as column headers
-  const columns = (pricingCards || [])
-    .map((item: any) => item.pricing_cards_id || item)
-    .filter(Boolean);
+  const columns: PricingCardItem[] = (pricingCards || [])
+    .map((item) =>
+      typeof item === "object" && item !== null && "pricing_cards_id" in item
+        ? (item.pricing_cards_id as PricingCardItem)
+        : (item as PricingCardItem)
+    )
+    .filter((item): item is PricingCardItem => typeof item === "object" && item !== null);
 
   // Helper: check if a benefit is included in a specific pricing card
   const isIncluded = (benefit: PricingBenefitItem, cardId: string): boolean => {
     if (!benefit.plans || benefit.plans.length === 0) return false;
-    return benefit.plans.some((plan: any) => {
+    return benefit.plans.some((plan: { pricing_cards_id?: { id: string } | string }) => {
       const card = plan.pricing_cards_id;
       if (!card) return false;
       const id = typeof card === "string" ? card : card.id;
@@ -106,7 +110,7 @@ export default function PricingBenefits({
                   >
                     Benefits &amp; Advantages
                   </th>
-                  {columns.map((card: any) => (
+                  {columns.map((card: PricingCardItem) => (
                     <th
                       key={card.id}
                       scope="col"
@@ -136,7 +140,7 @@ export default function PricingBenefits({
                     >
                       {benefit.title || ""}
                     </td>
-                    {columns.map((card: any) => (
+                    {columns.map((card: PricingCardItem) => (
                       <td
                         key={card.id}
                         data-label={card.title || ""}
@@ -177,7 +181,7 @@ export default function PricingBenefits({
 
                   {/* Plan availability rows */}
                   <div className="border-t border-[#5E5E5E]/10">
-                    {columns.map((card: any) => (
+                    {columns.map((card: PricingCardItem) => (
                       <div
                         key={card.id}
                         className="flex items-center justify-between px-4 py-2.5 border-b border-[#5E5E5E]/10 last:border-b-0"

@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import HoverButton from "@/components/HoverButton/HoverButton";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import { BlockFormProps } from "@/lib/types";
+import { BlockFormProps, BlockButton, FormField } from "@/lib/types";
+import { submitFormData } from "@/lib/utils";
 
 export default function BlockForm({ data, globalSettings }: BlockFormProps) {
   const { title, background_image, captcha, buttons, form } = data;
@@ -20,19 +21,26 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
       : background_image;
 
   // Resolve M2M buttons
-  let buttonList: any[] = [];
+  let buttonList: BlockButton[] = [];
   if (Array.isArray(buttons)) {
     buttonList = buttons
-      .map((junction: any) => junction.buttons_id || junction)
-      .filter((item: any) => typeof item === "object" && item !== null);
+      .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
+        typeof junction === "object" && junction !== null && "buttons_id" in junction
+          ? (junction.buttons_id as BlockButton)
+          : (junction as BlockButton)
+      )
+      .filter((item: BlockButton) => typeof item === "object" && item !== null);
   }
 
   const titleSize = globalSettings?.global_title_size || 48;
 
-  const formFields = form?.form_fields || [];
+  const formFields: FormField[] =
+    typeof form === "object" && form !== null && Array.isArray(form.form_fields)
+      ? form.form_fields
+      : [];
   // Sort fields by the 'sort' property if available
   const sortedFields = [...formFields].sort(
-    (a, b) => (a.sort || 0) - (b.sort || 0),
+    (a, b) => (a.sort || 0) - (b.sort || 0)
   );
 
   // Auto-hide success message after 5 seconds
@@ -47,47 +55,34 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formEl = e.currentTarget; // capture before async — React nullifies currentTarget after sync return
     setIsSubmitting(true);
     setErrorMsg(null);
 
-    const formElement = e.currentTarget;
-    const formData = new FormData(formElement);
-    const dataObj: Record<string, any> = {};
-    formData.forEach((value, key) => {
-      dataObj[key] = value;
-    });
+    const formId =
+      typeof form === "object" && form !== null && "id" in form
+        ? (form as { id: string }).id
+        : (form as string | null | undefined);
 
-    const formId = typeof form === "object" && form !== null ? form.id : form;
+    const result = await submitFormData(formEl, formId);
 
-    try {
-      const res = await fetch("/api/form-submission", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          formId,
-          data: dataObj,
-        }),
-      });
-
-      if (res.ok) {
-        setIsSubmitted(true);
-        formElement.reset();
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        setErrorMsg(errData.error || "Something went wrong. Please try again.");
-      }
-    } catch (err: any) {
-      console.error("Form submission error:", err);
-      setErrorMsg("Failed to send submission. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    if (result.success) {
+      setIsSubmitted(true);
+      formEl.reset();
+    } else {
+      setErrorMsg(result.error ?? "Something went wrong.");
     }
+    setIsSubmitting(false);
   };
 
   return (
-    <div className="relative w-full py-16 md:py-24 px-4 md:px-12 lg:px-20 2xl:px-32 overflow-hidden flex justify-center">
+    <div
+      className="relative w-full py-16 md:py-24 overflow-hidden flex justify-center"
+      style={{
+        background:
+          "linear-gradient(180deg, #D6CFC9 0%, #F5F2EF 50%, #D6CFC9 100%)",
+      }}
+    >
       {/* Background Image */}
       {bgImageId && (
         <div className="absolute inset-0 w-full h-full z-0">
@@ -95,15 +90,22 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
             src={`/api/assets/${bgImageId}`}
             alt="Background"
             fill
-            className="object-cover object-center opacity-30"
+            className="object-cover object-center opacity-60"
             sizes="100vw"
+            priority
           />
-          {/* Light overlay to match mockup brightness */}
-          <div className="absolute inset-0 bg-white/70"></div>
+          {/* Top & Bottom #D6CFC9 with Whitish Middle Overlay */}
+          <div
+            className="absolute inset-0 z-1"
+            style={{
+              background:
+                "linear-gradient(180deg, #D6CFC9 0%, #D6CFC9DF 15%, rgba(255, 255, 255, 0.75) 50%, #D6CFC9DF 85%, #D6CFC9 100%)",
+            }}
+          />
         </div>
       )}
 
-      <div className="relative z-10 w-full max-w-225 flex flex-col items-center">
+      <div className="relative z-10 w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col items-center">
         {/* Title */}
         {title && (
           <motion.div
@@ -139,7 +141,7 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
           <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
             {/* Dynamic Fields Grid */}
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-              {sortedFields.map((field: any) => {
+              {sortedFields.map((field: FormField) => {
                 const isFullWidth =
                   field.type === "textarea" ||
                   field.type === "text-area" ||
@@ -148,6 +150,8 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
                 const isRequired =
                   field.required === true || field.required === "true";
 
+                const placeholderText = field.placeholder || `${field.label}${isRequired ? " *" : ""}`;
+
                 return (
                   <div
                     key={field.id || field.name}
@@ -155,7 +159,7 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
                   >
                     <label
                       htmlFor={field.name}
-                      className="text-[#1a1a1a] font-sans text-sm tracking-wide"
+                      className="text-[#1a1a1a] font-sans text-sm tracking-wide font-medium"
                     >
                       {field.label}{" "}
                       {isRequired && <span className="text-red-500">*</span>}
@@ -164,19 +168,19 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
                       <textarea
                         id={field.name}
                         name={field.name}
-                        placeholder={field.placeholder}
+                        placeholder={placeholderText}
                         required={isRequired}
                         rows={5}
-                        className="w-full bg-white border border-black p-4 text-[#1a1a1a] font-sans text-base focus:outline-none focus:ring-1 focus:ring-black transition-shadow resize-y"
+                        className="w-full bg-white border-2 border-black p-4 text-[#1a1a1a] placeholder:text-gray-400 font-sans text-base focus:outline-none focus:ring-2 focus:ring-black transition-shadow resize-y"
                       />
                     ) : (
                       <input
                         id={field.name}
                         name={field.name}
                         type={field.type || "text"}
-                        placeholder={field.placeholder}
+                        placeholder={placeholderText}
                         required={isRequired}
-                        className="w-full bg-white border border-black p-4 text-[#1a1a1a] font-sans text-base focus:outline-none focus:ring-1 focus:ring-black transition-shadow"
+                        className="w-full bg-white border-2 border-black p-4 text-[#1a1a1a] placeholder:text-gray-400 font-sans text-base focus:outline-none focus:ring-2 focus:ring-black transition-shadow"
                       />
                     )}
                   </div>
@@ -190,12 +194,11 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
               </div>
             )}
 
-            {/* Footer: Captcha + Submit Button Centered */}
-            <div className="w-full mt-4 flex flex-col sm:flex-row items-center justify-center gap-6">
+            {/* Footer: Captcha + Submit Button Aligned */}
+            <div className="w-full mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               {captcha && (
-                <div className="w-full sm:w-auto flex justify-center">
-                  {/* Static mock of Google reCAPTCHA as per visual mockup */}
-                  <div className="bg-[#f9f9f9] border border-[#d3d3d3] rounded-[3px] p-2 flex items-center justify-between w-76 h-19.5 shadow-sm">
+                <div className="flex justify-center">
+                  <div className="bg-white border border-[#d3d3d3] rounded-[3px] p-2 flex items-center justify-between w-76 h-19.5 shadow-sm">
                     <div className="flex items-center gap-3 pl-2">
                       <div className="w-7 h-7 border-2 border-[#c1c1c1] rounded-sm bg-white cursor-pointer hover:border-gray-400 transition-colors"></div>
                       <span className="font-sans text-sm text-[#222]">
@@ -221,7 +224,7 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
 
               <div className="shrink-0 w-full sm:w-auto flex justify-center">
                 {buttonList.length > 0 ? (
-                  buttonList.map((btn: any, idx: number) => (
+                  buttonList.map((btn: BlockButton, idx: number) => (
                     <DynamicButton
                       key={idx}
                       btn={btn}
@@ -271,8 +274,9 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
                     className="prose prose-p:m-0 prose-p:text-[#1e5622] prose-p:font-sans prose-p:text-base sm:prose-p:text-lg prose-p:font-medium text-center pt-1"
                     dangerouslySetInnerHTML={{
                       __html:
-                        form?.success_message ||
-                        "<p>Thank you! Your response has been successfully submitted.</p>",
+                        (typeof form === "object" && form !== null && "success_message" in form && form.success_message)
+                          ? form.success_message
+                          : "<p>Thank you! Your response has been successfully submitted.</p>",
                     }}
                   />
                   <button

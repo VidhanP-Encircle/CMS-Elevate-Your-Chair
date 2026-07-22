@@ -15,6 +15,7 @@ import BlockForm from '@/components/BlockForm/BlockForm';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
+import { Page, GlobalSettings, PricingBenefitItem } from '@/lib/types';
 
 export const dynamic = "force-dynamic";
 
@@ -65,29 +66,28 @@ export default async function HomePage() {
           'pages_blocks.item.blogs.blogs_id.authors.*',
           'pages_blocks.item.form.*',
           'pages_blocks.item.form.form_fields.*',
-        ] as any,
+        ] as never,
       })
-    )) as any[];
+    )) as Page[];
 
-    // Fetch global settings to get colors and sizes
-    let globalSettings: any = {};
+    let globalSettings: GlobalSettings | undefined = undefined;
     try {
-      globalSettings = await directus.request(readSingleton('global_settings', {
-        fields: ['*', 'social_links.*'] as any
-      })) || {};
+      globalSettings = (await directus.request(readSingleton('global_settings' as never, {
+        fields: ['*', 'social_links.*', 'made_by_logo.*'] as never
+      }))) as GlobalSettings;
     } catch (e) {
       console.warn('Could not fetch global settings', e);
     }
 
     // Fetch pricing benefits (used within pricing blocks)
-    let pricingBenefits: any[] = [];
+    let pricingBenefits: PricingBenefitItem[] = [];
     try {
       pricingBenefits = (await directus.request(
-        readItems('pricing_benefits', {
-          fields: ['*', 'plans.*', 'plans.pricing_cards_id.*'] as any,
-          sort: 'sort',
+        readItems('pricing_benefits' as never, {
+          fields: ['*', 'plans.*', 'plans.pricing_cards_id.*'] as never,
+          sort: ['sort'] as never,
         })
-      )) as any[];
+      )) as unknown as PricingBenefitItem[];
     } catch (e) {
       console.warn('Could not fetch pricing benefits', e);
     }
@@ -95,8 +95,9 @@ export default async function HomePage() {
     // Fetch all categories and authors for blog filtering
     let allCategories: string[] = [];
     let allAuthors: string[] = [];
+    let authorsMapData: { id: string; name: string }[] = [];
     try {
-      const blogsData = (await directus.request(readItems('blogs' as any, { fields: ['categories'] }))) as any[];
+      const blogsData = (await directus.request(readItems('blogs' as never, { fields: ['categories'] }))) as Array<{ categories?: string | string[] }>;
       const uniqueCats = new Set<string>();
       blogsData.forEach(b => {
         if (b.categories) {
@@ -109,16 +110,15 @@ export default async function HomePage() {
       });
       allCategories = Array.from(uniqueCats).filter(Boolean);
       
-      const authorsData = (await directus.request(readItems('authors' as any, { fields: ['id', 'name'] }))) as any[];
-      allAuthors = authorsData.map(a => a.name).filter(Boolean);
-      
-      // Store the raw authors array to pass as a lookup map to BlockBlogs
-      (global as any).__authorsMapData = authorsData;
+      const fetchedAuthors = (await directus.request(readItems('authors' as never, { fields: ['id', 'name'] }))) as Array<{ id: string; name: string }>;
+      authorsMapData = fetchedAuthors;
+      allAuthors = fetchedAuthors.map(a => a.name).filter(Boolean);
       
       console.log("SERVER FETCHED:", { allCategories, allAuthors });
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.warn('Could not fetch categories or authors', e);
-      allCategories = ["Error: " + e.message];
+      const errMessage = e instanceof Error ? e.message : String(e);
+      allCategories = ["Error: " + errMessage];
     }
 
     if (!pages || pages.length === 0) {
@@ -164,9 +164,10 @@ export default async function HomePage() {
           </div>
         )}
         <div className="flex flex-col w-full">
-          {groupedBlocks.map((blockWrap: any, index: number) => {
+          {groupedBlocks.map((wrap: unknown, index: number) => {
+            const blockWrap = wrap as { collection: string; item: Record<string, unknown> };
             const collection = blockWrap.collection;
-            const item = blockWrap.item; // for standard blocks
+            const item = blockWrap.item as never; // for standard blocks
 
             if (collection === 'block_title') {
               return <BlockTitle key={index} data={item} globalSettings={globalSettings} />;
@@ -181,7 +182,8 @@ export default async function HomePage() {
             }
 
             if (collection === 'block_pricing_cards_group') {
-              return <BlockPricingCards key={index} data={blockWrap.items} globalSettings={globalSettings} benefits={pricingBenefits} />;
+              const groupItems = (wrap as { items: Record<string, unknown>[] }).items as never;
+              return <BlockPricingCards key={index} data={groupItems} globalSettings={globalSettings} benefits={pricingBenefits} />;
             }
 
             if (collection === 'block_testimonials') {
@@ -209,7 +211,7 @@ export default async function HomePage() {
             }
 
             if (collection === 'block_blogs') {
-              return <BlockBlogs key={index} data={item} globalSettings={globalSettings} allCategories={allCategories} allAuthors={allAuthors} authorsMapData={(global as any).__authorsMapData} />;
+              return <BlockBlogs key={index} data={item} globalSettings={globalSettings} allCategories={allCategories} allAuthors={allAuthors} authorsMapData={authorsMapData} />;
             }
 
             if (collection === 'block_form') {

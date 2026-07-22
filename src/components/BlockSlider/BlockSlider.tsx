@@ -3,38 +3,46 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperClass } from "swiper";
 import { Autoplay, EffectFade } from "swiper/modules";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/effect-fade";
-import { BlockSliderProps } from '@/lib/types';
+import { BlockSliderProps, SlideItem, BlockButton } from '@/lib/types';
 
 export default function BlockSlider({
   data,
   globalSettings,
 }: BlockSliderProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [swiper, setSwiper] = useState<any>(null);
+  const [swiper, setSwiper] = useState<SwiperClass | null>(null);
 
   if (!data) return null;
 
   const { slides, button } = data;
 
   // Resolve slides M2M
-  let slideItems: any[] = [];
+  let slideItems: SlideItem[] = [];
   if (Array.isArray(slides)) {
     slideItems = slides
-      .map((junction: any) => junction.slides_id || junction)
-      .filter((item: any) => typeof item === "object" && item !== null);
+      .map((junction: { slides_id?: SlideItem | string } | SlideItem) =>
+        typeof junction === "object" && junction !== null && "slides_id" in junction && typeof junction.slides_id === "object"
+          ? (junction.slides_id as SlideItem)
+          : (junction as SlideItem)
+      )
+      .filter((item): item is SlideItem => typeof item === "object" && item !== null);
   }
 
   // Resolve button M2M
-  let ctaButton: any = null;
+  let ctaButton: BlockButton | null = null;
   if (Array.isArray(button) && button.length > 0) {
     const junction = button[0];
-    ctaButton = junction.buttons_id || junction;
+    ctaButton =
+      typeof junction === "object" && junction !== null && "buttons_id" in junction && typeof junction.buttons_id === "object"
+        ? (junction.buttons_id as BlockButton)
+        : (junction as unknown as BlockButton);
   }
 
   if (slideItems.length === 0) return null;

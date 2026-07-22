@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import HoverButton from "@/components/HoverButton/HoverButton";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import { BlockJourneyAppProps } from '@/lib/types';
+import { BlockJourneyAppProps, BlockButton } from '@/lib/types';
 
 export default function BlockJourneyApp({
   data,
@@ -17,11 +17,15 @@ export default function BlockJourneyApp({
   const { title, content, image, buttons } = data;
 
   // Resolve buttons M2M
-  let buttonList: any[] = [];
+  let buttonList: BlockButton[] = [];
   if (Array.isArray(buttons)) {
     buttonList = buttons
-      .map((junction: any) => junction.buttons_id || junction)
-      .filter((item: any) => typeof item === "object" && item !== null);
+      .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
+        typeof junction === "object" && junction !== null && "buttons_id" in junction && typeof junction.buttons_id === "object"
+          ? (junction.buttons_id as BlockButton)
+          : (junction as BlockButton)
+      )
+      .filter((item): item is BlockButton => typeof item === "object" && item !== null && "button_text" in item);
   }
 
   const bgColor = globalSettings?.bg_color || "#151515";
@@ -154,7 +158,7 @@ export default function BlockJourneyApp({
                 transition={{ duration: 0.5, delay: 0.35 }}
                 className="flex flex-wrap gap-4 md:gap-5"
               >
-                {buttonList.map((btn: any, index: number) => {
+                {buttonList.map((btn: BlockButton, index: number) => {
                   const defaultBorder =
                     btn.button_border_color ||
                     globalSettings?.button_color ||

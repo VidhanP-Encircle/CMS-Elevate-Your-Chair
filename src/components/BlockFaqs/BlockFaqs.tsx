@@ -3,17 +3,20 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { BlockFaqsProps } from '@/lib/types';
+import { BlockFaqsProps, BlockFaqItem } from "@/lib/types";
 
-export default function BlockFaqs({
-  data,
-}: BlockFaqsProps) {
+export default function BlockFaqs({ data }: BlockFaqsProps) {
   if (!data) return null;
 
   const { title, que_ans, background_image } = data;
   const bgImage =
-    background_image?.id ||
-    (typeof background_image === "string" ? background_image : null);
+    typeof background_image === "object" &&
+    background_image !== null &&
+    "id" in background_image
+      ? (background_image as { id: string }).id
+      : typeof background_image === "string"
+        ? background_image
+        : null;
   const faqs = Array.isArray(que_ans) ? que_ans : [];
 
   if (faqs.length === 0) return null;
@@ -29,7 +32,7 @@ export default function BlockFaqs({
       {/* Background Image — fixed height so it doesn't stretch */}
       {bgImage && (
         <>
-          <div className="absolute top-0 left-0 w-full h-[500px] md:h-[700px] z-0 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-125 md:h-175 z-0 overflow-hidden">
             <Image
               src={`/api/assets/${bgImage}`}
               alt="FAQ Background"
@@ -38,7 +41,7 @@ export default function BlockFaqs({
               className="object-cover object-center mix-blend-multiply opacity-80"
             />
           </div>
-          <div className="absolute top-0 left-0 w-full h-[500px] md:h-[700px] z-0 bg-linear-to-b from-white/95 via-white/50 to-white/95 backdrop-blur-[2px]" />
+          <div className="absolute top-0 left-0 w-full h-125 md:h-175 z-0 bg-linear-to-b from-white/95 via-white/50 to-white/95 backdrop-blur-[2px]" />
         </>
       )}
       <div className="relative z-10 max-w-300 mx-auto w-full flex flex-col items-center">
@@ -64,9 +67,9 @@ export default function BlockFaqs({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
-          className="w-full max-w-220 mx-auto flex flex-col gap-3 sm:gap-4 min-h-[450px] sm:min-h-[580px] md:min-h-[700px]"
+          className="w-full max-w-220 mx-auto flex flex-col gap-3 sm:gap-4 min-h-112.5 sm:min-h-145 md:min-h-175"
         >
-          {faqs.map((faq: any, index: number) => {
+          {faqs.map((faq: BlockFaqItem, index: number) => {
             const isActive = activeIndex === index;
             const question = faq.questions || "";
             const answer = faq.answers || "";
@@ -114,9 +117,9 @@ export default function BlockFaqs({
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden bg-white"
                     >
-                  <div className="px-4 sm:px-5 md:px-6 pb-4 sm:pb-5 md:pb-6 pt-3 sm:pt-4 md:pt-5 border-t border-black/30">
-                    <div
-                      className="
+                      <div className="px-4 sm:px-5 md:px-6 pb-4 sm:pb-5 md:pb-6 pt-3 sm:pt-4 md:pt-5 border-t border-black/30">
+                        <div
+                          className="
                         prose max-w-none
                         prose-p:text-[14px] sm:prose-p:text-[15px] md:prose-p:text-[16px] prose-p:leading-[1.6] sm:prose-p:leading-[1.7] prose-p:text-[#333333] prose-p:font-light prose-p:m-0
                         prose-headings:font-title prose-headings:text-[#1a1a1a] prose-headings:mt-4 prose-headings:mb-2
@@ -128,10 +131,10 @@ export default function BlockFaqs({
                         prose-img:rounded-lg prose-img:my-4
                         prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#1a1a1a]
                       "
-                      dangerouslySetInnerHTML={{ __html: answer }}
-                    />
-                  </div>
-                </motion.div>
+                          dangerouslySetInnerHTML={{ __html: answer }}
+                        />
+                      </div>
+                    </motion.div>
                   )}
                 </AnimatePresence>
               </div>

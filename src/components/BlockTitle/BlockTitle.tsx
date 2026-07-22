@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import HoverButton from "@/components/HoverButton/HoverButton";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import { BlockTitleProps } from '@/lib/types';
+import { BlockTitleProps, BlockButton } from "@/lib/types";
 
 export default function BlockTitle({
   data,
@@ -21,11 +21,15 @@ export default function BlockTitle({
   } = data;
 
   // Resolve M2M buttons (Directus returns junction array with buttons_id)
-  let buttonList: any[] = [];
+  let buttonList: BlockButton[] = [];
   if (Array.isArray(buttons)) {
     buttonList = buttons
-      .map((junction: any) => junction.buttons_id || junction)
-      .filter((item: any) => typeof item === "object" && item !== null);
+      .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
+        typeof junction === "object" && junction !== null && "buttons_id" in junction
+          ? (junction.buttons_id as BlockButton)
+          : (junction as BlockButton)
+      )
+      .filter((item: BlockButton) => typeof item === "object" && item !== null);
   }
 
   const bgImageId =
@@ -54,7 +58,7 @@ export default function BlockTitle({
         }}
         className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-7 mt-5 w-full md:w-auto"
       >
-        {buttonList.map((btn: any, idx: number) => {
+        {buttonList.map((btn: BlockButton, idx: number) => {
           return (
             <DynamicButton 
               key={idx} 
@@ -173,7 +177,7 @@ export default function BlockTitle({
                       : undefined,
                     "--tw-prose-headings": "inherit",
                     "--tw-prose-p": "inherit",
-                  } as any
+                  } as React.CSSProperties
                 }
                 dangerouslySetInnerHTML={{ __html: title }}
               />

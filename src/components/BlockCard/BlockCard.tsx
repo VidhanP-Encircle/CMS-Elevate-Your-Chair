@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper/types";
 import "swiper/css";
-import { BlockCardProps } from '@/lib/types';
+import { BlockCardProps, CardItem } from '@/lib/types';
 
 export default function BlockCard({
   data,
@@ -100,7 +100,7 @@ export default function BlockCard({
                     ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
                     : undefined,
                   "--tw-prose-body": subtitleColor,
-                } as any
+                } as React.CSSProperties & { [key: string]: string }
               }
               dangerouslySetInnerHTML={{ __html: subtitle }}
             />
@@ -136,7 +136,7 @@ export default function BlockCard({
                 centerInsufficientSlides={true}
                 className="w-full px-0.5! py-0.5!"
               >
-                {cards.map((card: any, index: number) => {
+                {cards.map((card: CardItem, index: number) => {
                   const isFullObject =
                     typeof card === "object" && card !== null;
                   if (!isFullObject) return null;

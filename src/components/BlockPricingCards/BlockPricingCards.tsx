@@ -9,7 +9,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { BlockPricingCardsProps } from '@/lib/types';
+import { BlockPricingCardsProps, BlockButton, PricingCardItem } from "@/lib/types";
 
 export default function BlockPricingCards({
   data,
@@ -44,11 +44,15 @@ export default function BlockPricingCards({
   } = currentBlock;
 
   // Resolve M2M buttons
-  let buttonList: any[] = [];
+  let buttonList: BlockButton[] = [];
   if (Array.isArray(buttons)) {
     buttonList = buttons
-      .map((junction: any) => junction.buttons_id || junction)
-      .filter((item: any) => typeof item === "object" && item !== null);
+      .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
+        typeof junction === "object" && junction !== null && "buttons_id" in junction && typeof junction.buttons_id === "object"
+          ? (junction.buttons_id as BlockButton)
+          : (junction as BlockButton)
+      )
+      .filter((item): item is BlockButton => typeof item === "object" && item !== null && "button_text" in item);
   }
 
   // Use either legacy direct button fields or first M2M button
@@ -68,7 +72,11 @@ export default function BlockPricingCards({
     monthlyBlock?.background_image ||
     yearlyBlock?.background_image;
   const bgImage =
-    bgImageObj?.id || (typeof bgImageObj === "string" ? bgImageObj : null);
+    typeof bgImageObj === "object" && bgImageObj !== null && "id" in bgImageObj
+      ? (bgImageObj as { id: string }).id
+      : typeof bgImageObj === "string"
+        ? bgImageObj
+        : null;
 
   const cards = currentBlock.pricing_cards || [];
 
@@ -187,9 +195,9 @@ export default function BlockPricingCards({
               }}
               className="w-full pt-8! pb-4!"
             >
-              {cards.map((item: any, index: number) => {
-                const card = item.pricing_cards_id || item;
-                if (!card) return null;
+              {cards.map((item: PricingCardItem | { pricing_cards_id?: PricingCardItem | string }, index: number) => {
+                const card = (typeof item === "object" && item !== null && "pricing_cards_id" in item ? item.pricing_cards_id : item) as PricingCardItem;
+                if (!card || typeof card !== "object") return null;
 
                 const isYearly = activePlan === "yearly";
                 const price = isYearly ? card.yearly_price : card.monthly_price;

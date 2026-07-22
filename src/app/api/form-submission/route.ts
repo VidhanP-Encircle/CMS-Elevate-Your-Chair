@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const directus = await getDirectus();
 
     // Store the form submission in Directus 'form_submission' collection
-    const payload: { form?: string; data: Record<string, any> } = {
+    const payload: { form?: string; data: Record<string, unknown> } = {
       data,
     };
 
@@ -25,19 +25,20 @@ export async function POST(request: NextRequest) {
       payload.form = formId;
     }
 
-    const result = await directus.request(
-      createItem('form_submission' as any, payload as any)
-    );
+    const result = (await directus.request(
+      createItem("form_submission" as never, payload as never)
+    )) as { id?: string } | null;
 
     return NextResponse.json({
       success: true,
       message: 'Form submission received successfully',
-      id: (result as any)?.id,
+      id: result?.id,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error handling form submission:', error);
+    const errMessage = error instanceof Error ? error.message : 'Failed to submit form';
     return NextResponse.json(
-      { error: error?.message || 'Failed to submit form' },
+      { error: errMessage },
       { status: 500 }
     );
   }

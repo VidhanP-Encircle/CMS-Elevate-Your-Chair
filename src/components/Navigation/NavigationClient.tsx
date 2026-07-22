@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { GlobalSettings , NavigationClientProps } from "@/lib/types";
+import { NavigationClientProps, NavigationItem } from "@/lib/types";
 import HoverButton from "@/components/HoverButton/HoverButton";
 
 export default function NavigationClient({
@@ -69,7 +69,7 @@ export default function NavigationClient({
         backgroundColor: shouldBeSolid ? navBgScrolled : "transparent",
       }}
     >
-      <div className="flex items-center justify-between gap-5 xl:gap-7.5 px-4 xl:px-13.75 py-4 xl:py-2.5 w-full max-w-378 mx-auto min-h-20 box-border">
+      <div className="flex items-center justify-between gap-5 md:gap-7.5 px-4 md:px-13.75 py-4 md:py-2.5 w-full min-h-20 box-border">
         {/* Hamburger (Mobile only) */}
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -121,13 +121,13 @@ export default function NavigationClient({
         {/* Nav Links (Desktop) */}
         <div className="hidden xl:flex flex-row flex-wrap items-center justify-center gap-x-5 gap-y-3.75 xl:gap-x-10 nav-wrapper">
           {navigationData
-            .filter((item: any) => item.name?.toLowerCase() !== "search")
-            .map((item: any) => (
+            .filter((item: NavigationItem) => item.name?.toLowerCase() !== "search")
+            .map((item: NavigationItem) => (
               <Link
                 key={item.id}
                 href={item.slug || "#"}
-                className="flex items-center font-sans font-normal text-[13px] leading-4.5 tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
-                style={{ color: navTextColor }}
+                className="flex items-center font-sans font-normal leading-4.5 tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
+                style={{ color: navTextColor, fontSize: "clamp(12px, 1vw, 15px)" }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.color = navTextHover)
                 }
@@ -137,7 +137,7 @@ export default function NavigationClient({
               >
                 {item.logo ? (
                   <Image
-                    src={`/api/assets/${item.logo}`}
+                    src={`/api/assets/${typeof item.logo === "object" && item.logo !== null ? item.logo.id : item.logo}`}
                     alt={item.name || "Icon"}
                     width={20}
                     height={20}
@@ -153,31 +153,28 @@ export default function NavigationClient({
         {/* Search */}
         <div className="flex-none flex items-center search">
           {navigationData
-            .filter((item: any) => item.name?.toLowerCase() === "search")
-            .map((searchItem: any) => (
+            .filter((item: NavigationItem) => item.name?.toLowerCase() === "search")
+            .map((searchItem: NavigationItem) => (
               <button
                 key={searchItem.id}
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsSearchOpen(!isSearchOpen);
-                  setIsOpen(false);
-                }}
+                aria-label="search icon"
                 className="search-toggle-btn cursor-pointer bg-transparent border-none p-0 outline-none flex items-center"
-                aria-label="Open search"
+                style={{ color: navTextColor }}
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
                 {searchItem.logo ? (
                   <Image
-                    src={`/api/assets/${searchItem.logo}`}
-                    alt="Search"
-                    width={20}
-                    height={20}
-                    className="object-contain w-5 h-5"
+                    src={`/api/assets/${typeof searchItem.logo === "object" && searchItem.logo !== null ? searchItem.logo.id : searchItem.logo}`}
+                    alt={searchItem.name || "Search"}
+                    width={24}
+                    height={24}
+                    className="object-contain w-6 h-6"
                   />
                 ) : (
                   <span
-                    className="uppercase font-sans whitespace-nowrap"
-                    style={{ color: navTextColor }}
+                    className="font-sans font-normal leading-4.5 tracking-wide uppercase"
+                    style={{ color: navTextColor, fontSize: "clamp(12px, 1vw, 15px)" }}
                   >
                     {searchItem.name}
                   </span>
@@ -185,7 +182,7 @@ export default function NavigationClient({
               </button>
             ))}
           {navigationData.filter(
-            (item: any) => item.name?.toLowerCase() === "search",
+            (item: NavigationItem) => item.name?.toLowerCase() === "search",
           ).length === 0 && (
             <button
               type="button"
@@ -226,8 +223,8 @@ export default function NavigationClient({
             {/* Indented links container with gap */}
             <div className="flex flex-col gap-10 text-left px-8 py-12 md:px-12.5">
               {navigationData
-                .filter((item: any) => item.name?.toLowerCase() !== "search")
-                .map((item: any) => {
+                .filter((item: NavigationItem) => item.name?.toLowerCase() !== "search")
+                .map((item: NavigationItem) => {
                   const isActive =
                     pathname === item.slug ||
                     (item.slug === "/" && pathname === "") ||
@@ -284,7 +281,7 @@ export default function NavigationClient({
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className="absolute top-full left-0 w-full z-45 bg-[#1a1a1a] py-4 border-t border-white/5 overflow-hidden"
           >
-            <div className="px-4 xl:px-13.75 w-full max-w-378 mx-auto">
+            <div className="px-4 md:px-13.75 w-full">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();

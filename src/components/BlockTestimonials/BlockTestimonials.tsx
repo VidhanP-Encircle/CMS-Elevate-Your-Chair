@@ -7,7 +7,7 @@ import { Navigation } from "swiper/modules";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import "swiper/css";
 import "swiper/css/navigation";
-import { BlockTestimonialsProps } from '@/lib/types';
+import { BlockTestimonialsProps, TestimonialItem } from "@/lib/types";
 
 export default function BlockTestimonials({
   data,
@@ -19,8 +19,12 @@ export default function BlockTestimonials({
 
   const testimonials = Array.isArray(testimonial)
     ? testimonial
-        .map((junction: any) => junction.testimonial_id || junction)
-        .filter(Boolean)
+        .map((junction: { testimonial_id?: TestimonialItem | string } | TestimonialItem) =>
+          typeof junction === "object" && junction !== null && "testimonial_id" in junction && typeof junction.testimonial_id === "object"
+            ? (junction.testimonial_id as TestimonialItem)
+            : (junction as TestimonialItem)
+        )
+        .filter((item): item is TestimonialItem => typeof item === "object" && item !== null)
     : [];
 
   const bgImageId =
@@ -102,10 +106,10 @@ export default function BlockTestimonials({
               centeredSlides={true}
               initialSlide={testimonials.length >= 3 ? 1 : 0}
               spaceBetween={24}
-              slidesPerView={"auto" as any}
+              slidesPerView={"auto"}
               className="pt-4! pb-4!"
             >
-              {testimonials.map((item: any, index: number) => {
+              {testimonials.map((item: TestimonialItem, index: number) => {
                 const authorImgId =
                   typeof item.image === "string"
                     ? item.image

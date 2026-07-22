@@ -5,21 +5,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import { BlockBlogDetailProps, BlogItem, BlockButton } from "@/lib/types";
 
 export default function BlockBlogDetail({
   data,
   globalSettings,
   authorsMapData,
-}: {
-  data: any;
-  globalSettings?: any;
-  authorsMapData?: { id: string; name: string }[];
-}) {
-  const rawBlogs = useMemo(() => {
+}: BlockBlogDetailProps) {
+  const rawBlogs: BlogItem[] = useMemo(() => {
     return (
       data.blogs
-        ?.map((b: any) => b.blogs_id)
-        .filter((b: any) => b !== null && b !== undefined) || []
+        ?.map((b: { blogs_id?: BlogItem | string } | BlogItem) =>
+          typeof b === "object" && b !== null && "blogs_id" in b
+            ? (b.blogs_id as BlogItem)
+            : (b as BlogItem)
+        )
+        .filter((b): b is BlogItem => Boolean(b && typeof b === "object")) || []
     );
   }, [data]);
 
@@ -28,17 +29,18 @@ export default function BlockBlogDetail({
   const authors = useMemo(() => {
     if (!blog) return [];
     if (blog.authors && Array.isArray(blog.authors)) {
-      return blog.authors.map((a: any) => {
+      return blog.authors.map((a: unknown) => {
         if (a && typeof a === "object") {
-          if (a.name) return a.name;
+          const aObj = a as Record<string, unknown>;
+          if (aObj.name) return aObj.name as string;
           if (
-            a.authors_id &&
-            typeof a.authors_id === "object" &&
-            a.authors_id.name
+            aObj.authors_id &&
+            typeof aObj.authors_id === "object" &&
+            (aObj.authors_id as Record<string, unknown>).name
           )
-            return a.authors_id.name;
-          if (a.id && authorsMapData) {
-            const found = authorsMapData.find((mapA) => mapA.id === a.id);
+            return (aObj.authors_id as Record<string, unknown>).name as string;
+          if (aObj.id && authorsMapData) {
+            const found = authorsMapData.find((mapA) => mapA.id === aObj.id);
             if (found) return found.name;
           }
         }
@@ -49,40 +51,37 @@ export default function BlockBlogDetail({
         return "Unknown Author Structure";
       });
     }
-    return blog.author?.name ? [blog.author.name] : [];
+    const singleAuthor = (blog as unknown as Record<string, unknown>)?.author as { name?: string } | undefined;
+    return singleAuthor?.name ? [singleAuthor.name] : [];
   }, [blog, authorsMapData]);
 
-  const formatLabel = (val: any) => {
-    let text = val;
+  const blogDetailBtns: BlockButton[] = useMemo(() => {
+    if (!data.blog_detail_button) return [];
+    const list = Array.isArray(data.blog_detail_button)
+      ? data.blog_detail_button
+      : [data.blog_detail_button];
+    return list.map((item: unknown) =>
+      typeof item === "object" && item !== null && "buttons_id" in item && typeof (item as Record<string, unknown>).buttons_id === "object"
+        ? ((item as Record<string, unknown>).buttons_id as BlockButton)
+        : (item as BlockButton)
+    );
+  }, [data.blog_detail_button]);
+
+  const formatLabel = (val: unknown): string => {
+    let text = "";
     if (Array.isArray(val)) {
       text = val.join(", ");
     } else if (typeof val === "string") {
-      try {
-        const parsed = JSON.parse(val);
-        if (Array.isArray(parsed)) text = parsed.join(", ");
-      } catch (e) {}
+      text = val;
+    } else {
+      text = String(val || "");
     }
-    
-    if (typeof text === "string") {
-      return text
-        .split("_")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(" ");
-    }
-    
     return text;
   };
 
-  const bgColor =
-    data.background_color || globalSettings?.bg_color || "#ffffff";
-  const textColor =
-    bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-      ? "#ffffff"
-      : "#1a1a1a";
-  const mutedColor =
-    bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-      ? "#e5e5e5"
-      : "#555555";
+  const textColor = "#1a1a1a";
+  const bgColor = "#ffffff";
+  const mutedColor = "#555555";
 
   if (!blog) return null;
 
@@ -94,20 +93,23 @@ export default function BlockBlogDetail({
       <div className="w-full max-w-5xl flex flex-col items-center">
         {/* Top Bar with "BACK TO BLOG" Button */}
         <div className="w-full flex justify-end mb-8">
-          {data.blog_detail_button && data.blog_detail_button.length > 0 && (
-            <DynamicButton 
-              btn={{
-                ...(data.blog_detail_button[0].buttons_id || {}),
-                button_text_color: data.blog_detail_button[0].buttons_id?.button_text_color || textColor,
-                button_fill_color: data.blog_detail_button[0].buttons_id?.button_fill_color || "transparent",
-                button_border_color: data.blog_detail_button[0].buttons_id?.button_border_color || textColor,
-                button_hover_fill_color: data.blog_detail_button[0].buttons_id?.button_hover_fill_color || textColor,
-                button_hover_text_color: data.blog_detail_button[0].buttons_id?.button_hover_text_color || bgColor,
-              }} 
-              globalSettings={{}} 
-              className="font-bold tracking-widest text-[13px] px-6 py-3 border transition-colors"
-            />
-          )}
+          {blogDetailBtns.length > 0 && (() => {
+            const btnObj = blogDetailBtns[0];
+            return (
+              <DynamicButton 
+                btn={{
+                  ...btnObj,
+                  button_text_color: btnObj.button_text_color || textColor,
+                  button_fill_color: btnObj.button_fill_color || "transparent",
+                  button_border_color: btnObj.button_border_color || textColor,
+                  button_hover_fill_color: btnObj.button_hover_fill_color || textColor,
+                  button_hover_text_color: btnObj.button_hover_text_color || bgColor,
+                }} 
+                globalSettings={globalSettings} 
+                className="font-bold tracking-widest text-[13px] px-6 py-3 border transition-colors"
+              />
+            );
+          })()}
         </div>
 
         {/* Featured Image */}
@@ -209,7 +211,7 @@ export default function BlockBlogDetail({
               } catch (e) {}
             }
             if (parsedDetails && Array.isArray(parsedDetails)) {
-              return parsedDetails.map((detail: any, i: number) => (
+              return parsedDetails.map((detail: { title?: string | null; content?: string | null }, i: number) => (
                 <div key={i} className="flex flex-col gap-4 text-center">
                   {detail.title && (
                     <div
@@ -246,26 +248,26 @@ export default function BlockBlogDetail({
         </motion.div>
 
         {/* Footer Buttons (Previous / Next) */}
-        {data.blog_detail_button && data.blog_detail_button.length > 1 && (
+        {blogDetailBtns.length > 1 && (
           <div className="w-full flex justify-between items-center mt-12 pt-8">
             {/* Previous Button */}
-            {data.blog_detail_button[1] && (
+            {blogDetailBtns[1] && (
               <DynamicButton 
-                btn={data.blog_detail_button[1].buttons_id || { button_text: "PREVIOUS" }}
+                btn={blogDetailBtns[1]}
                 fallbackFill="transparent"
                 fallbackText={textColor}
-                globalSettings={{}} 
+                globalSettings={globalSettings} 
                 className="font-bold tracking-widest text-[13px] px-8 py-3 border transition-colors"
               />
             )}
 
             {/* Next Button */}
-            {data.blog_detail_button[2] && (
+            {blogDetailBtns[2] && (
               <DynamicButton 
-                btn={data.blog_detail_button[2].buttons_id || { button_text: "NEXT" }}
+                btn={blogDetailBtns[2]}
                 fallbackFill={textColor}
                 fallbackText={bgColor}
-                globalSettings={{}} 
+                globalSettings={globalSettings} 
                 className="font-bold tracking-widest text-[13px] px-8 py-3 border transition-colors"
               />
             )}
