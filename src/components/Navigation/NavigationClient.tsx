@@ -141,32 +141,39 @@ export default function NavigationClient({
         <div className="hidden xl:flex flex-row flex-wrap items-center justify-center gap-x-5 gap-y-3.75 xl:gap-x-10 nav-wrapper">
           {navigationData
             .filter((item: NavigationItem) => item.name?.toLowerCase() !== "search")
-            .map((item: NavigationItem) => (
-              <Link
-                key={item.id}
-                href={item.slug || "#"}
-                className="flex items-center font-sans font-normal leading-4.5 tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
-                style={{ color: navTextColor, fontSize: "clamp(11px, 0.9vw, 12px)" }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = navTextHover)
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = navTextColor)
-                }
-              >
-                {item.logo ? (
-                  <Image
-                    src={`/api/assets/${typeof item.logo === "object" && item.logo !== null ? item.logo.id : item.logo}`}
-                    alt={item.name || "Icon"}
-                    width={20}
-                    height={20}
-                    className="object-contain w-5 h-5"
-                  />
-                ) : (
-                  item.name
-                )}
-              </Link>
-            ))}
+            .map((item: NavigationItem) => {
+              const isActive =
+                pathname === item.slug ||
+                (item.slug === "/" && pathname === "") ||
+                (pathname === "/home" && item.slug === "/");
+
+              return (
+                <Link
+                  key={item.id}
+                  href={item.slug || "#"}
+                  className="flex items-center font-sans font-normal leading-4.5 tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
+                  style={{ color: isActive ? navTextHover : navTextColor, fontSize: "clamp(11px, 0.9vw, 12px)" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = navTextHover)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = isActive ? navTextHover : navTextColor)
+                  }
+                >
+                  {item.logo ? (
+                    <Image
+                      src={`/api/assets/${typeof item.logo === "object" && item.logo !== null ? item.logo.id : item.logo}`}
+                      alt={item.name || "Icon"}
+                      width={20}
+                      height={20}
+                      className="object-contain w-5 h-5"
+                    />
+                  ) : (
+                    item.name
+                  )}
+                </Link>
+              );
+            })}
         </div>
 
         {/* Search */}

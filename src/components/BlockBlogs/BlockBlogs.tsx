@@ -294,7 +294,7 @@ export default function BlockBlogs({
         )}
 
         <p
-          className="text-[16px] leading-5 w-full px-4"
+          className="text-[16px] leading-5 w-full"
           style={{
             color:
               bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
@@ -399,7 +399,7 @@ export default function BlockBlogs({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="w-full grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-20 max-w-6xl"
+            className="w-full grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-20"
           >
             {/* Left Column (Image & Filters) */}
             <div className="flex flex-col w-full">
@@ -788,7 +788,7 @@ export default function BlockBlogs({
 
         {/* MULTI BLOG LAYOUT */}
         {!isSingle && rawBlogs.length > 0 && (
-          <div className="w-full flex flex-col items-center max-w-7xl">
+          <div className="w-full flex flex-col items-center">
             {/* First 6 Blogs */}
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
               {filteredBlogs.slice(0, 6).map((blog: BlogItem, index: number) => renderBlogCard(blog, index))}

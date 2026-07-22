@@ -57,10 +57,10 @@ export default function BlockCard({
         viewport={{ once: true }}
         variants={{ hidden: {}, visible: {} }}
         style={{ willChange: 'transform, opacity' }}
-        className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col items-center gap-10 md:gap-15"
+        className="w-full px-4 md:px-8 lg:px-10 2xl:px-13.75 flex flex-col items-center gap-10 md:gap-15"
       >
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center gap-5 max-w-294 w-full">
+        <div className="flex flex-col items-center text-center gap-5 w-full max-w-360">
           {/* Title */}
           {title && (
             <motion.div
@@ -99,7 +99,7 @@ export default function BlockCard({
                 theme="custom"
                 align="center"
                 content={subtitle}
-                className="prose prose-invert max-w-220 w-full prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0 prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 mx-auto"
+                className="prose prose-invert w-full max-w-full prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0 prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 mx-auto"
                 style={
                   {
                     color: isDarkBg ? "#ffffff" : subtitleColor,
@@ -130,8 +130,6 @@ export default function BlockCard({
                 breakpoints={{
                   640: { slidesPerView: 2 },
                   900: { slidesPerView: 3 },
-                  1200: { slidesPerView: 4 },
-                  1500: { slidesPerView: 5 },
                 }}
                 onSwiper={(swiper) => {
                   swiperRef.current = swiper;
@@ -167,27 +165,29 @@ export default function BlockCard({
                       {isWhiteTheme ? (
                         /* Light Theme Card */
                         <div
-                          className="w-full h-full min-w-0 flex flex-col items-center justify-between p-4 md:p-5"
+                          className="w-full h-full min-w-0 flex flex-col items-center justify-between p-3.5 md:p-4.5"
                           style={{ backgroundColor: "#ffffff" }}
                         >
                           <div className="w-full flex flex-col items-center text-center">
                             {/* Photo */}
                             {card.photo && (
-                              <div className="w-full aspect-4/3 relative mb-4 overflow-hidden">
-                                <Image
-                                  src={`/api/assets/${card.photo}`}
-                                  alt={card.title || "Card Photo"}
-                                  fill
-                                  sizes="(max-width: 768px) 300px, 231px"
-                                  className="object-cover"
-                                />
+                              <div className="w-full aspect-4/3 relative mb-3 overflow-hidden p-1.5">
+                                <div className="w-full h-full relative">
+                                  <Image
+                                    src={`/api/assets/${card.photo}`}
+                                    alt={card.title || "Card Photo"}
+                                    fill
+                                    sizes="(max-width: 768px) 300px, 231px"
+                                    className="object-cover"
+                                  />
+                                </div>
                               </div>
                             )}
 
                             {/* Title */}
                             {card.title && (
                               <h3
-                                className="font-title font-bold uppercase tracking-widest text-[15px] md:text-[16px] mb-2 leading-[1.3]"
+                                className="font-title font-bold uppercase tracking-widest text-[14px] md:text-[15px] mb-1.5 leading-[1.3]"
                                 style={{
                                   color:
                                     textColor === "#ffffff"
@@ -203,6 +203,7 @@ export default function BlockCard({
                             {card.content && (
                               <RichText
                                 variant="content"
+                                align="center"
                                 theme="custom"
                                 content={card.content}
                                 className="prose max-w-full"
@@ -275,6 +276,7 @@ export default function BlockCard({
                             {card.content && (
                               <RichText
                                 variant="content"
+                                align="center"
                                 theme="custom"
                                 content={card.content}
                                 className="prose prose-invert max-w-full prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[13px] md:prose-p:text-[14px] prose-p:text-[#a3a3a3] prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-1.5 prose-headings:mb-0.5 prose-strong:text-white prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[13px] md:prose-li:text-[14px] prose-li:leading-normal prose-li:text-[#a3a3a3] prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded prose-code:text-[#a3a3a3]"
