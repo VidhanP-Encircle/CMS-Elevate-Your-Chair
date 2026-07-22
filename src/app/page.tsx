@@ -12,6 +12,7 @@ import BlockFaqs from '@/components/BlockFaqs/BlockFaqs';
 import BlockContent from '@/components/BlockContent/BlockContent';
 import BlockBlogs from '@/components/BlockBlogs/BlockBlogs';
 import BlockForm from '@/components/BlockForm/BlockForm';
+import BlockLegal from '@/components/BlockLegal/BlockLegal';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
@@ -66,6 +67,7 @@ export default async function HomePage() {
           'pages_blocks.item.blogs.blogs_id.authors.*',
           'pages_blocks.item.form.*',
           'pages_blocks.item.form.form_fields.*',
+          'pages_blocks.item.details.*',
         ] as never,
       })
     )) as Page[];
@@ -216,6 +218,10 @@ export default async function HomePage() {
 
             if (collection === 'block_form') {
               return <BlockForm key={index} data={item} globalSettings={globalSettings} />;
+            }
+
+            if (collection === 'block_legal') {
+              return <BlockLegal key={index} data={item} globalSettings={globalSettings} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;

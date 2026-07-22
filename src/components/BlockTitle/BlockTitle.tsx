@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import HoverButton from "@/components/HoverButton/HoverButton";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
@@ -100,12 +99,10 @@ export default function BlockTitle({
             className="w-full h-full object-cover"
           />
         ) : bgImageId ? (
-          <Image
+          <img
             src={`/api/assets/${bgImageId}`}
             alt="Background"
-            fill
-            sizes="100vw"
-            className="object-cover"
+            className="w-full h-full object-cover"
           />
         ) : null}
 

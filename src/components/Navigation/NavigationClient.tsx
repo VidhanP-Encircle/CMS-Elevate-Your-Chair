@@ -59,8 +59,7 @@ export default function NavigationClient({
   const buttonColor = globalSettings?.button_color || "#c2b7a3";
   const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
-  const isHomePage = pathname === "/";
-  const shouldBeSolid = isScrolled || !isHomePage;
+  const shouldBeSolid = isScrolled;
 
   return (
     <nav
@@ -127,7 +126,7 @@ export default function NavigationClient({
                 key={item.id}
                 href={item.slug || "#"}
                 className="flex items-center font-sans font-normal leading-4.5 tracking-wide text-center uppercase no-underline transition-colors whitespace-nowrap"
-                style={{ color: navTextColor, fontSize: "clamp(12px, 1vw, 15px)" }}
+                style={{ color: navTextColor, fontSize: "clamp(11px, 0.9vw, 12px)" }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.color = navTextHover)
                 }
@@ -174,7 +173,7 @@ export default function NavigationClient({
                 ) : (
                   <span
                     className="font-sans font-normal leading-4.5 tracking-wide uppercase"
-                    style={{ color: navTextColor, fontSize: "clamp(12px, 1vw, 15px)" }}
+                    style={{ color: navTextColor, fontSize: "clamp(11px, 0.9vw, 12px)" }}
                   >
                     {searchItem.name}
                   </span>
@@ -235,7 +234,7 @@ export default function NavigationClient({
                       key={item.id}
                       href={item.slug || "#"}
                       onClick={() => setIsOpen(false)}
-                      className="font-sans font-normal text-[18px] leading-5.5 uppercase no-underline transition-colors"
+                      className="font-sans font-normal text-[14px] leading-5.5 uppercase no-underline transition-colors"
                       style={{ color: isActive ? navTextHover : dropdownTextColor }}
                       onMouseEnter={(e) =>
                         (e.currentTarget.style.color = navTextHover)
@@ -255,7 +254,7 @@ export default function NavigationClient({
               <HoverButton
                 href="http://elevate-by-blake-charles-salon.mn.co/plans/1896001"
                 target="_blank"
-                className="font-bold font-sans text-[16px] leading-5 uppercase px-6 py-3 w-full max-w-75 text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
+                className="font-bold font-sans text-[14px] leading-5 uppercase px-6 py-3 w-full max-w-75 text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
                 style={{
                   backgroundColor: buttonColor,
                   color: buttonTextColor,

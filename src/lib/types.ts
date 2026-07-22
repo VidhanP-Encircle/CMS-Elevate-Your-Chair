@@ -377,6 +377,18 @@ export interface BlockContent {
   content_size?: number | null;
 }
 
+export interface BlockLegalDetail {
+  title?: string | null;
+  subtitle?: string | null;
+  content?: string | null;
+}
+
+export interface BlockLegal {
+  id: string;
+  inner_name?: string | null;
+  details?: BlockLegalDetail[] | null;
+}
+
 export interface Schema {
   block_notice: Notice[];
   global_settings: GlobalSettings;
@@ -406,6 +418,12 @@ export interface Schema {
   slides: SlideItem[];
   testimonial: TestimonialItem[];
   text_image: TextImageItem[];
+  block_legal: BlockLegal[];
+}
+
+export interface BlockLegalProps {
+  data: BlockLegal;
+  globalSettings?: GlobalSettings;
 }
 
 export interface ScrollRevealProps {
