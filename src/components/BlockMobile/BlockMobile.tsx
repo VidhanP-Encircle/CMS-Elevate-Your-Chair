@@ -91,7 +91,16 @@ export default function BlockMobile({
       className="w-full py-10 md:py-15 overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col md:flex-row items-start md:items-center justify-center gap-10 md:gap-12 lg:gap-16">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}          variants={{
+            hidden: {},
+            visible: {}
+          }}
+        style={{ willChange: 'transform, opacity' }}
+        className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col md:flex-row items-start md:items-center justify-center gap-10 md:gap-12 lg:gap-16"
+      >
         {/* Content Column */}
         <div
           className={`flex-1 min-w-0 flex flex-col w-full order-2 ${isRight ? "md:order-1" : "md:order-2"}`}
@@ -103,10 +112,10 @@ export default function BlockMobile({
             {/* Title - Full WYSIWYG HTML from Directus */}
             {title && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.1 } }
+                }}
                 className="
                   prose prose-p:m-0 prose-p:leading-[1.1]
                   prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
@@ -127,10 +136,10 @@ export default function BlockMobile({
 
             {isContactInfo ? (
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 } }
+                }}
                 className="mt-6 flex flex-col gap-6"
               >
                 {/* Email Section */}
@@ -227,10 +236,10 @@ export default function BlockMobile({
                 {/* Subtitle - Full WYSIWYG HTML from Directus */}
                 {subtitle && (
                   <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 15 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 } }
+                    }}
                     className="
                       prose prose-p:leading-[1.4] prose-p:font-black prose-p:text-[#1a1a1a] prose-p:mt-0 prose-p:mb-2
                       prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
@@ -256,10 +265,10 @@ export default function BlockMobile({
                 {/* Content - Full WYSIWYG HTML from Directus */}
                 {content && (
                   <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 15 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.3 } }
+                    }}
                     className="
                       prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
                       prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
@@ -293,10 +302,10 @@ export default function BlockMobile({
             {/* Buttons (Side-by-side) */}
             {buttonList.length > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.4 } }
+                }}
                 className={`mt-4 flex flex-wrap gap-4 ${isContactInfo ? "pt-4" : ""}`}
               >
                 {buttonList.map((btn: BlockButton, idx: number) => (
@@ -314,10 +323,10 @@ export default function BlockMobile({
               primaryButtonText &&
               primaryButtonUrl && (
                 <motion.div
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.4 } }
+                  }}
                 >
                   <div className="mt-8 flex justify-center">
                     <DynamicButton
@@ -337,10 +346,10 @@ export default function BlockMobile({
 
         {/* Image Column */}
         <motion.div
-          initial={{ opacity: 0, x: isRight ? 20 : -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+          variants={{
+            hidden: { opacity: 0, x: isRight ? 20 : -20 },
+            visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.15, ease: "easeOut" } }
+          }}
           className={`w-full md:w-auto md:shrink md:basis-95 lg:basis-120 flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
         >
           {imageId && (
@@ -355,7 +364,7 @@ export default function BlockMobile({
             </div>
           )}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }

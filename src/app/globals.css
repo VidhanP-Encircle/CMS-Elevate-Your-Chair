@@ -167,3 +167,51 @@ body {
     @apply font-sans;
   }
 }
+
+/* ── GPU Compositing Utilities ── */
+/* 
+ * Use these classes on containers that animate via framer-motion to 
+ * hint the browser to promote them to their own composite layer.
+ * This reduces repaints during scroll-triggered animations.
+ */
+.gpu-layer {
+  will-change: transform, opacity;
+}
+
+.gpu-transform {
+  will-change: transform;
+}
+
+.gpu-opacity {
+  will-change: opacity;
+}
+
+/* 
+ * `contain: layout style` tells the browser the element's contents
+ * don't affect the layout/style of outside elements, enabling faster
+ * paint cycles during animation.
+ */
+.contain-paint {
+  contain: layout style;
+}
+
+/* ── Content Visibility (skip rendering offscreen content) ── */
+/*
+ * Apply to block-level section wrappers to tell the browser to skip
+ * rendering content that is outside the viewport. This dramatically
+ * improves initial load and scroll performance.
+ */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px; /* initial size hint before content loads */
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

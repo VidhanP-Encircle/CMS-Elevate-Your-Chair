@@ -53,14 +53,24 @@ export default function BlockJourneyApp({
       />
 
       <div className="relative z-10 w-full px-4 md:px-12 lg:px-20 2xl:px-32">
-        <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            visible: {}
+          }}
+          style={{ willChange: 'transform, opacity' }}
+          className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24"
+        >
           {/* Left: Phone Mockup */}
           {imageId && (
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.1 }}
+              variants={{
+                hidden: { opacity: 0, x: -30 },
+                visible: { opacity: 1, x: 0, transition: { duration: 0.7, delay: 0.1 } }
+              }}
               className="w-full max-w-70 md:max-w-95 lg:max-w-105 shrink relative"
             >
               {/* Phone glow */}
@@ -86,10 +96,10 @@ export default function BlockJourneyApp({
             {/* Title */}
             {title && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.15 }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.15 } }
+                }}
                 className="font-title font-light uppercase tracking-wide mb-6 md:mb-8 [&>p]:m-0 [&>p]:leading-[1.15] [&>p>strong]:font-black [&>p>strong]:font-title"
                 style={{
                   fontSize: titleSize
@@ -104,10 +114,10 @@ export default function BlockJourneyApp({
             {/* Content - Full WYSIWYG HTML from Directus */}
             {content && (
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.25 }}
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.25 } }
+                }}
                 className="
                   mb-8 md:mb-10 w-full max-w-155
                   prose prose-invert
@@ -152,10 +162,10 @@ export default function BlockJourneyApp({
             {/* Buttons */}
             {buttonList.length > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.35 }}
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.35 } }
+                }}
                 className="flex flex-wrap gap-4 md:gap-5"
               >
                 {buttonList.map((btn: BlockButton, index: number) => {
@@ -177,7 +187,7 @@ export default function BlockJourneyApp({
               </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

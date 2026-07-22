@@ -16,12 +16,19 @@ export default function BlockCard({
   const { title, subtitle, cards } = data;
   const isWhiteTheme = data.theme === "white";
   const [showNav, setShowNav] = useState(false);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
   const swiperRef = useRef<SwiperClass | null>(null);
 
   const checkNavVisibility = useCallback((swiper: SwiperClass) => {
     if (!swiper) return;
     const fullyVisible = Math.floor(swiper.slidesPerViewDynamic());
     setShowNav(swiper.slides.length > fullyVisible);
+  }, []);
+
+  const updateBoundaryStates = useCallback((swiper: SwiperClass) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
   }, []);
 
   // Background and Text colors
@@ -41,16 +48,23 @@ export default function BlockCard({
       className="w-full py-15 md:py-25 overflow-hidden"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col items-center gap-10 md:gap-15">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{ hidden: {}, visible: {} }}
+        style={{ willChange: 'transform, opacity' }}
+        className="w-full px-4 md:px-12 lg:px-20 2xl:px-32 flex flex-col items-center gap-10 md:gap-15"
+      >
         {/* Header Section */}
         <div className="flex flex-col items-center text-center gap-5 max-w-294 w-full">
           {/* Title */}
           {title && (
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+              variants={{
+                hidden: { opacity: 0, y: 15 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.1, ease: "easeOut" } }
+              }}
               className="
                 prose prose-invert max-w-none text-center
                 prose-p:m-0 prose-p:leading-[1.1]
@@ -73,10 +87,10 @@ export default function BlockCard({
           {/* Subtitle */}
           {subtitle && (
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+              variants={{
+                hidden: { opacity: 0, y: 15 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.25, ease: "easeOut" } }
+              }}
               className="
                 prose prose-invert max-w-220 w-full
                 prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0
@@ -110,10 +124,10 @@ export default function BlockCard({
         {/* Cards Section */}
         {cards && cards.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.4, ease: "easeOut" } }
+            }}
             className="w-full relative mt-10 flex flex-col items-center"
           >
             <div className="w-full">
@@ -129,10 +143,21 @@ export default function BlockCard({
                 onSwiper={(swiper) => {
                   swiperRef.current = swiper;
                   checkNavVisibility(swiper);
+                  updateBoundaryStates(swiper);
                 }}
-                onInit={checkNavVisibility}
-                onResize={checkNavVisibility}
-                onSlidesLengthChange={checkNavVisibility}
+                onInit={(swiper) => {
+                  checkNavVisibility(swiper);
+                  updateBoundaryStates(swiper);
+                }}
+                onResize={(swiper) => {
+                  checkNavVisibility(swiper);
+                  updateBoundaryStates(swiper);
+                }}
+                onSlidesLengthChange={(swiper) => {
+                  checkNavVisibility(swiper);
+                  updateBoundaryStates(swiper);
+                }}
+                onSlideChange={updateBoundaryStates}
                 centerInsufficientSlides={true}
                 className="w-full px-0.5! py-0.5!"
               >
@@ -285,14 +310,18 @@ export default function BlockCard({
                 })}
               </Swiper>
             </div>
-            {/* Centering style for when cards don't fill viewport */}
 
             {/* Custom Navigation — only shown when cards overflow the viewport */}
             {showNav && (
               <div className="flex justify-center items-center gap-6 mt-8">
                 <button
-                  className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
+                  className={`flex items-center justify-center w-10 h-10 transition-colors rounded focus-visible:outline-2 focus-visible:outline-[#c2b7a3] focus-visible:outline-offset-2 ${
+                    isBeginning
+                      ? "text-[#555555] cursor-not-allowed"
+                      : "text-[#c2b7a3] hover:text-white cursor-pointer"
+                  }`}
                   onClick={() => swiperRef.current?.slidePrev()}
+                  disabled={isBeginning}
                 >
                   <svg
                     width="30"
@@ -308,8 +337,13 @@ export default function BlockCard({
                   </svg>
                 </button>
                 <button
-                  className="flex items-center justify-center w-10 h-10 text-[#c2b7a3] hover:text-white transition-colors cursor-pointer outline-none focus:ring-2 focus:ring-[#005fcc] focus:ring-offset-2 focus:ring-offset-[#151515] rounded"
+                  className={`flex items-center justify-center w-10 h-10 transition-colors rounded focus-visible:outline-2 focus-visible:outline-[#c2b7a3] focus-visible:outline-offset-2 ${
+                    isEnd
+                      ? "text-[#555555] cursor-not-allowed"
+                      : "text-[#c2b7a3] hover:text-white cursor-pointer"
+                  }`}
                   onClick={() => swiperRef.current?.slideNext()}
+                  disabled={isEnd}
                 >
                   <svg
                     width="30"
@@ -328,7 +362,7 @@ export default function BlockCard({
             )}
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import { getDirectusImageUrl } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -250,9 +251,10 @@ export default function BlockBlogs({
           className="w-full aspect-4/3 relative mb-6 overflow-hidden bg-gray-200 block"
         >
           <Image
-            src={`/api/assets/${typeof blog.photo === "object" ? blog.photo.id : blog.photo}`}
+            src={getDirectusImageUrl(blog.photo)}
             alt="Blog image"
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
           />
         </Link>
@@ -403,10 +405,12 @@ export default function BlockBlogs({
               {rawBlogs[0].photo && (
                 <div className="w-full aspect-4/3 relative mb-6 overflow-hidden bg-gray-200">
                   <Image
-                    src={`/api/assets/${typeof rawBlogs[0].photo === "object" ? rawBlogs[0].photo.id : rawBlogs[0].photo}`}
+                    src={getDirectusImageUrl(rawBlogs[0].photo)}
                     alt="Featured Blog"
                     fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover"
+                    priority
                   />
                 </div>
               )}

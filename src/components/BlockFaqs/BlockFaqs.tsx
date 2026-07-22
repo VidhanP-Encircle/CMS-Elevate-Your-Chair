@@ -44,14 +44,21 @@ export default function BlockFaqs({ data }: BlockFaqsProps) {
           <div className="absolute top-0 left-0 w-full h-125 md:h-175 z-0 bg-linear-to-b from-white/95 via-white/50 to-white/95 backdrop-blur-[2px]" />
         </>
       )}
-      <div className="relative z-10 max-w-300 mx-auto w-full flex flex-col items-center">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{ hidden: {}, visible: {} }}
+        style={{ willChange: 'transform, opacity' }}
+        className="relative z-10 max-w-300 mx-auto w-full flex flex-col items-center"
+      >
         {/* Title */}
         {title && (
           <motion.h2
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.1, ease: "easeOut" } }
+            }}
             className="font-title font-bold uppercase tracking-wide text-center text-[#1a1a1a] mb-12 md:mb-16"
             style={{
               fontSize: "clamp(28px, 4vw, 48px)",
@@ -63,10 +70,10 @@ export default function BlockFaqs({ data }: BlockFaqsProps) {
 
         {/* FAQ Accordion */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.25, ease: "easeOut" } }
+          }}
           className="w-full max-w-220 mx-auto flex flex-col gap-3 sm:gap-4 min-h-112.5 sm:min-h-145 md:min-h-175"
         >
           {faqs.map((faq: BlockFaqItem, index: number) => {
@@ -141,7 +148,7 @@ export default function BlockFaqs({ data }: BlockFaqsProps) {
             );
           })}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }

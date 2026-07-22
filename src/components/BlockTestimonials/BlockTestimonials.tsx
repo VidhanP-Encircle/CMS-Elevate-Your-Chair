@@ -58,14 +58,21 @@ export default function BlockTestimonials({
         </>
       )}
 
-      <div className="relative z-10 w-full flex flex-col items-center">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={{ hidden: {}, visible: {} }}
+        style={{ willChange: 'transform, opacity' }}
+        className="relative z-10 w-full flex flex-col items-center"
+      >
         {/* Title */}
         {title && (
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.1, ease: "easeOut" } }
+            }}
             className="w-full px-4"
           >
             <h2
@@ -82,10 +89,10 @@ export default function BlockTestimonials({
 
         {/* Carousel */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.25, ease: "easeOut" } }
+          }}
           className="w-full relative flex flex-col items-center"
         >
           <motion.div
@@ -221,7 +228,7 @@ export default function BlockTestimonials({
           {/* Custom Navigation */}
           {testimonials.length > 1 && (
             <div className="flex justify-center items-center gap-6 mt-10 md:mt-12">
-              <button className="swiper-button-prev-testimonial flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded disabled:opacity-30 disabled:cursor-not-allowed">
+              <button className="swiper-button-prev-testimonial flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
                 <svg
                   width="36"
                   height="36"
@@ -233,7 +240,7 @@ export default function BlockTestimonials({
                   <path d="M19 12H5M5 12L12 5M5 12L12 19" />
                 </svg>
               </button>
-              <button className="swiper-button-next-testimonial flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded disabled:opacity-30 disabled:cursor-not-allowed">
+              <button className="swiper-button-next-testimonial flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
                 <svg
                   width="36"
                   height="36"
@@ -248,7 +255,7 @@ export default function BlockTestimonials({
             </div>
           )}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }

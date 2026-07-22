@@ -304,7 +304,7 @@ export default function BlockPricingCards({
           </div>
           {/* Custom Navigation */}
           <div className="flex justify-center items-center gap-6 mt-2 md:mt-4">
-            <button className="swiper-button-prev-pricing flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded disabled:opacity-30 disabled:cursor-not-allowed">
+            <button className="swiper-button-prev-pricing flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
               <svg
                 width="36"
                 height="36"
@@ -316,7 +316,7 @@ export default function BlockPricingCards({
                 <path d="M19 12H5M5 12L12 5M5 12L12 19" />
               </svg>
             </button>
-            <button className="swiper-button-next-pricing flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded disabled:opacity-30 disabled:cursor-not-allowed">
+            <button className="swiper-button-next-pricing flex items-center justify-center w-12 h-12 text-[#1a1a1a] hover:text-black transition-colors cursor-pointer outline-none rounded [&.swiper-button-disabled]:opacity-30 [&.swiper-button-disabled]:cursor-not-allowed">
               <svg
                 width="36"
                 height="36"

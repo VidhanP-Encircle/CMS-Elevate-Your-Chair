@@ -75,18 +75,31 @@ export default function BlockTextImage({
   const buttonColor = globalSettings?.button_color || "#c2b7a3";
   const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
+  // --- Shared variant presets for stagger animation ---
+  const childVariant = (delay: number, y: number = 15) => ({
+    hidden: { opacity: 0, y },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay, ease: "easeOut" as const } }
+  });
+
   // --- Inner content (shared between card and direct modes) ---
   const renderContent = () => (
-    <div className={hasBgImage ? "px-6 md:px-12.5 lg:px-15 py-8 md:py-10 lg:py-12.5" : "px-6 md:px-8 py-8 md:py-10"}>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={{
+        hidden: {},
+        visible: {}
+      }}
+      style={{ willChange: 'transform, opacity' }}
+      className={hasBgImage ? "px-6 md:px-12.5 lg:px-15 py-8 md:py-10 lg:py-12.5" : "px-6 md:px-8 py-8 md:py-10"}
+    >
       {/* Header */}
       <div className="flex flex-col items-center text-center max-w-200 mx-auto mb-8 md:mb-8 lg:mb-10">
         {/* Title - Full WYSIWYG HTML from Directus */}
         {title && (
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+            variants={childVariant(0)}
             className="
               prose max-w-none
               prose-p:m-0 prose-p:leading-[1.15]
@@ -104,10 +117,7 @@ export default function BlockTextImage({
         {/* Initial Text - appears AFTER the title */}
         {initial_text && (
           <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+            variants={childVariant(0.05, 10)}
             className="font-sans text-[14px] md:text-[15px] font-black tracking-wider mt-5 md:mt-6 block text-[#1a1a1a]"
           >
             {initial_text}
@@ -117,10 +127,7 @@ export default function BlockTextImage({
         {/* Label - simple text below the title, 24px, not bold */}
         {label && (
           <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            variants={childVariant(0.1, 10)}
             className="font-sans text-[24px] font-light text-[#1a1a1a] block mt-4"
           >
             {label}
@@ -131,10 +138,7 @@ export default function BlockTextImage({
       {/* Content - WYSIWYG HTML from Directus */}
       {content && (
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.35, ease: "easeOut" }}
+          variants={childVariant(0)}
           className="
             prose max-w-220 mx-auto text-center mb-8 md:mb-8 lg:mb-10
             prose-p:font-sans prose-p:font-light prose-p:text-[14px] md:prose-p:text-[15px] prose-p:leading-[1.7] prose-p:text-[#555555] prose-p:mb-5 last:prose-p:mb-0
@@ -148,10 +152,7 @@ export default function BlockTextImage({
       {/* Photo Grid - 4 items */}
       {items.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          variants={childVariant(0)}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6 mb-8 md:mb-8 lg:mb-10"
         >
           {items.map((item: TextImageItem, index: number) => {
@@ -162,9 +163,8 @@ export default function BlockTextImage({
             const itemTitle = item.title || "";
 
             return (
-              <motion.div
+              <div
                 key={item.id || index}
-                initial={{ opacity: 1, y: 0 }}
                 className="group relative flex flex-col items-center text-center"
               >
                 {/* Photo */}
@@ -200,7 +200,7 @@ export default function BlockTextImage({
                     {itemTitle}
                   </h3>
                 )}
-              </motion.div>
+              </div>
             );
           })}
         </motion.div>
@@ -209,10 +209,7 @@ export default function BlockTextImage({
       {/* Bottom Text */}
       {bottom_text && (
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          variants={childVariant(0)}
         >
           <span className="font-sans text-[14px] md:text-[15px] font-black tracking-wide text-[#1a1a1a] block text-center">
             {bottom_text}
@@ -223,10 +220,7 @@ export default function BlockTextImage({
       {/* CTA Button */}
       {primaryButtonText && primaryButtonUrl && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+          variants={childVariant(0, 20)}
           className="flex justify-center mt-5"
         >
           <DynamicButton 
@@ -240,7 +234,7 @@ export default function BlockTextImage({
           />
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 
   return (
