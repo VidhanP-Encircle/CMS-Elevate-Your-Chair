@@ -1,19 +1,25 @@
 import { getDirectus } from "@/lib/directus";
 import Link from "next/link";
 import Image from "next/image";
-import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import FooterSubscribeForm from "@/components/Footer/FooterSubscribeForm";
-import { FooterProps, BlockButton, SocialLink, FormField, Form } from "@/lib/types";
+import {
+  FooterProps,
+  BlockButton,
+  SocialLink,
+  FormField,
+  Form,
+} from "@/lib/types";
 import { readItems } from "@directus/sdk";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
-import AnimatedImageGrid from "@/components/AnimatedImageGrid/AnimatedImageGrid";
+import AnimatedImageGrid from "./AnimatedImageGrid";
+import RichText from "@/components/RichText/RichText";
 
-export default async function Footer({
-  globalSettings,
-}: FooterProps) {
+export default async function Footer({ globalSettings }: FooterProps) {
   try {
     const directus = await getDirectus();
-    const socialLinksData: SocialLink[] = await directus.request(readItems("social_links"));
+    const socialLinksData: SocialLink[] = await directus.request(
+      readItems("social_links"),
+    );
     const footerImagesData = await directus.request(readItems("footer_images"));
 
     // Resolve dynamic footer form from globalSettings.footer_form
@@ -28,7 +34,7 @@ export default async function Footer({
           fields: ["id", "name", "success_message"],
           filter: { id: { _eq: footerFormSetting } },
           limit: 1,
-        })
+        }),
       )) as Form[];
       subscribeForm = forms?.[0] ?? null;
     }
@@ -39,7 +45,7 @@ export default async function Footer({
         readItems("form", {
           fields: ["id", "name", "success_message"],
           limit: 1,
-        })
+        }),
       )) as Form[];
       subscribeForm = forms?.[0] ?? null;
     }
@@ -51,14 +57,15 @@ export default async function Footer({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             filter: { form_id: { _eq: subscribeForm.id } } as any,
             sort: ["sort"],
-          })
+          }),
         )) as FormField[])
       : [];
 
     const year = new Date().getFullYear();
 
     const madeByLogoId =
-      typeof globalSettings?.made_by_logo === "object" && globalSettings?.made_by_logo !== null
+      typeof globalSettings?.made_by_logo === "object" &&
+      globalSettings?.made_by_logo !== null
         ? (globalSettings.made_by_logo as { id?: string }).id
         : (globalSettings?.made_by_logo as string | undefined);
 
@@ -66,16 +73,21 @@ export default async function Footer({
     if (Array.isArray(globalSettings.buttons)) {
       buttonList = globalSettings.buttons
         .map((junction: { buttons_id?: BlockButton | number } | BlockButton) =>
-          typeof junction === "object" && junction !== null && "buttons_id" in junction && typeof junction.buttons_id === "object"
+          typeof junction === "object" &&
+          junction !== null &&
+          "buttons_id" in junction &&
+          typeof junction.buttons_id === "object"
             ? (junction.buttons_id as BlockButton)
-            : (junction as BlockButton)
+            : (junction as BlockButton),
         )
-        .filter((item): item is BlockButton => typeof item === "object" && item !== null && "button_text" in item);
+        .filter(
+          (item): item is BlockButton =>
+            typeof item === "object" && item !== null && "button_text" in item,
+        );
     }
 
     const footerBgColor = "#1a1a1a";
     const footerTextColor = "#ffffff";
-    const footerSubtitleColor = globalSettings?.subtitle_color || "#f9f9f9";
     const footerLabelSize = globalSettings?.global_label_size || undefined;
 
     return (
@@ -124,28 +136,17 @@ export default async function Footer({
         >
           {/* Newsletter Column */}
           <div className="flex flex-col w-full md:w-75 lg:w-87.5 xl:w-100 shrink-0 gap-7.5">
-            <div
+            <RichText
+              content={globalSettings.content}
               className="
-                flex flex-col gap-4
-                prose prose-invert
-                prose-p:my-0 prose-p:text-[14px] prose-p:leading-5.5 prose-p:text-[#f9f9f9]
-                prose-h1:my-0 prose-h1:text-[32px] prose-h1:leading-[1.1] prose-h1:uppercase prose-h1:font-black prose-h1:text-white
+                prose-invert
+                prose-p:my-0 prose-p:text-[14px] prose-p:leading-[1.4] md:prose-p:leading-5.5 prose-p:text-[#f9f9f9]
+                prose-h1:my-0 prose-h1:text-[28px] md:prose-h1:text-[32px] prose-h1:leading-[1.1] prose-h1:uppercase prose-h1:font-black prose-h1:text-white
                 prose-h2:text-white prose-h2:font-title prose-h2:mt-4 prose-h2:mb-2
                 prose-h3:text-white prose-h3:font-title prose-h3:mt-3 prose-h3:mb-1
-                prose-headings:text-white prose-headings:font-title
-                prose-strong:text-white prose-strong:font-bold
-                prose-em:text-[#f9f9f9]
-                prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                prose-ul:list-disc prose-ul:pl-5 prose-li:text-[#f9f9f9] prose-li:leading-[1.6] prose-li:mb-1
-                prose-ol:list-decimal prose-ol:pl-5
-                prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#f9f9f9]
-                prose-img:rounded-lg prose-img:my-4
-                prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2
-                prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
                 prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#c2b7a3]
                 prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-700
               "
-              dangerouslySetInnerHTML={{ __html: globalSettings.content }}
             />
             <FooterSubscribeForm
               formId={subscribeForm?.id ?? ""}
@@ -154,7 +155,6 @@ export default async function Footer({
               buttons={buttonList}
               globalSettings={globalSettings}
             />
-
           </div>
 
           {/* Links and Logo Column */}
@@ -176,15 +176,20 @@ export default async function Footer({
             <div className="flex flex-col w-full gap-6.25">
               {/* Links - Justify Between */}
               <div className="flex flex-wrap justify-between items-center gap-x-5 gap-y-2.5 w-full">
-                {globalSettings.link_details?.map((link: { link_text: string; link_url: string }, idx: number) => (
-                  <Link
-                    key={idx}
-                    href={link.link_url}
-                    className="font-sans text-[14px] font-medium text-[#f9f9f9] no-underline hover:text-white transition-colors tracking-wide"
-                  >
-                    {link.link_text}
-                  </Link>
-                ))}
+                {globalSettings.link_details?.map(
+                  (
+                    link: { link_text: string; link_url: string },
+                    idx: number,
+                  ) => (
+                    <Link
+                      key={idx}
+                      href={link.link_url}
+                      className="font-sans text-[14px] font-medium text-[#f9f9f9] no-underline hover:text-white transition-colors tracking-wide"
+                    >
+                      {link.link_text}
+                    </Link>
+                  ),
+                )}
               </div>
 
               {/* Horizontal Line */}

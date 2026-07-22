@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BlockContentProps } from '@/lib/types';
+import { BlockContentProps } from "@/lib/types";
+import RichText from "@/components/RichText/RichText";
 
 export default function BlockContent({
   data,
-  globalSettings,
 }: BlockContentProps) {
   const { title, subtitle, content, background_color } = data;
 
@@ -41,15 +41,10 @@ export default function BlockContent({
         className="flex flex-col items-center w-full gap-5 md:gap-8"
       >
         {title && (
-          <div
-            className={`
-              w-full text-center
-              prose ${isDarkBg ? "prose-invert" : ""} max-w-none
-              prose-p:my-0 prose-p:leading-[1.2] prose-p:uppercase prose-p:font-title prose-p:text-[36px] prose-p:font-light prose-p:tracking-wider
-              prose-strong:font-bold prose-strong:font-title
-              prose-headings:font-title
-            `}
-            dangerouslySetInnerHTML={{ __html: title }}
+          <RichText
+            variant="title"
+            content={title}
+            className={`w-full text-center ${isDarkBg ? "prose-invert" : ""}`}
           />
         )}
 
@@ -64,22 +59,21 @@ export default function BlockContent({
         )}
 
         {content && (
-          <div
+          <RichText
+            variant="content"
+            content={content}
             className={`
-              w-full text-center
-              prose max-w-none ${isDarkBg ? "prose-invert" : ""}
+              w-full max-w-4xl xl:max-w-6xl 2xl:max-w-7xl
               mx-auto
-              prose-p:text-[16px] prose-p:font-sans prose-p:font-light prose-p:leading-[1.8] ${
+              prose-p:font-light prose-p:leading-[1.8] ${
                 isDarkBg ? "prose-p:text-gray-300" : "prose-p:text-gray-600"
               }
-              prose-strong:font-bold ${
+              ${
                 isDarkBg
                   ? "prose-strong:text-white"
                   : "prose-strong:text-gray-800"
               }
-              prose-a:underline hover:prose-a:opacity-80
             `}
-            dangerouslySetInnerHTML={{ __html: content }}
           />
         )}
       </motion.div>

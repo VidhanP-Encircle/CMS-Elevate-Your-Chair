@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+
 import { motion } from "framer-motion";
-import HoverButton from "@/components/HoverButton/HoverButton";
+
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import RichText from "@/components/RichText/RichText";
 import { BlockTitleProps, BlockButton } from "@/lib/types";
 
 export default function BlockTitle({
@@ -16,7 +17,7 @@ export default function BlockTitle({
     buttons,
     background_image,
     background_video,
-    subtitle_size,
+
   } = data;
 
   // Resolve M2M buttons (Directus returns junction array with buttons_id)
@@ -146,38 +147,35 @@ export default function BlockTitle({
                     transition: { duration: 0.8, ease: "easeOut" },
                   },
                 }}
-                className="
-                  flex flex-col justify-center items-center gap-2.5 w-full text-center
-                  prose prose-invert
-                  prose-p:my-0 prose-p:leading-[1.2] prose-p:uppercase prose-p:font-title
-                  prose-h1:my-0 prose-h1:leading-[1.2] prose-h1:uppercase prose-h1:font-bold
-                  prose-h2:my-0 prose-h2:leading-[1.2] prose-h2:uppercase prose-h2:font-bold
-                  prose-h3:my-0 prose-h3:leading-[1.2]
-                  prose-headings:font-title prose-headings:text-white
-                  prose-strong:font-title prose-strong:text-white
-                  prose-em:text-white
-                  prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-disc prose-ul:pl-5 prose-ul:text-left prose-li:leading-[1.6] prose-li:mb-1
-                  prose-ol:list-decimal prose-ol:pl-5 prose-ol:text-left
-                  prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                  prose-img:rounded-lg prose-img:my-4
-                  prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2
-                  prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
-                  prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#c2b7a3]
-                  prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-700
-                  font-title
-                "
-                style={
-                  {
-                    fontSize: titleSize
-                      ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
-                      : undefined,
-                    "--tw-prose-headings": "inherit",
-                    "--tw-prose-p": "inherit",
-                  } as React.CSSProperties
-                }
-                dangerouslySetInnerHTML={{ __html: title }}
-              />
+              >
+                <RichText
+                  variant="title"
+                  content={title}
+                  className="
+                    flex flex-col justify-center items-center gap-2.5 w-full text-center
+                    prose-invert
+                    prose-headings:text-white prose-strong:text-white prose-em:text-white
+                    prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                    prose-ul:list-disc prose-ul:pl-5 prose-ul:text-left prose-li:leading-[1.6] prose-li:mb-1
+                    prose-ol:list-decimal prose-ol:pl-5 prose-ol:text-left
+                    prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                    prose-img:rounded-lg prose-img:my-4
+                    prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2
+                    prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
+                    prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#c2b7a3]
+                    prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-700
+                  "
+                  style={
+                    {
+                      fontSize: titleSize
+                        ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                        : undefined,
+                      "--tw-prose-headings": "inherit",
+                      "--tw-prose-p": "inherit",
+                    } as React.CSSProperties
+                  }
+                />
+              </motion.div>
             )}
 
             {subtitle && (

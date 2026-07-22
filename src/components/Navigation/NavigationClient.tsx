@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavigationClientProps, NavigationItem } from "@/lib/types";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
 
 export default function NavigationClient({
   globalSettings,
@@ -259,20 +259,17 @@ export default function NavigationClient({
 
             {/* Solid dark banner at the bottom containing the button */}
             <div className="w-full bg-[#151515] py-8 flex justify-center px-8 md:px-12.5">
-              <HoverButton
-                href="http://elevate-by-blake-charles-salon.mn.co/plans/1896001"
-                target="_blank"
-                className="font-bold font-sans text-[14px] leading-5 uppercase px-6 py-3 w-full max-w-75 text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
-                style={{
-                  backgroundColor: buttonColor,
-                  color: buttonTextColor,
+              <DynamicButton
+                btn={{
+                  button_text: "Join Elevate",
+                  button_url: "http://elevate-by-blake-charles-salon.mn.co/plans/1896001",
+                  button_fill_color: buttonColor,
+                  button_text_color: buttonTextColor,
                 }}
-                hoverFill={globalSettings?.button_hover_fill_color}
-                hoverText={globalSettings?.button_hover_text_color}
+                className="font-bold font-sans text-[14px] leading-5 uppercase px-6 py-3 w-full max-w-75 text-center transition-transform duration-300 hover:-translate-y-0.5 border-none"
                 onClick={() => setIsOpen(false)}
-              >
-                Join Elevate
-              </HoverButton>
+                globalSettings={globalSettings}
+              />
             </div>
           </motion.div>
         )}
@@ -301,7 +298,7 @@ export default function NavigationClient({
                 className="w-full"
               >
                 {/* Input container matching screenshot */}
-                <div className="flex items-center bg-white h-11 md:h-12 rounded-none border border-transparent focus-within:border-[#c2b7a3] w-full">
+                <div className="flex items-center px-4 bg-white h-11 md:h-12 rounded-none border border-transparent focus-within:border-[#c2b7a3] w-full">
                   {/* Search Icon inside white bar */}
                   <svg
                     className="w-5 h-5 mr-3 shrink-0"

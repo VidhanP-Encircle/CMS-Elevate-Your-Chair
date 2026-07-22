@@ -1,10 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
-import HoverButton from "@/components/HoverButton/HoverButton";
+
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import { BlockJourneyAppProps, BlockButton } from '@/lib/types';
 
@@ -31,7 +29,7 @@ export default function BlockJourneyApp({
   const bgColor = globalSettings?.bg_color || "#151515";
   const textColor = globalSettings?.text_color || "#ffffff";
   const subtitleColor = globalSettings?.subtitle_color || "#a3a3a3";
-  const accentColor = globalSettings?.button_text_color || "#a3a3a3";
+
 
   // Dynamic font size fallbacks
   const titleSize = data.title_size || globalSettings?.global_title_size || 48;
@@ -169,11 +167,6 @@ export default function BlockJourneyApp({
                 className="flex flex-wrap gap-4 md:gap-5"
               >
                 {buttonList.map((btn: BlockButton, index: number) => {
-                  const defaultBorder =
-                    btn.button_border_color ||
-                    globalSettings?.button_color ||
-                    accentColor;
-                    
                   return (
                     <DynamicButton 
                       key={index} 

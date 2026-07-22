@@ -153,7 +153,7 @@ export default function BlockBlogs({
     return list;
   }, [rawBlogs, selectedCategory, selectedAuthor, selectedDate, authorsMapData]);
 
-  const visibleBlogs = filteredBlogs.slice(0, visibleCount);
+
 
   // Helper to format raw strings like "daily_devotionals" into "Daily Devotionals"
   const formatLabel = (val: string) => {
@@ -167,7 +167,7 @@ export default function BlockBlogs({
     return val;
   };
 
-  const { title, background_color, blogs, buttons } = data;
+  const { title, background_color, buttons } = data;
 
   // Background Color
   const bgColor = background_color || globalSettings?.bg_color || "#ffffff";
@@ -180,7 +180,7 @@ export default function BlockBlogs({
     if (typeof html === "string") {
       try {
         parsed = JSON.parse(html);
-      } catch (e) {
+      } catch {
         // Not JSON, treat as raw HTML string
         const text = html
           .replace(/<[^>]+>/g, "")
@@ -251,9 +251,10 @@ export default function BlockBlogs({
           className="w-full aspect-4/3 relative mb-6 overflow-hidden bg-gray-200 block"
         >
           <Image
-            src={getDirectusImageUrl(blog.photo)}
+            src={getDirectusImageUrl(blog.photo, { width: 600, quality: 80, format: "webp" })}
             alt="Blog image"
             fill
+            priority={index < 2}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
           />
@@ -311,7 +312,7 @@ export default function BlockBlogs({
                   : "#1a1a1a",
             }}
           >
-            {blog.slug_button_text || "READ MORE"}
+            {blog.slug_button_text}
             <svg
               width="20"
               height="20"
@@ -685,7 +686,7 @@ export default function BlockBlogs({
                 if (typeof parsedDetails === "string") {
                   try {
                     parsedDetails = JSON.parse(parsedDetails);
-                  } catch (e) {}
+                  } catch {}
                 }
                 if (
                   parsedDetails &&

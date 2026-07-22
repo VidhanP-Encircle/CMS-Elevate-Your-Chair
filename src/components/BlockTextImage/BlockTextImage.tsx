@@ -1,9 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import { BlockTextImageProps, BlockButton, TextImageItem } from "@/lib/types";
 
@@ -19,8 +17,6 @@ export default function BlockTextImage({
     label,
     content,
     bottom_text,
-    button_text,
-    button_url,
     background_image,
     text_image,
     buttons,
@@ -38,12 +34,7 @@ export default function BlockTextImage({
       .filter((item: BlockButton) => typeof item === "object" && item !== null);
   }
 
-  // Use either legacy direct button fields or first M2M button
   const primaryButton = buttonList.length > 0 ? buttonList[0] : null;
-  const primaryButtonText = primaryButton?.button_text || button_text;
-  const primaryButtonUrl = primaryButton?.button_url || button_url;
-  const primaryButtonFill = primaryButton?.button_fill_color || undefined;
-  const primaryButtonColor = primaryButton?.button_text_color || globalSettings?.button_text_color || "#1a1a1a";
 
   // Resolve text_image items - Directus M2M returns junction objects
   let items: TextImageItem[] = [];
@@ -72,8 +63,6 @@ export default function BlockTextImage({
   // Colors
   const textColor = "#1a1a1a";
   const subtitleColor = "#666666";
-  const buttonColor = globalSettings?.button_color || "#c2b7a3";
-  const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
 
   // --- Shared variant presets for stagger animation ---
   const childVariant = (delay: number, y: number = 15) => ({
@@ -218,18 +207,13 @@ export default function BlockTextImage({
       )}
 
       {/* CTA Button */}
-      {primaryButtonText && primaryButtonUrl && (
+      {primaryButton && (
         <motion.div
           variants={childVariant(0, 20)}
           className="flex justify-center mt-5"
         >
           <DynamicButton 
-            btn={primaryButton || {
-              button_text: primaryButtonText,
-              button_url: primaryButtonUrl,
-              button_fill_color: primaryButtonFill,
-              button_text_color: primaryButtonColor,
-            }}
+            btn={primaryButton}
             globalSettings={globalSettings} 
           />
         </motion.div>

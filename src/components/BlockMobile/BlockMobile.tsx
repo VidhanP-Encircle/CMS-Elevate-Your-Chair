@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
-import HoverButton from "@/components/HoverButton/HoverButton";
+
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import { BlockMobileProps, BlockButton, SocialLink } from "@/lib/types";
+import { getDirectusImageUrl } from "@/lib/utils";
 
 export default function BlockMobile({
   data,
@@ -19,8 +17,6 @@ export default function BlockMobile({
     content,
     image,
     image_position,
-    button_text,
-    button_url,
     content_size,
     buttons,
   } = data;
@@ -43,15 +39,7 @@ export default function BlockMobile({
       );
   }
 
-  // Use either legacy direct button fields or first M2M button
   const primaryButton = buttonList.length > 0 ? buttonList[0] : null;
-  const primaryButtonText = primaryButton?.button_text || button_text;
-  const primaryButtonUrl = primaryButton?.button_url || button_url;
-  const primaryButtonFill = primaryButton?.button_fill_color || undefined;
-  const primaryButtonColor =
-    primaryButton?.button_text_color ||
-    globalSettings?.button_text_color ||
-    "#1a1a1a";
 
   // image can be a string UUID or an expanded Directus file object { id: "..." }
   const imageId =
@@ -61,20 +49,9 @@ export default function BlockMobile({
 
   // Dynamic values strictly from global_settings (block doesn't have these fields)
   const titleSize = globalSettings?.global_title_size || 48;
-  const buttonColor = globalSettings?.button_color || "#c2b7a3";
-  const buttonTextColor = globalSettings?.button_text_color || "#1a1a1a";
   const contentSize =
     content_size || globalSettings?.global_content_size || undefined;
   const subtitleSizeVal = contentSize ? contentSize + 4 : 20;
-
-  // Background and Text colors (Hardcoded aesthetic defaults as requested)
-  const globalHoverFill = globalSettings?.button_hover_fill_color;
-  const globalHoverText = globalSettings?.button_hover_text_color;
-  // Resolve per-button hover colors with global fallback
-  const resolvedHoverFill =
-    primaryButton?.button_hover_fill_color || globalHoverFill;
-  const resolvedHoverText =
-    primaryButton?.button_hover_text_color || globalHoverText;
 
   const bgColor = "#fcfcfc";
   const textColor = "#1a1a1a";
@@ -320,8 +297,7 @@ export default function BlockMobile({
 
             {/* Fallback for legacy single button if no buttonList is present */}
             {buttonList.length === 0 &&
-              primaryButtonText &&
-              primaryButtonUrl && (
+              primaryButton && (
                 <motion.div
                   variants={{
                     hidden: { opacity: 0, y: 15 },
@@ -330,12 +306,7 @@ export default function BlockMobile({
                 >
                   <div className="mt-8 flex justify-center">
                     <DynamicButton
-                      btn={{
-                        button_text: primaryButtonText,
-                        button_url: primaryButtonUrl,
-                        button_fill_color: primaryButtonFill,
-                        button_text_color: primaryButtonColor,
-                      }}
+                      btn={primaryButton}
                       globalSettings={globalSettings}
                     />
                   </div>
@@ -355,10 +326,11 @@ export default function BlockMobile({
           {imageId && (
             <div className="w-full flex justify-center relative">
               <Image
-                src={`/api/assets/${imageId}`}
+                src={getDirectusImageUrl(imageId, { width: 800, quality: 80, format: "webp" })}
                 alt="Mobile preview"
                 width={480}
                 height={600}
+                priority
                 className="w-auto h-auto max-h-95 md:max-h-115 object-contain object-center"
               />
             </div>

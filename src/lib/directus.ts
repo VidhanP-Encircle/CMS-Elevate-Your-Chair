@@ -6,19 +6,30 @@ const directus = createDirectus<Schema>("http://127.0.0.1:8055")
   .with(rest());
 
 let tokenExpiresAt = 0;
+let loginPromise: Promise<void> | null = null;
 
 export const getDirectus = async () => {
   const now = Date.now();
-  // Directus tokens expire in 15 minutes by default.
-  // We re-login if the token is expired or within 1 minute of expiring.
+  
   if (now > tokenExpiresAt) {
-    try {
-      await directus.login({ email: 'admin@gmail.com', password: 'admin123' });
-      tokenExpiresAt = now + 14 * 60 * 1000; // 14 minutes
-    } catch (e) {
-      console.error("Directus login failed:", e);
+    if (!loginPromise) {
+      loginPromise = (async () => {
+        try {
+          await directus.login({ email: 'admin@gmail.com', password: 'admin123' });
+          tokenExpiresAt = Date.now() + 14 * 60 * 1000; // 14 minutes
+        } catch (e) {
+          console.error("Directus login failed:", e);
+          throw e; // Rethrow to prevent unauthenticated queries
+        } finally {
+          loginPromise = null;
+        }
+      })();
     }
+    
+    // Wait for the in-progress login
+    await loginPromise;
   }
+  
   return directus;
 };
 

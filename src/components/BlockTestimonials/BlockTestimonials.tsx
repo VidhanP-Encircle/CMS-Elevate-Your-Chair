@@ -4,14 +4,13 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import { BlockTestimonialsProps, TestimonialItem } from "@/lib/types";
 
 export default function BlockTestimonials({
   data,
-  globalSettings,
 }: BlockTestimonialsProps) {
   if (!data) return null;
 

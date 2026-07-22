@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper/types";
 import "swiper/css";
 import { BlockCardProps, CardItem } from '@/lib/types';
+import RichText from "@/components/RichText/RichText";
 
 export default function BlockCard({
   data,
@@ -65,23 +66,20 @@ export default function BlockCard({
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.1, ease: "easeOut" } }
               }}
-              className="
-                prose prose-invert max-w-none text-center
-                prose-p:m-0 prose-p:leading-[1.1]
-                prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
-                prose-headings:font-light prose-headings:m-0 prose-headings:text-white
-                prose-strong:text-white prose-strong:font-black prose-strong:font-title
-                prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                font-title font-light uppercase tracking-wide
-              "
-              style={{
-                fontSize: titleSize
-                  ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
-                  : undefined,
-                color: textColor,
-              }}
-              dangerouslySetInnerHTML={{ __html: title }}
-            />
+              className="w-full"
+            >
+              <RichText
+                variant="title"
+                content={title}
+                className="prose prose-invert max-w-none text-center prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide prose-headings:font-light prose-headings:m-0 prose-headings:text-white font-title font-light uppercase tracking-wide"
+                style={{
+                  fontSize: titleSize
+                    ? `clamp(${Math.round(titleSize * 0.35)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                    : undefined,
+                  color: textColor,
+                }}
+              />
+            </motion.div>
           )}
 
           {/* Subtitle */}
@@ -91,33 +89,23 @@ export default function BlockCard({
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.25, ease: "easeOut" } }
               }}
-              className="
-                prose prose-invert max-w-220 w-full
-                prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0
-                prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 prose-headings:text-white
-                prose-strong:text-white prose-strong:font-bold
-                prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
-                prose-li:leading-[1.6] prose-li:mb-1
-                prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                prose-img:rounded-lg prose-img:my-4
-                prose-table:w-full prose-table:border-collapse
-                prose-th:border prose-th:border-gray-600 prose-th:px-3 prose-th:py-2 prose-th:bg-gray-800
-                prose-td:border prose-td:border-gray-600 prose-td:px-3 prose-td:py-2
-                prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
-              "
-              style={
-                {
-                  color: subtitleColor,
-                  fontSize: subtitleSize
-                    ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
-                    : undefined,
-                  "--tw-prose-body": subtitleColor,
-                } as React.CSSProperties & { [key: string]: string }
-              }
-              dangerouslySetInnerHTML={{ __html: subtitle }}
-            />
+              className="w-full"
+            >
+              <RichText
+                variant="subtitle"
+                content={subtitle}
+                className="prose prose-invert max-w-220 w-full prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-0 prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2 prose-headings:text-white"
+                style={
+                  {
+                    color: subtitleColor,
+                    fontSize: subtitleSize
+                      ? `clamp(14px, ${(subtitleSize / 12).toFixed(3)}vw, ${subtitleSize}px)`
+                      : undefined,
+                    "--tw-prose-body": subtitleColor,
+                  } as React.CSSProperties & { [key: string]: string }
+                }
+              />
+            </motion.div>
           )}
         </div>
 
@@ -128,7 +116,7 @@ export default function BlockCard({
               hidden: { opacity: 0, y: 15 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.4, ease: "easeOut" } }
             }}
-            className="w-full relative mt-10 flex flex-col items-center"
+            className="w-full relative flex flex-col items-center"
           >
             <div className="w-full">
               <Swiper
@@ -174,7 +162,7 @@ export default function BlockCard({
                       {isWhiteTheme ? (
                         /* Light Theme Card */
                         <div
-                          className="w-full h-full min-h-70 min-w-0 flex flex-col items-center justify-between p-4 md:p-5"
+                          className="w-full h-full min-w-0 flex flex-col items-center justify-between p-4 md:p-5"
                           style={{ backgroundColor: "#ffffff" }}
                         >
                           <div className="w-full flex flex-col items-center text-center">
@@ -208,16 +196,15 @@ export default function BlockCard({
 
                             {/* Content */}
                             {card.content && (
-                              <div
+                              <RichText
+                                variant="content"
+                                content={card.content}
                                 className="prose max-w-full"
                                 style={{
                                   color: "#555555",
                                   fontSize: contentSize
                                     ? `clamp(12px, ${(contentSize / 14).toFixed(3)}vw, 14px)`
                                     : undefined,
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html: card.content,
                                 }}
                               />
                             )}
@@ -237,7 +224,7 @@ export default function BlockCard({
                       ) : (
                         /* Dark Theme Card - gradient border via CSS mask */
                         <div
-                          className="w-full h-full min-h-70 min-w-0 flex flex-col items-center text-center px-3 py-6 md:py-8 relative hover:brightness-110 transition-all"
+                          className="w-full h-full min-w-0 flex flex-col items-center text-center px-3 py-6 md:py-8 relative hover:brightness-110 transition-all"
                           style={{ backgroundColor: "#1a1a1a" }}
                         >
                           {/* Border overlay with CSS mask */}
@@ -280,25 +267,15 @@ export default function BlockCard({
 
                             {/* Content */}
                             {card.content && (
-                              <div
-                                className="
-                                  prose prose-invert
-                                  prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[13px] md:prose-p:text-[14px] prose-p:text-[#a3a3a3]
-                                  prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-1.5 prose-headings:mb-0.5
-                                  prose-strong:text-white prose-strong:font-bold
-                                  prose-a:text-[#c2b7a3] prose-a:no-underline
-                                  prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[13px] md:prose-li:text-[14px] prose-li:leading-normal prose-li:text-[#a3a3a3]
-                                  prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded prose-code:text-[#a3a3a3]
-                                  max-w-full
-                                "
+                              <RichText
+                                variant="content"
+                                content={card.content}
+                                className="prose prose-invert max-w-full prose-p:my-0 prose-p:leading-normal prose-p:text-center prose-p:text-[13px] md:prose-p:text-[14px] prose-p:text-[#a3a3a3] prose-headings:font-title prose-headings:font-bold prose-headings:text-center prose-headings:text-white prose-headings:mt-1.5 prose-headings:mb-0.5 prose-strong:text-white prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline prose-ul:list-none prose-ul:pl-0 prose-li:text-center prose-li:text-[13px] md:prose-li:text-[14px] prose-li:leading-normal prose-li:text-[#a3a3a3] prose-code:text-sm prose-code:bg-gray-800 prose-code:px-1 prose-code:rounded prose-code:text-[#a3a3a3]"
                                 style={{
                                   color: "#a3a3a3",
                                   fontSize: contentSize
                                     ? `clamp(12px, ${(contentSize / 14).toFixed(3)}vw, 14px)`
                                     : undefined,
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html: card.content,
                                 }}
                               />
                             )}

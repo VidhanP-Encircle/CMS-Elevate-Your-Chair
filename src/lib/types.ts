@@ -15,11 +15,6 @@ export interface Author {
 export interface Notice {
   id: string;
   text: string;
-  button_text?: string | null;
-  button_url?: string | null;
-  button_border?: string | null;
-  button_fill?: string | null;
-  button_text_color?: string | null;
   buttons?: Array<{ buttons_id: BlockButton | number }>;
 }
 
@@ -100,17 +95,6 @@ export interface BlockTitle {
   content?: string | null;
 }
 
-export interface BlockJourneyAppButton {
-  button_text: string;
-  button_url: string;
-  button_border_color: string;
-  button_text_color: string;
-  button_fill_color?: string;
-  button_hover_text_color?: string | null;
-  button_hover_fill_color?: string | null;
-  logo?: DirectusFile;
-}
-
 export interface BlockJourneyApp {
   id: string;
   image?: DirectusFile;
@@ -118,11 +102,9 @@ export interface BlockJourneyApp {
   title: string | null;
   /** WYSIWYG - rich HTML content */
   content: string | null;
-  buttons: BlockJourneyAppButton[];
+  buttons: Array<{ buttons_id: BlockButton | number }>;
   title_size?: number;
   content_size?: number | null;
-  button_hover_text_color?: string | null;
-  button_hover_fill_color?: string | null;
 }
 
 export interface BlockMobile {
@@ -135,8 +117,6 @@ export interface BlockMobile {
   content: string | null;
   image?: DirectusFile;
   image_position: "left" | "right" | string | null;
-  button_text: string | null;
-  button_url: string | null;
   content_size?: number | null;
   contact_information?: boolean | string | null;
   buttons?: Array<{ buttons_id: BlockButton | number }>;
@@ -174,12 +154,6 @@ export interface BlockPricingCard {
   /** WYSIWYG - rich HTML content */
   content: string | null;
   show_benefits: "true" | "false" | string | null;
-  button_text: string | null;
-  button_url: string | null;
-  button_text_color: string | null;
-  button_fill: string | null;
-  button_hover_text_color?: string | null;
-  button_hover_fill_color?: string | null;
   pricing_cards: Array<{
     pricing_cards_id: PricingCardItem | string;
   }>;
@@ -287,8 +261,6 @@ export interface BlockTextImage {
   /** WYSIWYG - rich HTML content */
   content: string | null;
   bottom_text: string | null;
-  button_text: string | null;
-  button_url: string | null;
   background_image?: DirectusFile;
   text_image: Array<{
     text_image_id: TextImageItem | string;

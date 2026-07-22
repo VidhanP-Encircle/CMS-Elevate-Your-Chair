@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import HoverButton from "@/components/HoverButton/HoverButton";
+
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import { BlockFormProps, BlockButton, FormField } from "@/lib/types";
 import { submitFormData } from "@/lib/utils";
@@ -223,28 +223,18 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
               )}
 
               <div className="shrink-0 w-full sm:w-auto flex justify-center">
-                {buttonList.length > 0 ? (
-                  buttonList.map((btn: BlockButton, idx: number) => (
-                    <DynamicButton
-                      key={idx}
-                      btn={btn}
-                      globalSettings={globalSettings}
-                      fallbackFill="#1a1a1a"
-                      fallbackText="#ffffff"
-                      className="w-full sm:w-auto"
-                      type="submit"
-                      disabled={isSubmitting}
-                    />
-                  ))
-                ) : (
-                  <button
+                {buttonList.map((btn: BlockButton, idx: number) => (
+                  <DynamicButton
+                    key={idx}
+                    btn={btn}
+                    globalSettings={globalSettings}
+                    fallbackFill="#1a1a1a"
+                    fallbackText="#ffffff"
+                    className="w-full sm:w-auto"
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex justify-center items-center px-12 py-4 bg-[#1a1a1a] text-white font-sans font-bold text-[14px] uppercase transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {isSubmitting ? "SENDING..." : "SEND"}
-                  </button>
-                )}
+                  />
+                ))}
               </div>
             </div>
           </form>

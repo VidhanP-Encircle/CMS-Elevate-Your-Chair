@@ -1,5 +1,6 @@
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import { BlockLegalProps, BlockLegalDetail } from "@/lib/types";
+import RichText from "@/components/RichText/RichText";
 
 export default function BlockLegal({ data }: BlockLegalProps) {
   if (!data) return null;
@@ -34,10 +35,10 @@ export default function BlockLegal({ data }: BlockLegalProps) {
 
               {/* HTML Content styled using Tailwind Typography */}
               {content && (
-                <div
+                <RichText
+                  content={content}
                   className="
-                    prose max-w-none
-                    font-sans text-[16px] leading-relaxed text-[#2D2D2D]
+                    text-[16px] leading-relaxed text-[#2D2D2D]
                     prose-p:my-2 md:prose-p:my-2.5 prose-p:leading-normal md:prose-p:leading-[1.7] prose-p:text-[#2D2D2D]
                     prose-ul:list-disc prose-ul:pl-5 md:prose-ul:pl-6 prose-ul:my-2 md:prose-ul:my-3 prose-ul:space-y-1 md:prose-ul:space-y-1.5
                     prose-ol:list-decimal prose-ol:pl-5 md:prose-ol:pl-6 prose-ol:my-2 md:prose-ol:my-3 prose-ol:space-y-1 md:prose-ol:space-y-1.5
@@ -45,7 +46,6 @@ export default function BlockLegal({ data }: BlockLegalProps) {
                     prose-strong:text-[#1A1A1A] prose-strong:font-bold
                     prose-a:text-[#1A1A1A] prose-a:underline hover:prose-a:text-black
                   "
-                  dangerouslySetInnerHTML={{ __html: content }}
                 />
               )}
             </div>

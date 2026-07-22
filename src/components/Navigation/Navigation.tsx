@@ -1,5 +1,5 @@
 import { getDirectus } from "@/lib/directus";
-import { GlobalSettings , NavigationProps } from "@/lib/types";
+import { NavigationProps } from "@/lib/types";
 import { readItems } from "@directus/sdk";
 import NavigationClient from "./NavigationClient";
 

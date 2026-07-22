@@ -1,8 +1,7 @@
 import { getDirectus } from "@/lib/directus";
 import { readItems } from "@directus/sdk";
-import { GlobalSettings, Notice, BlockNoticeProps, BlockButton } from "@/lib/types";
+import { BlockNoticeProps, BlockButton, Notice } from "@/lib/types";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import Link from "next/link";
 
 export default async function BlockNotice({
   globalSettings,
@@ -52,8 +51,6 @@ export default async function BlockNotice({
               <DynamicButton
                 key={idx}
                 btn={btn}
-                fallbackFill="#c2b7a3"
-                fallbackText="#1a1a1a"
                 globalSettings={globalSettings}
                 className="text-[13px]! leading-4.5! px-6! py-2! min-h-9! border-0!"
               />

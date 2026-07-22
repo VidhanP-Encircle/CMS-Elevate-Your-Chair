@@ -2,6 +2,19 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    localPatterns: [
+      {
+        pathname: '/**',
+        search: '**',
+      },
+      {
+        pathname: '/**',
+        search: '',
+      },
+      {
+        pathname: '/**',
+      },
+    ],
     // Safe SVG handling
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',

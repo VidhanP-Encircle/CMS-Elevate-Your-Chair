@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
-import PricingBenefits from "@/components/PricingBenefits/PricingBenefits";
+import PricingBenefits from "./PricingBenefits";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -35,10 +35,6 @@ export default function BlockPricingCards({
     title,
     content,
     background_image,
-    button_text,
-    button_url,
-    button_fill,
-    button_text_color,
     show_benefits,
     buttons,
   } = currentBlock;
@@ -55,14 +51,7 @@ export default function BlockPricingCards({
       .filter((item): item is BlockButton => typeof item === "object" && item !== null && "button_text" in item);
   }
 
-  // Use either legacy direct button fields or first M2M button
   const primaryButton = buttonList.length > 0 ? buttonList[0] : null;
-  const primaryButtonText = primaryButton?.button_text || button_text;
-  const primaryButtonUrl = primaryButton?.button_url || button_url;
-  const primaryButtonFill =
-    primaryButton?.button_fill_color || button_fill || "#1a1a1a";
-  const primaryButtonColor =
-    primaryButton?.button_text_color || button_text_color || "#c2b7a3";
 
   const shouldShowBenefits = show_benefits === "true";
 
@@ -334,7 +323,7 @@ export default function BlockPricingCards({
 
       {/* Learn More Button */}
       <div className="relative z-10 w-full flex flex-col items-center">
-        {primaryButtonText && primaryButtonUrl && (
+        {primaryButton && (
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -343,12 +332,7 @@ export default function BlockPricingCards({
             className="mt-4 md:mt-6"
           >
             <DynamicButton 
-              btn={primaryButton || {
-                button_text: primaryButtonText,
-                button_url: primaryButtonUrl,
-                button_fill_color: primaryButtonFill,
-                button_text_color: primaryButtonColor,
-              }}
+              btn={primaryButton}
               globalSettings={globalSettings} 
             />
           </motion.div>

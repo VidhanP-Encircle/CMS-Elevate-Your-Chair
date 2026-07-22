@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import { motion } from "framer-motion";
 import { DynamicButtonProps, BlockButton } from "@/lib/types";
 
 export default function DynamicButton({
@@ -15,6 +17,8 @@ export default function DynamicButton({
   onClick,
   disabled,
 }: DynamicButtonProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   if (!btn) return null;
 
   const btnObj = (
@@ -44,10 +48,10 @@ export default function DynamicButton({
   const globalHoverFill = globalSettings?.button_hover_fill_color;
   const globalHoverText = globalSettings?.button_hover_text_color;
 
-  const fill = (btnObj?.button_fill_color as string | undefined) || buttonColor;
-  const color = (btnObj?.button_text_color as string | undefined) || buttonTextColor;
-  const hFill = (btnObj?.button_hover_fill_color as string | undefined) || globalHoverFill;
-  const hText = (btnObj?.button_hover_text_color as string | undefined) || globalHoverText;
+  const originalBg = (btnObj?.button_fill_color as string | undefined) || buttonColor;
+  const originalColor = (btnObj?.button_text_color as string | undefined) || buttonTextColor;
+  const resolvedHoverFill = (btnObj?.button_hover_fill_color as string | undefined) || globalHoverFill || originalBg;
+  const resolvedHoverText = (btnObj?.button_hover_text_color as string | undefined) || globalHoverText || originalColor;
   const borderCol = btnObj?.button_border_color as string | undefined;
 
   const logoId =
@@ -64,40 +68,93 @@ export default function DynamicButton({
       ? undefined
       : url;
 
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+
+  const combinedClassName = `group relative overflow-hidden inline-flex justify-center items-center font-sans font-extrabold text-[14px] md:text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg gap-2 ${defaultPadding} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`;
+
+  const transitionConfig = {
+    duration: 0.55,
+    ease: [0.25, 0.1, 0.25, 1.0] as const,
+  };
+
+  const innerContent = (
+    <>
+      {/* Button content (text & icon) above overlay */}
+      <span className="relative z-10 flex items-center justify-center gap-2 pointer-events-none">
+        {logoId && (
+          <Image
+            src={`/api/assets/${logoId}`}
+            alt="Button icon"
+            width={20}
+            height={20}
+            className={`w-5 h-5 object-contain ${hoverLogoId ? "group-hover:hidden" : ""}`}
+          />
+        )}
+        {hoverLogoId && (
+          <Image
+            src={`/api/assets/${hoverLogoId}`}
+            alt="Button icon hover"
+            width={20}
+            height={20}
+            className="w-5 h-5 object-contain hidden group-hover:block"
+          />
+        )}
+        {text}
+      </span>
+
+      {/* Fill overlay sliding in from left to right in parallel */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{ backgroundColor: resolvedHoverFill }}
+        initial={false}
+        animate={{ x: isHovered ? "0%" : "-100%" }}
+        transition={transitionConfig}
+      />
+    </>
+  );
+
+  const buttonMotionProps = {
+    className: combinedClassName,
+    style: {
+      backgroundColor: originalBg,
+      ...(borderCol ? { border: `1px solid ${borderCol}` } : {}),
+    },
+    initial: false,
+    animate: {
+      color: isHovered ? resolvedHoverText : originalColor,
+    },
+    transition: {
+      color: transitionConfig,
+    },
+    onMouseEnter: handleMouseEnter,
+    onMouseLeave: handleMouseLeave,
+  };
+
+  if (resolvedHref) {
+    return (
+      <Link
+        href={resolvedHref}
+        onClick={onClick}
+        target={resolvedHref.startsWith("http") ? "_blank" : undefined}
+        rel={resolvedHref.startsWith("http") ? "noopener noreferrer" : undefined}
+        className="inline-block no-underline"
+      >
+        <motion.span {...buttonMotionProps}>
+          {innerContent}
+        </motion.span>
+      </Link>
+    );
+  }
+
   return (
-    <HoverButton
-      href={resolvedHref}
-      type={btnType}
-      disabled={disabled}
+    <motion.button
+      type={btnType || "button"}
       onClick={onClick}
-      className={`group inline-flex justify-center items-center font-sans font-extrabold text-[14px] md:text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg gap-2 ${defaultPadding} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-      style={{
-        backgroundColor: fill,
-        color: color,
-        ...(borderCol ? { border: `1px solid ${borderCol}` } : {}),
-      }}
-      hoverFill={hFill}
-      hoverText={hText}
+      disabled={disabled}
+      {...buttonMotionProps}
     >
-      {logoId && (
-        <Image
-          src={`/api/assets/${logoId}`}
-          alt="Button icon"
-          width={20}
-          height={20}
-          className={`w-5 h-5 object-contain ${hoverLogoId ? "group-hover:hidden" : ""}`}
-        />
-      )}
-      {hoverLogoId && (
-        <Image
-          src={`/api/assets/${hoverLogoId}`}
-          alt="Button icon hover"
-          width={20}
-          height={20}
-          className="w-5 h-5 object-contain hidden group-hover:block"
-        />
-      )}
-      {text}
-    </HoverButton>
+      {innerContent}
+    </motion.button>
   );
 }

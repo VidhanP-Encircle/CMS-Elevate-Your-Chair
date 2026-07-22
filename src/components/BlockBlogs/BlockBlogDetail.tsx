@@ -2,7 +2,6 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import { BlockBlogDetailProps, BlogItem, BlockButton } from "@/lib/types";
@@ -141,8 +140,8 @@ export default function BlockBlogDetail({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="prose max-w-none text-center mb-6 
-                       prose-headings:font-title prose-headings:font-light prose-headings:uppercase prose-headings:text-[48px]
-                       prose-p:font-title prose-p:font-light prose-p:uppercase prose-p:text-[48px]
+                       prose-headings:font-title prose-headings:font-light prose-headings:uppercase prose-headings:text-[28px] sm:prose-headings:text-[36px] md:prose-headings:text-[48px]
+                       prose-p:font-title prose-p:font-light prose-p:uppercase prose-p:text-[28px] sm:prose-p:text-[36px] md:prose-p:text-[48px]
                        prose-headings:m-0 prose-p:m-0 prose-strong:font-black
                        flex flex-col gap-1"
             style={
@@ -208,14 +207,14 @@ export default function BlockBlogDetail({
             if (typeof parsedDetails === "string") {
               try {
                 parsedDetails = JSON.parse(parsedDetails);
-              } catch (e) {}
+              } catch {}
             }
             if (parsedDetails && Array.isArray(parsedDetails)) {
               return parsedDetails.map((detail: { title?: string | null; content?: string | null }, i: number) => (
                 <div key={i} className="flex flex-col gap-4 text-center">
                   {detail.title && (
                     <div
-                      className="prose max-w-none text-center prose-p:font-bold prose-headings:font-bold prose-p:text-[24px] prose-headings:text-[24px]"
+                      className="prose max-w-none text-center prose-p:font-bold prose-headings:font-bold prose-p:text-[18px] md:prose-p:text-[24px] prose-headings:text-[18px] md:prose-headings:text-[24px]"
                       style={
                         {
                           color: textColor,
