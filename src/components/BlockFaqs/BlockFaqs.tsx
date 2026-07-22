@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { BlockFaqsProps } from '@/lib/types';
 
 export default function BlockFaqs({
   data,
-}: {
-  data: any;
-}) {
+}: BlockFaqsProps) {
   if (!data) return null;
 
   const { title, que_ans, background_image } = data;

@@ -2,16 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
+import { ScrollRevealProps } from '@/lib/types';
 
 export default function ScrollReveal({ 
   children, 
   className = "",
   delay = 0 
-}: { 
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-}) {
+}: ScrollRevealProps) {
   return (
     <motion.div
       initial="hidden"

@@ -1,0 +1,306 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import { BlockFormProps } from "@/lib/types";
+
+export default function BlockForm({ data, globalSettings }: BlockFormProps) {
+  const { title, background_image, captcha, buttons, form } = data;
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const bgImageId =
+    typeof background_image === "object" && background_image !== null
+      ? background_image.id
+      : background_image;
+
+  // Resolve M2M buttons
+  let buttonList: any[] = [];
+  if (Array.isArray(buttons)) {
+    buttonList = buttons
+      .map((junction: any) => junction.buttons_id || junction)
+      .filter((item: any) => typeof item === "object" && item !== null);
+  }
+
+  const titleSize = globalSettings?.global_title_size || 48;
+
+  const formFields = form?.form_fields || [];
+  // Sort fields by the 'sort' property if available
+  const sortedFields = [...formFields].sort(
+    (a, b) => (a.sort || 0) - (b.sort || 0),
+  );
+
+  // Auto-hide success message after 5 seconds
+  useEffect(() => {
+    if (isSubmitted) {
+      const timer = setTimeout(() => {
+        setIsSubmitted(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSubmitted]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
+    const dataObj: Record<string, any> = {};
+    formData.forEach((value, key) => {
+      dataObj[key] = value;
+    });
+
+    const formId = typeof form === "object" && form !== null ? form.id : form;
+
+    try {
+      const res = await fetch("/api/form-submission", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          formId,
+          data: dataObj,
+        }),
+      });
+
+      if (res.ok) {
+        setIsSubmitted(true);
+        formElement.reset();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setErrorMsg(errData.error || "Something went wrong. Please try again.");
+      }
+    } catch (err: any) {
+      console.error("Form submission error:", err);
+      setErrorMsg("Failed to send submission. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="relative w-full py-16 md:py-24 px-4 md:px-12 lg:px-20 2xl:px-32 overflow-hidden flex justify-center">
+      {/* Background Image */}
+      {bgImageId && (
+        <div className="absolute inset-0 w-full h-full z-0">
+          <Image
+            src={`/api/assets/${bgImageId}`}
+            alt="Background"
+            fill
+            className="object-cover object-center opacity-30"
+            sizes="100vw"
+          />
+          {/* Light overlay to match mockup brightness */}
+          <div className="absolute inset-0 bg-white/70"></div>
+        </div>
+      )}
+
+      <div className="relative z-10 w-full max-w-225 flex flex-col items-center">
+        {/* Title */}
+        {title && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="
+              prose prose-p:m-0 prose-p:leading-[1.1]
+              prose-headings:font-title prose-headings:uppercase prose-headings:tracking-wide
+              prose-headings:font-light prose-headings:text-[#1a1a1a] prose-headings:m-0
+              prose-strong:font-black prose-strong:font-title prose-strong:text-[#1a1a1a]
+              font-title font-light uppercase tracking-wide text-center mb-12
+            "
+            style={{
+              fontSize: titleSize
+                ? `clamp(${Math.round(titleSize * 0.4)}px, ${(titleSize / 12).toFixed(3)}vw, ${titleSize}px)`
+                : undefined,
+              color: "#1a1a1a",
+            }}
+            dangerouslySetInnerHTML={{ __html: title }}
+          />
+        )}
+
+        {/* Form Container */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full"
+        >
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
+            {/* Dynamic Fields Grid */}
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+              {sortedFields.map((field: any) => {
+                const isFullWidth =
+                  field.type === "textarea" ||
+                  field.type === "text-area" ||
+                  field.name === "message";
+
+                const isRequired =
+                  field.required === true || field.required === "true";
+
+                return (
+                  <div
+                    key={field.id || field.name}
+                    className={`flex flex-col gap-2 ${isFullWidth ? "md:col-span-2" : ""}`}
+                  >
+                    <label
+                      htmlFor={field.name}
+                      className="text-[#1a1a1a] font-sans text-sm tracking-wide"
+                    >
+                      {field.label}{" "}
+                      {isRequired && <span className="text-red-500">*</span>}
+                    </label>
+                    {isFullWidth ? (
+                      <textarea
+                        id={field.name}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        required={isRequired}
+                        rows={5}
+                        className="w-full bg-white border border-black p-4 text-[#1a1a1a] font-sans text-base focus:outline-none focus:ring-1 focus:ring-black transition-shadow resize-y"
+                      />
+                    ) : (
+                      <input
+                        id={field.name}
+                        name={field.name}
+                        type={field.type || "text"}
+                        placeholder={field.placeholder}
+                        required={isRequired}
+                        className="w-full bg-white border border-black p-4 text-[#1a1a1a] font-sans text-base focus:outline-none focus:ring-1 focus:ring-black transition-shadow"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {errorMsg && (
+              <div className="text-red-600 font-sans text-sm text-center">
+                {errorMsg}
+              </div>
+            )}
+
+            {/* Footer: Captcha + Submit Button Centered */}
+            <div className="w-full mt-4 flex flex-col sm:flex-row items-center justify-center gap-6">
+              {captcha && (
+                <div className="w-full sm:w-auto flex justify-center">
+                  {/* Static mock of Google reCAPTCHA as per visual mockup */}
+                  <div className="bg-[#f9f9f9] border border-[#d3d3d3] rounded-[3px] p-2 flex items-center justify-between w-76 h-19.5 shadow-sm">
+                    <div className="flex items-center gap-3 pl-2">
+                      <div className="w-7 h-7 border-2 border-[#c1c1c1] rounded-sm bg-white cursor-pointer hover:border-gray-400 transition-colors"></div>
+                      <span className="font-sans text-sm text-[#222]">
+                        I'm not a robot
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center pr-2">
+                      <div className="w-8 h-8 flex flex-wrap items-center justify-center -mb-1">
+                        <div className="text-[#4285f4] font-bold text-2xl leading-none">
+                          ↻
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-[#555] mt-1">
+                        reCAPTCHA
+                      </span>
+                      <span className="text-[8px] text-[#555]">
+                        Privacy - Terms
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="shrink-0 w-full sm:w-auto flex justify-center">
+                {buttonList.length > 0 ? (
+                  buttonList.map((btn: any, idx: number) => (
+                    <DynamicButton
+                      key={idx}
+                      btn={btn}
+                      globalSettings={globalSettings}
+                      fallbackFill="#1a1a1a"
+                      fallbackText="#ffffff"
+                      className="w-full sm:w-auto"
+                      type="submit"
+                      disabled={isSubmitting}
+                    />
+                  ))
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="inline-flex justify-center items-center px-12 py-4 bg-[#1a1a1a] text-white font-sans font-bold text-[14px] uppercase transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {isSubmitting ? "SENDING..." : "SEND"}
+                  </button>
+                )}
+              </div>
+            </div>
+          </form>
+
+          {/* Success Message Banner (auto-width according to message, centered below form) */}
+          <AnimatePresence>
+            {isSubmitted && (
+              <div className="w-full flex justify-center mt-8">
+                <motion.div
+                  key="success-banner"
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative w-fit max-w-full bg-[#f4f7f4] border border-[#a3d9a5] py-4 px-6 sm:px-8 rounded-sm flex items-center justify-between gap-4 shadow-sm overflow-hidden"
+                >
+                  {/* Top border timer progress line */}
+                  <motion.div
+                    initial={{ scaleX: 1 }}
+                    animate={{ scaleX: 0 }}
+                    transition={{ duration: 5, ease: "linear" }}
+                    style={{ transformOrigin: "left" }}
+                    className="absolute top-0 left-0 right-0 h-0.75 bg-[#1e5622]"
+                  />
+
+                  <div
+                    className="prose prose-p:m-0 prose-p:text-[#1e5622] prose-p:font-sans prose-p:text-base sm:prose-p:text-lg prose-p:font-medium text-center pt-1"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        form?.success_message ||
+                        "<p>Thank you! Your response has been successfully submitted.</p>",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsSubmitted(false)}
+                    className="text-[#1e5622] hover:text-[#143b17] p-1.5 rounded-full hover:bg-[#e2efe3] transition-colors shrink-0 cursor-pointer z-10 ml-2"
+                    aria-label="Close message"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </div>
+  );
+}

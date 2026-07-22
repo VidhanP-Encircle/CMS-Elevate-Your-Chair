@@ -5,16 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { GlobalSettings } from "@/lib/types";
+import { GlobalSettings , NavigationClientProps } from "@/lib/types";
 import HoverButton from "@/components/HoverButton/HoverButton";
 
 export default function NavigationClient({
   globalSettings,
   navigationData,
-}: {
-  globalSettings: GlobalSettings;
-  navigationData: any[];
-}) {
+}: NavigationClientProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -261,7 +258,7 @@ export default function NavigationClient({
               <HoverButton
                 href="http://elevate-by-blake-charles-salon.mn.co/plans/1896001"
                 target="_blank"
-                className="font-bold font-sans text-[16px] leading-5 uppercase px-8 py-4.5 w-full max-w-75 text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
+                className="font-bold font-sans text-[16px] leading-5 uppercase px-6 py-3 w-full max-w-75 text-center no-underline transition-transform duration-300 hover:-translate-y-0.5"
                 style={{
                   backgroundColor: buttonColor,
                   color: buttonTextColor,

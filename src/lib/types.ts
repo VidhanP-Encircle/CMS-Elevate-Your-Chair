@@ -1,3 +1,5 @@
+import { ReactNode, CSSProperties } from "react";
+
 export interface Notice {
   id: string;
   text: string;
@@ -6,10 +8,12 @@ export interface Notice {
   button_border: string | null;
   button_fill: string | null;
   button_text_color: string | null;
+  buttons?: Array<{ buttons_id: BlockButton | number }>;
 }
 
 export interface GlobalSettings {
   brand_name: string;
+  handle_name?: string | null;
   logo: string;
   favicon: string;
   link_details: Array<{ link_text: string; link_url: string }>;
@@ -29,6 +33,7 @@ export interface GlobalSettings {
   global_content_size?: number | null;
   social_links: string[]; // UUIDs of social links
   footer_images: string[]; // UUIDs of footer images
+  buttons?: Array<{ buttons_id: BlockButton | number }>;
 }
 
 export interface NavigationItem {
@@ -43,12 +48,22 @@ export interface Navigation {
 }
 
 export interface BlockButton {
+  id?: number | string;
   button_text: string;
-  button_url: string;
-  button_text_color: string;
-  button_fill_color?: string;
-  button_border_color?: string;
+  button_url?: string | null;
+  button_text_color?: string | null;
+  button_fill_color?: string | null;
+  button_border_color?: string | null;
+  button_hover_text_color?: string | null;
+  button_hover_fill_color?: string | null;
   logo?: string | { id: string } | null;
+  hover_logo?: string | { id: string } | null;
+  inner_name?: string | null;
+  type?: "redirect" | "more_less" | "submit" | "navigation" | string | null;
+  user_created?: string | null;
+  date_created?: string | null;
+  user_updated?: string | null;
+  date_updated?: string | null;
 }
 
 export interface BlockTitle {
@@ -302,4 +317,163 @@ export interface Schema {
   buttons: BlockButton[];
   block_blogs: BlockBlogs[];
   blogs: BlogItem[];
+}
+
+export interface ScrollRevealProps {
+ 
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+
+}
+
+export interface FooterProps {
+
+  globalSettings: GlobalSettings;
+
+}
+
+export interface BlockJourneyAppProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface BlockFaqsProps {
+
+  data: any;
+
+}
+
+export interface BlockSliderProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface BlockContentProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface NavigationClientProps {
+
+  globalSettings: GlobalSettings;
+  navigationData: any[];
+
+}
+
+export interface NavigationProps {
+
+  globalSettings: GlobalSettings;
+
+}
+
+export interface BlockMobileProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface BlockPricingCardsProps {
+
+  data: any[];
+  globalSettings?: any;
+  benefits?: any[];
+
+}
+
+export interface BlockTestimonialsProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface AnimatedImageGridProps {
+ images: any[] 
+}
+
+export interface BlockNoticeProps {
+
+  globalSettings: GlobalSettings;
+
+}
+
+export interface BlockFormProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface PricingBenefitsProps {
+
+  benefits: PricingBenefitItem[];
+  pricingCards?: any[];
+
+}
+
+export interface BlockTitleProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface BlockCardProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface BlockTextImageProps {
+
+  data: any;
+  globalSettings?: any;
+
+}
+
+export interface PricingBenefitItem {
+  id: string;
+  sort: number | null;
+  title: string | null;
+  plans?: Array<{
+    pricing_cards_id?: {
+      id: string;
+      title?: string | null;
+    };
+  }>;
+}
+
+export interface DynamicButtonProps {
+  btn: any;
+  globalSettings?: any;
+  className?: string;
+  defaultPadding?: string;
+  fallbackFill?: string;
+  fallbackText?: string;
+  type?: "submit" | "button" | "reset";
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
+export interface HoverButtonProps {
+  href?: string;
+  type?: "submit" | "button" | "reset";
+  className?: string;
+  style?: import("react").CSSProperties;
+  hoverFill?: string | null;
+  hoverText?: string | null;
+  children: import("react").ReactNode;
+  onClick?: () => void;
+  target?: string;
+  disabled?: boolean;
+  [key: string]: any;
 }

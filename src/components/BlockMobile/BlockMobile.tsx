@@ -6,14 +6,13 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import { BlockMobileProps } from '@/lib/types';
 
 export default function BlockMobile({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockMobileProps) {
   const {
     title,
     subtitle,
@@ -71,6 +70,10 @@ export default function BlockMobile({
   const textColor = "#1a1a1a";
   const subtitleColor = globalSettings?.subtitle_color || "#666666";
 
+  const isContactInfo = data.contact_information === true;
+  const email = globalSettings?.email;
+  const socialLinks = Array.isArray(globalSettings?.social_links) ? globalSettings.social_links : [];
+
   return (
     <div
       className="w-full py-10 md:py-15 px-4 md:px-13.75 overflow-hidden"
@@ -110,91 +113,162 @@ export default function BlockMobile({
               />
             )}
 
-            {/* Subtitle - Full WYSIWYG HTML from Directus */}
-            {subtitle && (
-              <motion.div
+            {isContactInfo ? (
+              <motion.div 
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="
-                  prose prose-p:leading-[1.4] prose-p:font-black prose-p:text-[#1a1a1a] prose-p:mt-0 prose-p:mb-2
-                  prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
-                  prose-strong:font-black prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
-                  marker:text-[#c2b7a3]
-                  prose-li:leading-[1.6] prose-li:mb-1
-                  prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                  prose-img:rounded-lg prose-img:my-4
-                  prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
-                  prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
-                  prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                  max-w-full md:max-w-[90%]
-                "
-                style={{
-                  color: "#1a1a1a",
-                  fontSize: `clamp(18px, ${(subtitleSizeVal / 12).toFixed(3)}vw, ${subtitleSizeVal}px)`,
-                }}
-                dangerouslySetInnerHTML={{ __html: subtitle }}
-              />
+                className="mt-6 flex flex-col gap-6"
+              >
+                {/* Email Section */}
+                {email && (
+                  <div className="flex items-center gap-4 text-[#1a1a1a] font-sans font-bold text-lg md:text-xl">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6M22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <a href={`mailto:${email}`} className="hover:underline">{email}</a>
+                  </div>
+                )}
+                
+                {/* Social Links Section */}
+                {socialLinks.length > 0 && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-[#1a1a1a] font-sans font-bold text-lg md:text-xl">
+                    <div className="flex items-center gap-3">
+                      {socialLinks.map((social: any, idx: number) => (
+                        <a key={social.id || idx} href={social.url} target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+                          {social.media_logo ? (
+                            <Image 
+                              src={`/api/assets/${social.media_logo}`} 
+                              alt={social.media_name || 'Social icon'} 
+                              width={24} 
+                              height={24}
+                              className="w-6 h-6 object-contain"
+                            />
+                          ) : (
+                            <span className="text-sm">{social.media_name}</span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                    {/* Handle name from global settings */}
+                    {globalSettings?.handle_name && (
+                      <span className="hidden sm:inline">-</span>
+                    )}
+                    {globalSettings?.handle_name && (
+                      <a href={socialLinks[0]?.url || "#"} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                        {globalSettings.handle_name}
+                      </a>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            ) : (
+              <>
+                {/* Subtitle - Full WYSIWYG HTML from Directus */}
+                {subtitle && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="
+                      prose prose-p:leading-[1.4] prose-p:font-black prose-p:text-[#1a1a1a] prose-p:mt-0 prose-p:mb-2
+                      prose-headings:font-title prose-headings:font-light prose-headings:mt-4 prose-headings:mb-2
+                      prose-strong:font-black prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                      prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                      marker:text-[#c2b7a3]
+                      prose-li:leading-[1.6] prose-li:mb-1
+                      prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                      prose-img:rounded-lg prose-img:my-4
+                      prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
+                      prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
+                      prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                      max-w-full md:max-w-[90%]
+                    "
+                    style={{
+                      color: "#1a1a1a",
+                      fontSize: `clamp(18px, ${(subtitleSizeVal / 12).toFixed(3)}vw, ${subtitleSizeVal}px)`,
+                    }}
+                    dangerouslySetInnerHTML={{ __html: subtitle }}
+                  />
+                )}
+
+                {/* Content - Full WYSIWYG HTML from Directus */}
+                {content && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="
+                      prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
+                      prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
+                      prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
+                      prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
+                      marker:text-[#c2b7a3]
+                      prose-li:leading-[1.6] prose-li:mb-1
+                      prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
+                      prose-img:rounded-lg prose-img:my-4
+                      prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
+                      prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
+                      prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                      prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
+                      max-w-full md:max-w-[90%]
+                    "
+                    style={
+                      {
+                        color: subtitleColor,
+                        fontSize: contentSize
+                          ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
+                          : undefined,
+                        "--tw-prose-body": subtitleColor,
+                      } as any
+                    }
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                )}
+              </>
             )}
 
-            {/* Content - Full WYSIWYG HTML from Directus */}
-            {content && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="
-                  prose prose-p:font-normal prose-p:leading-[1.6] prose-p:mt-0 prose-p:mb-4 last:prose-p:mb-0
-                  prose-headings:font-title prose-headings:font-light prose-headings:mt-6 prose-headings:mb-3
-                  prose-strong:font-bold prose-a:text-[#c2b7a3] prose-a:no-underline hover:prose-a:underline
-                  prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5
-                  marker:text-[#c2b7a3]
-                  prose-li:leading-[1.6] prose-li:mb-1
-                  prose-blockquote:border-l-[#c2b7a3] prose-blockquote:border-l-2 prose-blockquote:pl-4 prose-blockquote:italic
-                  prose-img:rounded-lg prose-img:my-4
-                  prose-table:w-full prose-table:border-collapse prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2
-                  prose-td:border prose-td:border-gray-300 prose-td:px-3 prose-td:py-2
-                  prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                  prose-pre:bg-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
-                  max-w-full md:max-w-[90%]
-                "
-                style={
-                  {
-                    color: subtitleColor,
-                    fontSize: contentSize
-                      ? `clamp(14px, ${(contentSize / 12).toFixed(3)}vw, ${contentSize}px)`
-                      : undefined,
-                    "--tw-prose-body": subtitleColor,
-                  } as any
-                }
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
-            )}
-
-            {/* Button */}
-            {primaryButtonText && primaryButtonUrl && (
+            {/* Buttons (Side-by-side) */}
+            {buttonList.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-2.5"
+                className={`mt-4 flex flex-wrap gap-4 ${isContactInfo ? "pt-4" : ""}`}
               >
-                <HoverButton
-                  href={primaryButtonUrl}
-                  className="inline-flex justify-center items-center px-10 py-3.75 font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg"
-                  style={{
-                    backgroundColor: primaryButtonFill || buttonColor,
-                    color: primaryButtonColor,
-                  }}
-                  hoverFill={resolvedHoverFill}
-                  hoverText={resolvedHoverText}
-                >
-                  {primaryButtonText}
-                </HoverButton>
+                {buttonList.map((btn: any, idx: number) => (
+                  <DynamicButton 
+                    key={idx} 
+                    btn={btn} 
+                    globalSettings={globalSettings} 
+                  />
+                ))}
+              </motion.div>
+            )}
+            
+            {/* Fallback for legacy single button if no buttonList is present */}
+            {buttonList.length === 0 && primaryButtonText && primaryButtonUrl && (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <div className="mt-8 flex justify-center">
+                  <DynamicButton 
+                    btn={{
+                      button_text: primaryButtonText,
+                      button_url: primaryButtonUrl,
+                      button_fill_color: primaryButtonFill,
+                      button_text_color: primaryButtonColor,
+                    }} 
+                    globalSettings={globalSettings} 
+                  />
+                </div>
               </motion.div>
             )}
           </div>
@@ -209,7 +283,7 @@ export default function BlockMobile({
           className={`w-full max-w-70 md:max-w-105 lg:max-w-120 shrink flex justify-center order-1 ${isRight ? "md:order-2" : "md:order-1"}`}
         >
           {imageId && (
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center relative">
               <Image
                 src={`/api/assets/${imageId}`}
                 alt="Mobile preview"

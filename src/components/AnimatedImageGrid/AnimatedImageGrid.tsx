@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { AnimatedImageGridProps } from '@/lib/types';
 
-export default function AnimatedImageGrid({ images }: { images: any[] }) {
+export default function AnimatedImageGrid({ images }: AnimatedImageGridProps) {
   return (
     <>
       {images.map((img: any) => (

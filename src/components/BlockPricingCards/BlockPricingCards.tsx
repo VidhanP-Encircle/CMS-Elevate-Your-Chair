@@ -3,22 +3,19 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import PricingBenefits from "@/components/PricingBenefits/PricingBenefits";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import { BlockPricingCardsProps } from '@/lib/types';
 
 export default function BlockPricingCards({
   data,
   globalSettings,
   benefits,
-}: {
-  data: any[];
-  globalSettings?: any;
-  benefits?: any[];
-}) {
+}: BlockPricingCardsProps) {
   const [activePlan, setActivePlan] = useState<"monthly" | "yearly">("monthly");
 
   if (!data || data.length === 0) return null;
@@ -337,24 +334,15 @@ export default function BlockPricingCards({
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             className="mt-4 md:mt-6"
           >
-            <HoverButton
-              href={primaryButtonUrl}
-              className="inline-flex justify-center items-center px-10 py-3.75 font-sans font-extrabold text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5"
-              style={{
-                backgroundColor: primaryButtonFill,
-                color: primaryButtonColor,
+            <DynamicButton 
+              btn={primaryButton || {
+                button_text: primaryButtonText,
+                button_url: primaryButtonUrl,
+                button_fill_color: primaryButtonFill,
+                button_text_color: primaryButtonColor,
               }}
-              hoverFill={
-                primaryButton?.button_hover_fill_color ||
-                globalSettings?.button_hover_fill_color
-              }
-              hoverText={
-                primaryButton?.button_hover_text_color ||
-                globalSettings?.button_hover_text_color
-              }
-            >
-              {primaryButtonText}
-            </HoverButton>
+              globalSettings={globalSettings} 
+            />
           </motion.div>
         )}
       </div>

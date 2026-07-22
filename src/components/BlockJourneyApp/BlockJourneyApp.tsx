@@ -5,14 +5,13 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import { BlockJourneyAppProps } from '@/lib/types';
 
 export default function BlockJourneyApp({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockJourneyAppProps) {
   if (!data) return null;
 
   const { title, content, image, buttons } = data;
@@ -156,58 +155,19 @@ export default function BlockJourneyApp({
                 className="flex flex-wrap gap-4 md:gap-5"
               >
                 {buttonList.map((btn: any, index: number) => {
-                  // Handle logo image (string UUID or expanded object)
-                  const logoSrc =
-                    typeof btn.logo === "string"
-                      ? btn.logo
-                      : btn.logo?.id || null;
-
-                  // Resolve hover colors: button-level → global fallback
-                  const btnHoverFill =
-                    btn.button_hover_fill_color ||
-                    globalSettings?.button_hover_fill_color ||
-                    "#666666";
-                  const btnHoverText =
-                    btn.button_hover_text_color ||
-                    globalSettings?.button_hover_text_color ||
-                    "#ffffff";
-
-                  const defaultBg = btn.button_fill_color || "transparent";
-                  const defaultText =
-                    btn.button_text_color ||
-                    globalSettings?.button_text_color ||
-                    textColor;
                   const defaultBorder =
                     btn.button_border_color ||
                     globalSettings?.button_color ||
                     accentColor;
-
+                    
                   return (
-                    <HoverButton
-                      key={index}
-                      href={btn.button_url || "#"}
-                      className="inline-flex items-center gap-2.5 px-6 md:px-8 py-3 md:py-3.5 font-sans font-bold text-[14px] md:text-[15px] uppercase tracking-widest no-underline transition-transform duration-300 hover:-translate-y-0.5 border"
-                      style={{
-                        borderColor: defaultBorder,
-                        color: defaultText,
-                        backgroundColor: defaultBg,
-                      }}
-                      hoverFill={btnHoverFill}
-                      hoverText={btnHoverText}
-                    >
-                      {/* Logo Image */}
-                      {logoSrc && (
-                        <Image
-                          src={`/api/assets/${logoSrc}`}
-                          alt=""
-                          width={18}
-                          height={18}
-                          className="shrink-0 w-4.5 h-4.5 object-contain"
-                        />
-                      )}
-
-                      {btn.button_text}
-                    </HoverButton>
+                    <DynamicButton 
+                      key={index} 
+                      btn={btn}
+                      fallbackFill="transparent"
+                      fallbackText={textColor}
+                      globalSettings={globalSettings} 
+                    />
                   );
                 })}
               </motion.div>

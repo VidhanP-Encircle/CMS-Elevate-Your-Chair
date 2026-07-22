@@ -3,19 +3,7 @@
 import { useState, ReactNode } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-interface HoverButtonProps {
-  href?: string;
-  type?: "submit" | "button" | "reset";
-  className?: string;
-  style?: React.CSSProperties;
-  hoverFill?: string | null;
-  hoverText?: string | null;
-  children: ReactNode;
-  onClick?: () => void;
-  target?: string;
-  [key: string]: any;
-}
+import { HoverButtonProps } from "@/lib/types";
 
 export default function HoverButton({
   href,

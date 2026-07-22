@@ -7,14 +7,12 @@ import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper/types";
 import "swiper/css";
+import { BlockCardProps } from '@/lib/types';
 
 export default function BlockCard({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockCardProps) {
   const { title, subtitle, cards } = data;
   const isWhiteTheme = data.theme === "white";
   const [showNav, setShowNav] = useState(false);

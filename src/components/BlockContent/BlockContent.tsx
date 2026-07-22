@@ -1,14 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { BlockContentProps } from '@/lib/types';
 
 export default function BlockContent({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockContentProps) {
   const { title, subtitle, content, background_color } = data;
 
   // Determine if background is dark to use prose-invert

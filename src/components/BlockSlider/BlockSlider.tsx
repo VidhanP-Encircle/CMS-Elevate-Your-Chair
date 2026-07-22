@@ -4,19 +4,17 @@ import { useState } from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/effect-fade";
+import { BlockSliderProps } from '@/lib/types';
 
 export default function BlockSlider({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockSliderProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiper, setSwiper] = useState<any>(null);
 
@@ -142,31 +140,12 @@ export default function BlockSlider({
 
                   {ctaButton && (
                     <div className="mt-3 md:mt-4 opacity-0 translate-y-4 transition-all duration-800 delay-700 ease-out group-[.swiper-slide-active]/slide:opacity-100 group-[.swiper-slide-active]/slide:translate-y-0">
-                      <HoverButton
-                        href={ctaButton.button_url || "#"}
-                        className="box-border inline-flex items-center justify-center border px-8 md:px-10 py-2.5 md:py-3 uppercase text-[13px] md:text-[14px] font-sans font-extrabold tracking-widest transition-transform duration-300 hover:-translate-y-0.5"
-                        style={{
-                          backgroundColor:
-                            ctaButton.button_fill_color || "transparent",
-                          borderColor:
-                            ctaButton.button_border_color || "#c2b7a3",
-                          color: ctaButton.button_text_color || "#c2b7a3",
-                          borderWidth: "1.5px",
-                          borderStyle: "solid",
-                        }}
-                        hoverFill={
-                          globalSettings?.button_hover_fill_color ||
-                          ctaButton.button_hover_fill_color ||
-                          "#c2b7a3"
-                        }
-                        hoverText={
-                          globalSettings?.button_hover_text_color ||
-                          ctaButton.button_hover_text_color ||
-                          "#1a1a1a"
-                        }
-                      >
-                        {ctaButton.button_text}
-                      </HoverButton>
+                      <DynamicButton 
+                        btn={ctaButton} 
+                        fallbackFill="transparent"
+                        fallbackText="#c2b7a3"
+                        globalSettings={globalSettings} 
+                      />
                     </div>
                   )}
                 </div>

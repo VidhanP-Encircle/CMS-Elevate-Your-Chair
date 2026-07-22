@@ -1,13 +1,11 @@
 import { getDirectus } from "@/lib/directus";
-import { GlobalSettings } from "@/lib/types";
+import { GlobalSettings , NavigationProps } from "@/lib/types";
 import { readItems } from "@directus/sdk";
 import NavigationClient from "./NavigationClient";
 
 export default async function Navigation({
   globalSettings,
-}: {
-  globalSettings: GlobalSettings;
-}) {
+}: NavigationProps) {
   try {
     const directus = await getDirectus();
     const navigationData = await directus.request(

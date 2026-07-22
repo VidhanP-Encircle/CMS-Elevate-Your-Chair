@@ -4,7 +4,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -809,61 +809,44 @@ export default function BlockBlogs({
                   const b = btn.buttons_id;
                   if (!b) return null;
 
-                  // If it's an action button (no URL or #)
-                  if (!b.button_url || b.button_url === "" || b.button_url === "#") {
+                  // If it's a more_less button or action button without a URL
+                  if (b.type === "more_less" || !b.button_url || b.button_url === "" || b.button_url === "#") {
                     const isViewLess = b.button_text?.toLowerCase().includes("less");
                     
                     if (isViewLess) {
                       if (visibleCount <= 6) return null; // Hide View Less if at initial state
                       return (
-                        <button
+                        <DynamicButton
                           key={idx}
+                          btn={b}
+                          fallbackFill="transparent"
+                          fallbackText="#1a1a1a"
                           onClick={() => setVisibleCount(6)}
-                          className="px-6 py-3 font-sans font-bold uppercase tracking-wider transition-colors border cursor-pointer hover:opacity-80"
-                          style={{
-                            color: b.button_text_color || "#1a1a1a",
-                            backgroundColor: b.button_fill_color || "transparent",
-                            borderColor: b.button_border_color || "#1a1a1a",
-                          }}
-                        >
-                          {b.button_text}
-                        </button>
+                          globalSettings={globalSettings}
+                        />
                       );
                     } else {
                       // Load More
                       if (visibleCount >= filteredBlogs.length) return null; // Hide Load More if no more blogs
                       return (
-                        <button
+                        <DynamicButton
                           key={idx}
+                          btn={b}
+                          fallbackFill="transparent"
+                          fallbackText="#1a1a1a"
                           onClick={() => setVisibleCount((prev) => prev + 6)}
-                          className="px-6 py-3 font-sans font-bold uppercase tracking-wider transition-colors border cursor-pointer hover:opacity-80"
-                          style={{
-                            color: b.button_text_color || "#1a1a1a",
-                            backgroundColor: b.button_fill_color || "transparent",
-                            borderColor: b.button_border_color || "#1a1a1a",
-                          }}
-                        >
-                          {b.button_text}
-                        </button>
+                          globalSettings={globalSettings}
+                        />
                       );
                     }
                   }
 
                   return (
-                    <HoverButton
-                      key={idx}
-                      href={b.button_url || "#"}
-                      className="px-6 py-3 font-sans font-bold uppercase tracking-wider transition-colors border"
-                      style={{
-                        color: b.button_text_color || "#1a1a1a",
-                        backgroundColor: b.button_fill_color || "transparent",
-                        borderColor: b.button_border_color || "#1a1a1a",
-                      }}
-                      hoverText={b.button_hover_text_color}
-                      hoverFill={b.button_hover_fill_color}
-                    >
-                      {b.button_text}
-                    </HoverButton>
+                    <DynamicButton 
+                      key={idx} 
+                      btn={b} 
+                      globalSettings={globalSettings} 
+                    />
                   );
                 })}
               </motion.div>

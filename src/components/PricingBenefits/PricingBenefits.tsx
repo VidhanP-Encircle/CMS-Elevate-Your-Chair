@@ -1,26 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-interface PricingBenefitItem {
-  id: string;
-  sort: number | null;
-  title: string | null;
-  plans?: Array<{
-    pricing_cards_id?: {
-      id: string;
-      title?: string | null;
-    };
-  }>;
-}
+import { PricingBenefitsProps, PricingBenefitItem } from '@/lib/types';
 
 export default function PricingBenefits({
   benefits,
   pricingCards,
-}: {
-  benefits: PricingBenefitItem[];
-  pricingCards?: any[];
-}) {
+}: PricingBenefitsProps) {
   if (!benefits || benefits.length === 0) return null;
 
   // Sort benefits by `sort` field

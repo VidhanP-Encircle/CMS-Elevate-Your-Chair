@@ -11,6 +11,7 @@ import BlockSlider from "@/components/BlockSlider/BlockSlider";
 import BlockFaqs from "@/components/BlockFaqs/BlockFaqs";
 import BlockContent from "@/components/BlockContent/BlockContent";
 import BlockBlogs from "@/components/BlockBlogs/BlockBlogs";
+import BlockForm from "@/components/BlockForm/BlockForm";
 import { draftMode } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
@@ -52,6 +53,7 @@ export default async function DynamicPage({
           "pages_blocks.item.buttons.logo.*",
           "pages_blocks.item.buttons.buttons_id.*",
           "pages_blocks.item.buttons.buttons_id.logo.*",
+          "pages_blocks.item.buttons.buttons_id.hover_logo.*",
           "pages_blocks.item.text_image.*",
           "pages_blocks.item.text_image.text_image_id.*",
           "pages_blocks.item.text_image.text_image_id.photo.*",
@@ -60,10 +62,14 @@ export default async function DynamicPage({
           "pages_blocks.item.slides.slides_id.background_image.*",
           "pages_blocks.item.button.*",
           "pages_blocks.item.button.buttons_id.*",
+          "pages_blocks.item.button.buttons_id.logo.*",
+          "pages_blocks.item.button.buttons_id.hover_logo.*",
           "pages_blocks.item.blogs.*",
           "pages_blocks.item.blogs.blogs_id.*",
           "pages_blocks.item.blogs.blogs_id.photo.*",
           "pages_blocks.item.blogs.blogs_id.authors.*",
+          "pages_blocks.item.form.*",
+          "pages_blocks.item.form.form_fields.*",
         ] as any,
       }),
     )) as any[];
@@ -72,7 +78,11 @@ export default async function DynamicPage({
     let globalSettings: any = {};
     try {
       globalSettings =
-        (await directus.request(readSingleton("global_settings"))) || {};
+        (await directus.request(
+          readSingleton("global_settings", {
+            fields: ["*", "social_links.*"] as any,
+          }),
+        )) || {};
     } catch (e) {
       console.warn("Could not fetch global settings", e);
     }
@@ -84,7 +94,7 @@ export default async function DynamicPage({
         readItems("pricing_benefits", {
           fields: ["*", "plans.*", "plans.pricing_cards_id.*"] as any,
           sort: "sort",
-        })
+        }),
       )) as any[];
     } catch (e) {
       console.warn("Could not fetch pricing benefits", e);
@@ -94,7 +104,9 @@ export default async function DynamicPage({
     let allCategories: string[] = [];
     let allAuthors: string[] = [];
     try {
-      const blogsData = (await directus.request(readItems('blogs' as any, { fields: ['categories'] }))) as any[];
+      const blogsData = (await directus.request(
+        readItems("blogs" as any, { fields: ["categories"] }),
+      )) as any[];
       const uniqueCats = new Set<string>();
       blogsData.forEach((b: any) => {
         if (b.categories) {
@@ -106,15 +118,16 @@ export default async function DynamicPage({
         }
       });
       allCategories = Array.from(uniqueCats).filter(Boolean);
-      
-      const authorsData = (await directus.request(readItems('authors' as any, { fields: ['id', 'name'] }))) as any[];
+
+      const authorsData = (await directus.request(
+        readItems("authors" as any, { fields: ["id", "name"] }),
+      )) as any[];
       allAuthors = authorsData.map((a: any) => a.name).filter(Boolean);
-      
+
       // Store the raw authors array to pass as a lookup map to BlockBlogs
       (global as any).__authorsMapData = authorsData;
-      
     } catch (e: any) {
-      console.warn('Could not fetch categories or authors', e);
+      console.warn("Could not fetch categories or authors", e);
       allCategories = ["Error: " + e.message];
     }
 
@@ -275,12 +288,7 @@ export default async function DynamicPage({
             }
 
             if (collection === "block_faqs") {
-              return (
-                <BlockFaqs
-                  key={index}
-                  data={item}
-                />
-              );
+              return <BlockFaqs key={index} data={item} />;
             }
 
             if (collection === "block_content") {
@@ -302,6 +310,16 @@ export default async function DynamicPage({
                   allCategories={allCategories}
                   allAuthors={allAuthors}
                   authorsMapData={(global as any).__authorsMapData}
+                />
+              );
+            }
+
+            if (collection === "block_form") {
+              return (
+                <BlockForm
+                  key={index}
+                  data={item}
+                  globalSettings={globalSettings}
                 />
               );
             }

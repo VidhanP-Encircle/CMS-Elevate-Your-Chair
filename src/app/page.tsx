@@ -11,6 +11,7 @@ import BlockSlider from '@/components/BlockSlider/BlockSlider';
 import BlockFaqs from '@/components/BlockFaqs/BlockFaqs';
 import BlockContent from '@/components/BlockContent/BlockContent';
 import BlockBlogs from '@/components/BlockBlogs/BlockBlogs';
+import BlockForm from '@/components/BlockForm/BlockForm';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
@@ -47,6 +48,7 @@ export default async function HomePage() {
           'pages_blocks.item.buttons.logo.*',
           'pages_blocks.item.buttons.buttons_id.*',
           'pages_blocks.item.buttons.buttons_id.logo.*',
+          'pages_blocks.item.buttons.buttons_id.hover_logo.*',
           'pages_blocks.item.text_image.*',
           'pages_blocks.item.text_image.text_image_id.*',
           'pages_blocks.item.text_image.text_image_id.photo.*',
@@ -55,10 +57,14 @@ export default async function HomePage() {
           'pages_blocks.item.slides.slides_id.background_image.*',
           'pages_blocks.item.button.*',
           'pages_blocks.item.button.buttons_id.*',
+          'pages_blocks.item.button.buttons_id.logo.*',
+          'pages_blocks.item.button.buttons_id.hover_logo.*',
           'pages_blocks.item.blogs.*',
           'pages_blocks.item.blogs.blogs_id.*',
           'pages_blocks.item.blogs.blogs_id.photo.*',
           'pages_blocks.item.blogs.blogs_id.authors.*',
+          'pages_blocks.item.form.*',
+          'pages_blocks.item.form.form_fields.*',
         ] as any,
       })
     )) as any[];
@@ -66,7 +72,9 @@ export default async function HomePage() {
     // Fetch global settings to get colors and sizes
     let globalSettings: any = {};
     try {
-      globalSettings = await directus.request(readSingleton('global_settings')) || {};
+      globalSettings = await directus.request(readSingleton('global_settings', {
+        fields: ['*', 'social_links.*'] as any
+      })) || {};
     } catch (e) {
       console.warn('Could not fetch global settings', e);
     }
@@ -202,6 +210,10 @@ export default async function HomePage() {
 
             if (collection === 'block_blogs') {
               return <BlockBlogs key={index} data={item} globalSettings={globalSettings} allCategories={allCategories} allAuthors={allAuthors} authorsMapData={(global as any).__authorsMapData} />;
+            }
+
+            if (collection === 'block_form') {
+              return <BlockForm key={index} data={item} globalSettings={globalSettings} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;

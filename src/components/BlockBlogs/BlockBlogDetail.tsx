@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
 
 export default function BlockBlogDetail({
   data,
@@ -95,32 +95,18 @@ export default function BlockBlogDetail({
         {/* Top Bar with "BACK TO BLOG" Button */}
         <div className="w-full flex justify-end mb-8">
           {data.blog_detail_button && data.blog_detail_button.length > 0 && (
-            <HoverButton
-              href={data.blog_detail_button[0].buttons_id?.button_url || "#"}
-              className="font-bold uppercase tracking-widest text-[13px] px-6 py-3 border transition-colors"
-              style={{
-                color:
-                  data.blog_detail_button[0].buttons_id?.button_text_color ||
-                  textColor,
-                backgroundColor:
-                  data.blog_detail_button[0].buttons_id?.button_fill_color ||
-                  "transparent",
-                borderColor:
-                  data.blog_detail_button[0].buttons_id?.button_border_color ||
-                  textColor,
-              }}
-              hoverFill={
-                data.blog_detail_button[0].buttons_id
-                  ?.button_hover_fill_color || textColor
-              }
-              hoverText={
-                data.blog_detail_button[0].buttons_id
-                  ?.button_hover_text_color || bgColor
-              }
-            >
-              {data.blog_detail_button[0].buttons_id?.button_text ||
-                "BACK TO BLOG"}
-            </HoverButton>
+            <DynamicButton 
+              btn={{
+                ...(data.blog_detail_button[0].buttons_id || {}),
+                button_text_color: data.blog_detail_button[0].buttons_id?.button_text_color || textColor,
+                button_fill_color: data.blog_detail_button[0].buttons_id?.button_fill_color || "transparent",
+                button_border_color: data.blog_detail_button[0].buttons_id?.button_border_color || textColor,
+                button_hover_fill_color: data.blog_detail_button[0].buttons_id?.button_hover_fill_color || textColor,
+                button_hover_text_color: data.blog_detail_button[0].buttons_id?.button_hover_text_color || bgColor,
+              }} 
+              globalSettings={{}} 
+              className="font-bold tracking-widest text-[13px] px-6 py-3 border transition-colors"
+            />
           )}
         </div>
 
@@ -264,63 +250,24 @@ export default function BlockBlogDetail({
           <div className="w-full flex justify-between items-center mt-12 pt-8">
             {/* Previous Button */}
             {data.blog_detail_button[1] && (
-              <HoverButton
-                href={data.blog_detail_button[1].buttons_id?.button_url || "#"}
-                className="font-bold uppercase tracking-widest text-[13px] px-8 py-3 border transition-colors"
-                style={{
-                  color:
-                    data.blog_detail_button[1].buttons_id?.button_text_color ||
-                    textColor,
-                  backgroundColor:
-                    data.blog_detail_button[1].buttons_id?.button_fill_color ||
-                    "transparent",
-                  borderColor:
-                    data.blog_detail_button[1].buttons_id
-                      ?.button_border_color || textColor,
-                }}
-                hoverFill={
-                  data.blog_detail_button[1].buttons_id
-                    ?.button_hover_fill_color || textColor
-                }
-                hoverText={
-                  data.blog_detail_button[1].buttons_id
-                    ?.button_hover_text_color || bgColor
-                }
-              >
-                {data.blog_detail_button[1].buttons_id?.button_text ||
-                  "PREVIOUS"}
-              </HoverButton>
+              <DynamicButton 
+                btn={data.blog_detail_button[1].buttons_id || { button_text: "PREVIOUS" }}
+                fallbackFill="transparent"
+                fallbackText={textColor}
+                globalSettings={{}} 
+                className="font-bold tracking-widest text-[13px] px-8 py-3 border transition-colors"
+              />
             )}
 
             {/* Next Button */}
             {data.blog_detail_button[2] && (
-              <HoverButton
-                href={data.blog_detail_button[2].buttons_id?.button_url || "#"}
-                className="font-bold uppercase tracking-widest text-[13px] px-8 py-3 border transition-colors"
-                style={{
-                  color:
-                    data.blog_detail_button[2].buttons_id?.button_text_color ||
-                    bgColor,
-                  backgroundColor:
-                    data.blog_detail_button[2].buttons_id?.button_fill_color ||
-                    textColor,
-                  borderColor:
-                    data.blog_detail_button[2].buttons_id
-                      ?.button_border_color || "transparent",
-                }}
-                hoverFill={
-                  data.blog_detail_button[2].buttons_id
-                    ?.button_hover_fill_color || "transparent"
-                }
-                hoverText={
-                  data.blog_detail_button[2].buttons_id
-                    ?.button_hover_text_color || textColor
-                }
-              >
-                <span className="relative z-10">
-                  {data.blog_detail_button[2].buttons_id?.button_text || "NEXT"}
-                </span>
-              </HoverButton>
+              <DynamicButton 
+                btn={data.blog_detail_button[2].buttons_id || { button_text: "NEXT" }}
+                fallbackFill={textColor}
+                fallbackText={bgColor}
+                globalSettings={{}} 
+                className="font-bold tracking-widest text-[13px] px-8 py-3 border transition-colors"
+              />
             )}
           </div>
         )}

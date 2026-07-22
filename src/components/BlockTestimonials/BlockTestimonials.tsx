@@ -7,14 +7,12 @@ import { Navigation } from "swiper/modules";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
 import "swiper/css";
 import "swiper/css/navigation";
+import { BlockTestimonialsProps } from '@/lib/types';
 
 export default function BlockTestimonials({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockTestimonialsProps) {
   if (!data) return null;
 
   const { title, title_size, testimonial, background_image } = data;

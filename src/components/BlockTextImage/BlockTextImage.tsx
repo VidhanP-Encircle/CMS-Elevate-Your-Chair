@@ -4,15 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal/ScrollReveal";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import DynamicButton from "@/components/DynamicButton/DynamicButton";
+import { BlockTextImageProps } from '@/lib/types';
 
 export default function BlockTextImage({
   data,
   globalSettings,
-}: {
-  data: any;
-  globalSettings?: any;
-}) {
+}: BlockTextImageProps) {
   if (!data) return null;
 
   const {
@@ -225,19 +223,15 @@ export default function BlockTextImage({
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           className="flex justify-center mt-5"
         >
-          <HoverButton
-            href={primaryButtonUrl}
-            className="inline-flex justify-center items-center px-7.5 py-3 font-sans text-[14px] uppercase no-underline tracking-widest transition-transform duration-300 hover:-translate-y-0.5"
-            style={{
-              backgroundColor: primaryButtonFill || buttonColor,
-              color: primaryButtonColor,
-              fontWeight: 900,
+          <DynamicButton 
+            btn={primaryButton || {
+              button_text: primaryButtonText,
+              button_url: primaryButtonUrl,
+              button_fill_color: primaryButtonFill,
+              button_text_color: primaryButtonColor,
             }}
-            hoverFill={primaryButton?.button_hover_fill_color || globalSettings?.button_hover_fill_color}
-            hoverText={primaryButton?.button_hover_text_color || globalSettings?.button_hover_text_color}
-          >
-            {primaryButtonText}
-          </HoverButton>
+            globalSettings={globalSettings} 
+          />
         </motion.div>
       )}
     </div>
