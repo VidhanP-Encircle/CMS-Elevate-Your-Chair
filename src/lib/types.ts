@@ -349,6 +349,20 @@ export interface BlockContent {
   content_size?: number | null;
 }
 
+export interface BlockSearchResults {
+  id: string;
+  search_placeholder: string | null;
+  results_per_page: number | null;
+  no_results_title: string | null;
+  no_results_description: string | null;
+}
+
+export interface BlockSearchResultsProps {
+  data: BlockSearchResults;
+  globalSettings?: GlobalSettings;
+  allBlogs: BlogItem[];
+}
+
 export interface BlockLegalDetail {
   title?: string | null;
   subtitle?: string | null;
@@ -391,6 +405,7 @@ export interface Schema {
   testimonial: TestimonialItem[];
   text_image: TextImageItem[];
   block_legal: BlockLegal[];
+  block_search_results: BlockSearchResults[];
 }
 
 export interface BlockLegalProps {

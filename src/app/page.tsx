@@ -13,11 +13,12 @@ import BlockContent from '@/components/BlockContent/BlockContent';
 import BlockBlogs from '@/components/BlockBlogs/BlockBlogs';
 import BlockForm from '@/components/BlockForm/BlockForm';
 import BlockLegal from '@/components/BlockLegal/BlockLegal';
+import BlockSearchResults from '@/components/BlockSearchResults/BlockSearchResults';
 import { draftMode } from 'next/headers';
 import { unstable_noStore as noStore } from 'next/cache';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Page, GlobalSettings, PricingBenefitItem } from '@/lib/types';
+import { Page, GlobalSettings, PricingBenefitItem, BlogItem } from '@/lib/types';
 
 export const dynamic = "force-dynamic";
 
@@ -93,6 +94,16 @@ export default async function HomePage() {
       )) as unknown as PricingBenefitItem[];
     } catch (e) {
       console.warn('Could not fetch pricing benefits', e);
+    }
+
+    // Fetch all blogs for search functionality across the site
+    let allBlogs: BlogItem[] = [];
+    try {
+      allBlogs = (await directus.request(readItems('blogs' as never, {
+        fields: ['*', 'photo.*', 'authors.*', 'authors.authors_id.*'] as never
+      }))) as unknown as BlogItem[];
+    } catch (e) {
+      console.warn('Could not fetch all blogs for search', e);
     }
 
     // Fetch all categories and authors for blog filtering
@@ -223,6 +234,10 @@ export default async function HomePage() {
 
             if (collection === 'block_legal') {
               return <BlockLegal key={index} data={item} globalSettings={globalSettings} />;
+            }
+
+            if (collection === 'block_search_results') {
+              return <BlockSearchResults key={index} data={item} globalSettings={globalSettings} allBlogs={allBlogs} />;
             }
 
             return <div key={index}>Unknown block type: {collection}</div>;
