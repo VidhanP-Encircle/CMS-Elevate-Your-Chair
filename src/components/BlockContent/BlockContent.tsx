@@ -19,6 +19,9 @@ export default function BlockContent({
   // Parse out title to apply uppercase but keeping any strong tags intact.
   // Tailwind typography plugin (.prose) handles the tags correctly.
 
+  // No content to display → nothing to render
+  if (!title && !subtitle && !content) return null;
+
   return (
     <div
       className={`relative w-full flex flex-col items-center justify-center py-10 md:py-16 px-5 md:px-20 ${

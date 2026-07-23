@@ -15,51 +15,77 @@ import AnimatedImageGrid from "./AnimatedImageGrid";
 import RichText from "@/components/RichText/RichText";
 
 export default async function Footer({ globalSettings }: FooterProps) {
+  let socialLinksData: SocialLink[] = [];
+  let footerImagesData: any[] = [];
+  let subscribeForm: Form | null = null;
+  let subscribeFields: FormField[] = [];
+
   try {
     const directus = await getDirectus();
-    const socialLinksData: SocialLink[] = await directus.request(
-      readItems("social_links"),
-    );
-    const footerImagesData = await directus.request(readItems("footer_images"));
+
+    // Fetch social links — isolated try/catch
+    try {
+      socialLinksData = (await directus.request(
+        readItems("social_links"),
+      )) as SocialLink[];
+    } catch (e) {
+      console.warn("Footer: Could not fetch social_links", e);
+    }
+
+    // Fetch footer images — isolated try/catch
+    try {
+      footerImagesData = (await directus.request(
+        readItems("footer_images"),
+      )) as SocialLink[];
+    } catch (e) {
+      console.warn("Footer: Could not fetch footer_images", e);
+    }
 
     // Resolve dynamic footer form from globalSettings.footer_form
-    let subscribeForm: Form | null = null;
     const footerFormSetting = globalSettings?.footer_form;
 
-    if (typeof footerFormSetting === "object" && footerFormSetting !== null) {
-      subscribeForm = footerFormSetting as Form;
-    } else if (typeof footerFormSetting === "string" && footerFormSetting) {
-      const forms = (await directus.request(
-        readItems("form", {
-          fields: ["id", "name", "success_message"],
-          filter: { id: { _eq: footerFormSetting } },
-          limit: 1,
-        }),
-      )) as Form[];
-      subscribeForm = forms?.[0] ?? null;
-    }
-
-    // Fallback: If no footer_form selected in globalSettings, fetch default form
-    if (!subscribeForm) {
-      const forms = (await directus.request(
-        readItems("form", {
-          fields: ["id", "name", "success_message"],
-          limit: 1,
-        }),
-      )) as Form[];
-      subscribeForm = forms?.[0] ?? null;
-    }
-
-    // Fetch all form_fields objects dynamically for the resolved form
-    const subscribeFields: FormField[] = subscribeForm
-      ? ((await directus.request(
-          readItems("form_fields", {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            filter: { form_id: { _eq: subscribeForm.id } } as any,
-            sort: ["sort"],
+    try {
+      if (typeof footerFormSetting === "object" && footerFormSetting !== null) {
+        subscribeForm = footerFormSetting as Form;
+      } else if (typeof footerFormSetting === "string" && footerFormSetting) {
+        const forms = (await directus.request(
+          readItems("form", {
+            fields: ["id", "name", "success_message"],
+            filter: { id: { _eq: footerFormSetting } },
+            limit: 1,
           }),
-        )) as FormField[])
-      : [];
+        )) as Form[];
+        subscribeForm = forms?.[0] ?? null;
+      }
+
+      // Fallback: If no footer_form selected in globalSettings, fetch default form
+      if (!subscribeForm) {
+        const forms = (await directus.request(
+          readItems("form", {
+            fields: ["id", "name", "success_message"],
+            limit: 1,
+          }),
+        )) as Form[];
+        subscribeForm = forms?.[0] ?? null;
+      }
+
+      // Fetch all form_fields objects dynamically for the resolved form
+      if (subscribeForm) {
+        try {
+          subscribeFields = (await directus.request(
+            readItems("form_fields", {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              filter: { form_id: { _eq: subscribeForm.id } } as any,
+              sort: ["sort"],
+            }),
+          )) as FormField[];
+        } catch (e) {
+          console.warn("Footer: Could not fetch form_fields", e);
+        }
+      }
+    } catch (e) {
+      console.warn("Footer: Could not resolve form", e);
+    }
 
     const year = new Date().getFullYear();
 
@@ -247,7 +273,17 @@ export default async function Footer({ globalSettings }: FooterProps) {
       </footer>
     );
   } catch (error) {
-    console.error("Error fetching footer data:", error);
-    return null;
+    console.error("Footer: Unexpected error in rendering:", error);
+    // Minimum viable footer — don't hide entirely
+    return (
+      <footer
+        className="w-full flex flex-col items-center py-8"
+        style={{ backgroundColor: "#1a1a1a" }}
+      >
+        <div className="font-sans text-[14px] text-white/60 text-center">
+          ©{new Date().getFullYear()} {globalSettings?.brand_name || ""}
+        </div>
+      </footer>
+    );
   }
 }

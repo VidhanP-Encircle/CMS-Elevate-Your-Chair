@@ -70,7 +70,12 @@ export default function BlockTitle({ data, globalSettings }: BlockTitleProps) {
 
   const hasButtons = buttons && Array.isArray(buttons) && buttons.length > 0;
   const hasSubtitle = !!subtitle;
+  const hasTitle = !!title;
+  const hasMedia = !!bgImageId || !!bgVideoId;
   const isBanner = !hasButtons && !hasSubtitle;
+
+  // No content at all and no background media → nothing to render
+  if (!hasTitle && !hasSubtitle && !hasButtons && !hasMedia) return null;
 
   return (
     <div

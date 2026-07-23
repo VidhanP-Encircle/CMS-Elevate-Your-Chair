@@ -113,7 +113,7 @@ export default function BlockTestimonials({
                     }
                   : undefined
               }
-              centeredSlides={true}
+              centeredSlides={testimonials.length > 1}
               initialSlide={testimonials.length >= 3 ? 1 : 0}
               spaceBetween={24}
               slidesPerView={"auto"}

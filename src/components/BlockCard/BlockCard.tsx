@@ -187,7 +187,7 @@ export default function BlockCard({
                             {/* Title */}
                             {card.title && (
                               <h3
-                                className="font-title font-bold uppercase tracking-widest text-[14px] md:text-[15px] mb-1.5 leading-[1.3]"
+                                className="font-title font-bold uppercase tracking-widest text-[14px] md:text-[15px] mb-1.5 leading-[1.3] break-words"
                                 style={{
                                   color:
                                     textColor === "#ffffff"
@@ -266,7 +266,7 @@ export default function BlockCard({
 
                             {/* Title slot */}
                             <h3
-                              className="font-title font-bold uppercase tracking-widest text-[14px] md:text-[15px] mb-2 leading-[1.3] min-h-[2.6em] w-full text-white"
+                              className="font-title font-bold uppercase tracking-widest text-[14px] md:text-[15px] mb-2 leading-[1.3] min-h-[2.6em] w-full text-white break-words"
                               style={{ color: textColor }}
                             >
                               {card.title || ""}

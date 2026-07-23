@@ -19,7 +19,9 @@ export default function BlockSearchResults({
   globalSettings,
   allBlogs,
 }: BlockSearchResultsProps) {
+  const resultsPerPage = data.results_per_page ?? 12;
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState<number>(resultsPerPage);
   const hasReadUrl = useRef(false);
 
   // Read ?q= URL param on mount (from navigation search redirect)
@@ -33,6 +35,11 @@ export default function BlockSearchResults({
       hasReadUrl.current = true;
     }
   }, []); // Runs once on mount
+
+  // Reset visible count when search query changes
+  useEffect(() => {
+    setVisibleCount(resultsPerPage);
+  }, [searchQuery]);
 
   // Sync URL with search query (for shareable/bookmarkable URLs)
   useEffect(() => {
@@ -84,12 +91,11 @@ export default function BlockSearchResults({
     });
   }, [searchQuery, allBlogs]);
 
-  // Limit results per page
-  const resultsPerPage = data.results_per_page ?? 12;
   const visibleResults = useMemo(
-    () => filteredBlogs.slice(0, resultsPerPage),
-    [filteredBlogs, resultsPerPage],
+    () => filteredBlogs.slice(0, visibleCount),
+    [filteredBlogs, visibleCount],
   );
+  const hasMore = filteredBlogs.length > visibleCount;
 
   const getSnippet = useCallback((blog: BlogItem) => {
     if (!blog.blog_details || !Array.isArray(blog.blog_details)) return "";
@@ -242,135 +248,155 @@ export default function BlockSearchResults({
 
         {/* Search Results Grid */}
         {searchQuery.trim() && filteredBlogs.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
-          >
-            <AnimatePresence mode="popLayout">
-              {visibleResults.map((blog: BlogItem, index: number) => (
-                <motion.div
-                  key={blog.id || `search-${index}`}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                  transition={{
-                    opacity: { duration: 0.4, ease: "easeOut" },
-                    scale: { duration: 0.4, ease: "easeOut" },
-                    y: { duration: 0.4, ease: "easeOut" },
-                    delay: Math.min(index * 0.05, 0.3),
-                  }}
-                  className="flex flex-col w-full group"
-                >
-                  {blog.photo && (
-                    <Link
-                      href={blog.slug_button_url || "#"}
-                      className="w-full aspect-4/3 relative mb-6 overflow-hidden bg-gray-200 block"
-                    >
-                      <Image
-                        src={getDirectusImageUrl(blog.photo, {
-                          width: 600,
-                          quality: 80,
-                          format: "webp",
-                        })}
-                        alt="Blog image"
-                        fill
-                        priority={index < 2}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                    </Link>
-                  )}
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
+            >
+              <AnimatePresence mode="popLayout">
+                {visibleResults.map((blog: BlogItem, index: number) => (
+                  <motion.div
+                    key={blog.id || `search-${index}`}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                    transition={{
+                      opacity: { duration: 0.4, ease: "easeOut" },
+                      scale: { duration: 0.4, ease: "easeOut" },
+                      y: { duration: 0.4, ease: "easeOut" },
+                      delay: Math.min(index * 0.05, 0.3),
+                    }}
+                    className="flex flex-col w-full group"
+                  >
+                    {blog.photo && (
+                      <Link
+                        href={blog.slug_button_url || "#"}
+                        className="w-full aspect-4/3 relative mb-6 overflow-hidden bg-gray-200 block"
+                      >
+                        <Image
+                          src={getDirectusImageUrl(blog.photo, {
+                            width: 600,
+                            quality: 80,
+                            format: "webp",
+                          })}
+                          alt="Blog image"
+                          fill
+                          priority={index < 2}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+                      </Link>
+                    )}
 
-                  <div className="flex flex-col flex-1 items-center text-center gap-3.5">
-                    {blog.main_title && (
-                      <RichText
-                        variant="title"
-                        align="center"
-                        theme="custom"
-                        content={blog.main_title}
-                        className="prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[20px] prose-headings:leading-6 prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[20px] prose-p:leading-6 prose-headings:m-0 prose-p:m-0 prose-strong:font-black font-bold m-0"
-                        style={
-                          {
+                    <div className="flex flex-col flex-1 items-center text-center gap-3.5">
+                      {blog.main_title && (
+                        <RichText
+                          variant="title"
+                          align="center"
+                          theme="custom"
+                          content={blog.main_title}
+                          className="prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[20px] prose-headings:leading-6 prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[20px] prose-p:leading-6 prose-headings:m-0 prose-p:m-0 prose-strong:font-black font-bold m-0"
+                          style={
+                            {
+                              color:
+                                bgColor === "#1A1A1A" ||
+                                bgColor === "#000000" ||
+                                bgColor === "#151515"
+                                  ? "#fff"
+                                  : "#1a1a1a",
+                              "--tw-prose-headings":
+                                bgColor === "#1A1A1A" ||
+                                bgColor === "#000000" ||
+                                bgColor === "#151515"
+                                  ? "#fff"
+                                  : "#1a1a1a",
+                              "--tw-prose-bold":
+                                bgColor === "#1A1A1A" ||
+                                bgColor === "#000000" ||
+                                bgColor === "#151515"
+                                  ? "#fff"
+                                  : "#1a1a1a",
+                              "--tw-prose-body":
+                                bgColor === "#1A1A1A" ||
+                                bgColor === "#000000" ||
+                                bgColor === "#151515"
+                                  ? "#fff"
+                                  : "#1a1a1a",
+                            } as React.CSSProperties
+                          }
+                        />
+                      )}
+
+                      <p
+                        className="text-[16px] leading-5 w-full px-4"
+                        style={{
+                          color:
+                            bgColor === "#1A1A1A" ||
+                            bgColor === "#000000" ||
+                            bgColor === "#151515"
+                              ? "#e5e5e5"
+                              : "#555",
+                        }}
+                      >
+                        {getSnippet(blog)}
+                      </p>
+
+                      <div className="mt-auto">
+                        <Link
+                          href={blog.slug_button_url || "#"}
+                          className="font-title font-black uppercase tracking-widest text-[16px] leading-5 hover:opacity-70 transition-opacity flex items-center gap-2.5 no-underline"
+                          style={{
                             color:
                               bgColor === "#1A1A1A" ||
                               bgColor === "#000000" ||
                               bgColor === "#151515"
                                 ? "#fff"
                                 : "#1a1a1a",
-                            "--tw-prose-headings":
-                              bgColor === "#1A1A1A" ||
-                              bgColor === "#000000" ||
-                              bgColor === "#151515"
-                                ? "#fff"
-                                : "#1a1a1a",
-                            "--tw-prose-bold":
-                              bgColor === "#1A1A1A" ||
-                              bgColor === "#000000" ||
-                              bgColor === "#151515"
-                                ? "#fff"
-                                : "#1a1a1a",
-                            "--tw-prose-body":
-                              bgColor === "#1A1A1A" ||
-                              bgColor === "#000000" ||
-                              bgColor === "#151515"
-                                ? "#fff"
-                                : "#1a1a1a",
-                          } as React.CSSProperties
-                        }
-                      />
-                    )}
-
-                    <p
-                      className="text-[16px] leading-5 w-full px-4"
-                      style={{
-                        color:
-                          bgColor === "#1A1A1A" ||
-                          bgColor === "#000000" ||
-                          bgColor === "#151515"
-                            ? "#e5e5e5"
-                            : "#555",
-                      }}
-                    >
-                      {getSnippet(blog)}
-                    </p>
-
-                    <div className="mt-auto">
-                      <Link
-                        href={blog.slug_button_url || "#"}
-                        className="font-title font-black uppercase tracking-widest text-[16px] leading-5 hover:opacity-70 transition-opacity flex items-center gap-2.5 no-underline"
-                        style={{
-                          color:
-                            bgColor === "#1A1A1A" ||
-                            bgColor === "#000000" ||
-                            bgColor === "#151515"
-                              ? "#fff"
-                              : "#1a1a1a",
-                        }}
-                      >
-                        {blog.slug_button_text || "Read More"}
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                          }}
                         >
-                          <line x1="5" y1="12" x2="19" y2="12"></line>
-                          <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                      </Link>
+                          {blog.slug_button_text || "Read More"}
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                          </svg>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Load More Button */}
+            {hasMore && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="w-full flex justify-center mt-12"
+              >
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + resultsPerPage)}
+                  className="group relative overflow-hidden inline-flex justify-center items-center font-sans font-extrabold text-[14px] md:text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg px-8 md:px-10 py-3 md:py-4 bg-[#1a1a1a] text-white border-none cursor-pointer"
+                >
+                  <span className="relative z-10">
+                    Load More ({filteredBlogs.length - visibleCount} remaining)
+                  </span>
+                </button>
+              </motion.div>
+            )}
+          </>
         )}
 
         {/* Initial State (no search query yet) */}

@@ -63,7 +63,7 @@ export default function BlockBlogs({
       return allCategories;
     const cats = rawBlogs.flatMap((b: BlogItem) => ((b as unknown as Record<string, unknown>).categories as string[]) || []);
     const unique = Array.from(new Set(cats)).filter(Boolean);
-    return unique.length > 0 ? unique : ["Test Category"];
+    return unique.length > 0 ? unique : [];
   }, [rawBlogs, allCategories]);
 
   const authors = useMemo(() => {
@@ -262,53 +262,39 @@ export default function BlockBlogs({
         </Link>
       )}
 
-      <div className="flex flex-col flex-1 items-center text-center gap-3.5">
+      <div className="flex flex-col items-center text-center gap-3.5">
         {blog.main_title && (
-          <RichText
-            variant="title"
-            align="center"
-            theme="custom"
-            content={blog.main_title}
-            className="prose-headings:font-title prose-headings:font-bold prose-headings:uppercase prose-headings:text-[20px] prose-headings:leading-6 prose-p:font-title prose-p:font-bold prose-p:uppercase prose-p:text-[20px] prose-p:leading-6 prose-headings:m-0 prose-p:m-0 prose-strong:font-black font-bold m-0"
-            style={
-              {
-                color:
-                  bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-                    ? "#fff"
-                    : "#1a1a1a",
-                "--tw-prose-headings":
-                  bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-                    ? "#fff"
-                    : "#1a1a1a",
-                "--tw-prose-bold":
-                  bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-                    ? "#fff"
-                    : "#1a1a1a",
-                "--tw-prose-body":
-                  bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-                    ? "#fff"
-                    : "#1a1a1a",
-              } as React.CSSProperties
-            }
-          />
+          <h3
+            className="font-title font-bold uppercase text-center text-[20px] leading-6 m-0 w-full"
+            style={{
+              color:
+                bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
+                  ? "#fff"
+                  : "#1a1a1a",
+            }}
+          >
+            {blog.main_title.replace(/<[^>]+>/g, "")}
+          </h3>
         )}
 
-        <p
-          className="text-[16px] leading-5 w-full"
-          style={{
-            color:
-              bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
-                ? "#e5e5e5"
-                : "#555",
-          }}
-        >
-          {getSnippet(blog.blog_details)}
-        </p>
+        {getSnippet(blog.blog_details) && (
+          <p
+            className="text-[16px] leading-5 w-full"
+            style={{
+              color:
+                bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"
+                  ? "#e5e5e5"
+                  : "#555",
+            }}
+          >
+            {getSnippet(blog.blog_details)}
+          </p>
+        )}
 
-        <div className="mt-auto">
+        <div className="flex justify-center w-full">
           <Link
             href={blog.slug_button_url || "#"}
-            className="font-title font-black uppercase tracking-widest text-[16px] leading-5 hover:opacity-70 transition-opacity flex items-center gap-2.5 no-underline"
+            className="font-title font-black uppercase tracking-widest text-[16px] leading-5 hover:opacity-70 transition-opacity inline-flex items-center gap-2.5 no-underline"
             style={{
               color:
                 bgColor === "#1A1A1A" || bgColor === "#000000" || bgColor === "#151515"

@@ -224,18 +224,29 @@ export default function BlockForm({ data, globalSettings }: BlockFormProps) {
               )}
 
               <div className="shrink-0 w-full sm:w-auto flex justify-center">
-                {buttonList.map((btn: BlockButton, idx: number) => (
-                  <DynamicButton
-                    key={idx}
-                    btn={btn}
-                    globalSettings={globalSettings}
-                    fallbackFill="#1a1a1a"
-                    fallbackText="#ffffff"
-                    className="w-full sm:w-auto"
+                {buttonList.length > 0 ? (
+                  buttonList.map((btn: BlockButton, idx: number) => (
+                    <DynamicButton
+                      key={idx}
+                      btn={btn}
+                      globalSettings={globalSettings}
+                      fallbackFill="#1a1a1a"
+                      fallbackText="#ffffff"
+                      className="w-full sm:w-auto"
+                      type="submit"
+                      disabled={isSubmitting}
+                    />
+                  ))
+                ) : (
+                  /* Fallback submit button when no buttons configured */
+                  <button
                     type="submit"
                     disabled={isSubmitting}
-                  />
-                ))}
+                    className="group relative overflow-hidden inline-flex justify-center items-center font-sans font-extrabold text-[14px] md:text-[16px] uppercase no-underline transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-lg px-6 md:px-8 py-2 md:py-3 bg-[#1a1a1a] text-white border-none cursor-pointer w-full sm:w-auto"
+                  >
+                    <span className="relative z-10">Submit</span>
+                  </button>
+                )}
               </div>
             </div>
           </form>

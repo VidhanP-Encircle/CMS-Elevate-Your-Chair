@@ -110,21 +110,16 @@ export default async function BlogDetailPage({
       : [];
 
     if (Array.isArray(rawButtons)) {
-      if (rawButtons[1]) {
-        if (prevUrl) {
-          if (!rawButtons[1].buttons_id) rawButtons[1].buttons_id = {};
-          rawButtons[1].buttons_id.button_url = prevUrl;
-        } else {
-          rawButtons[1] = null;
-        }
+      // Index 0 = Back button (kept as-is)
+      // Index 1 = Previous button — override URL with prevUrl if available
+      if (rawButtons[1] && prevUrl) {
+        if (!rawButtons[1].buttons_id) rawButtons[1].buttons_id = {};
+        rawButtons[1].buttons_id.button_url = prevUrl;
       }
-      if (rawButtons[2]) {
-        if (nextUrl) {
-          if (!rawButtons[2].buttons_id) rawButtons[2].buttons_id = {};
-          rawButtons[2].buttons_id.button_url = nextUrl;
-        } else {
-          rawButtons[2] = null;
-        }
+      // Index 2 = Next button — override URL with nextUrl if available
+      if (rawButtons[2] && nextUrl) {
+        if (!rawButtons[2].buttons_id) rawButtons[2].buttons_id = {};
+        rawButtons[2].buttons_id.button_url = nextUrl;
       }
     }
 

@@ -63,6 +63,14 @@ export default function BlockMobile({
     ? globalSettings.social_links
     : [];
 
+  // No content at all → nothing to render
+  const hasImage = !!imageId;
+  const hasContent = isContactInfo
+    ? !!(email || socialLinks.length > 0 || buttonList.length > 0)
+    : !!(title || subtitle || content || buttonList.length > 0);
+
+  if (!hasContent && !hasImage) return null;
+
   return (
     <div
       className="w-full py-10 md:py-15 overflow-hidden"
